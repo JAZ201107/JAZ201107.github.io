@@ -1,13 +1,12 @@
 <?xml version="1.0" encoding="utf-8"?>
 <search>
   <entry>
-    <title>Lec01</title>
-    <url>/Distributed-Systems/Lec01/</url>
-    <content><![CDATA[<p>[toc]</p>
-<p>MIT6.824 是关于分布式系统的</p>
+    <title>MIT_6-824_Lec01</title>
+    <url>/Distributed-Systems/MIT-6-824-Lec01/</url>
+    <content><![CDATA[<p>Lec01 介绍这个课程的架构，以及以MapReduce为例子，介绍分布式架构</p>
 <span id="more"></span>
 
-<p>第一节课主要讲的是MapReduce</p>
+<p>第一节课主要讲的是</p>
 ]]></content>
       <categories>
         <category>Distributed Systems</category>
@@ -19,13 +18,32 @@
       </tags>
   </entry>
   <entry>
-    <title>Lec03</title>
-    <url>/uncategorized/Lec03/</url>
-    <content><![CDATA[<p> <img src="/uncategorized/Lec03/jin_php.jpg"></p>
-<!--- more ---> 
-
-<p><img src="/uncategorized/Lec03/Beautiful_Cat_Imge_Download.jpg"></p>
+    <title>MIT_6-824_Lec02</title>
+    <url>/Distributed-Systems/MIT-6-824-Lec02/</url>
+    <content><![CDATA[]]></content>
+      <categories>
+        <category>Distributed Systems</category>
+      </categories>
+      <tags>
+        <tag>Distributed Systems</tag>
+        <tag>MIT 6.824</tag>
+        <tag>Go</tag>
+      </tags>
+  </entry>
+  <entry>
+    <title>MIT_6-824_Lec03</title>
+    <url>/Distributed-Systems/MIT-6-824-Lec03/</url>
+    <content><![CDATA[<p>Lec3 是关于Google File Systems</p>
+<span id="more"></span> 
 ]]></content>
+      <categories>
+        <category>Distributed Systems</category>
+      </categories>
+      <tags>
+        <tag>Distributed Systems</tag>
+        <tag>MIT 6.824</tag>
+        <tag>Google File Systems</tag>
+      </tags>
   </entry>
   <entry>
     <title>Hello World</title>
@@ -47,10 +65,6 @@
 <h3 id="Deploy-to-remote-sites"><a href="#Deploy-to-remote-sites" class="headerlink" title="Deploy to remote sites"></a>Deploy to remote sites</h3><figure class="highlight bash"><table><tr><td class="code"><pre><span class="line">$ hexo deploy</span><br></pre></td></tr></table></figure>
 
 <p>More info: <a href="https://hexo.io/docs/one-command-deployment.html">Deployment</a></p>
-<p>tiashro ha flahflk ahsf lkafl</p>
-<p>shfsekjth ;ls</p>
-<p>skjdhf akj</p>
-<p>kjsd f</p>
 ]]></content>
   </entry>
 </search>
