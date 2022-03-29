@@ -1,21 +1,6 @@
 <?xml version="1.0" encoding="utf-8"?>
 <search>
   <entry>
-    <title>Jin</title>
-    <url>/2022/03/29/Jin/</url>
-    <content><![CDATA[<p>dsad ass</p>
-<span id="more"></span>
-
-<p>das</p>
-]]></content>
-      <categories>
-        <category>This is try2</category>
-      </categories>
-      <tags>
-        <tag>JIN2</tag>
-      </tags>
-  </entry>
-  <entry>
     <title>Lec03</title>
     <url>/2022/03/29/Lec03/</url>
     <content><![CDATA[<p> <img src="/2022/03/29/Lec03/jin_php.jpg"></p>
@@ -23,25 +8,6 @@
 
 <p><img src="/2022/03/29/Lec03/Beautiful_Cat_Imge_Download.jpg"></p>
 ]]></content>
-  </entry>
-  <entry>
-    <title>This is Jin</title>
-    <url>/2022/03/28/This-is-Jin/</url>
-    <content><![CDATA[<h4 id="asdasdad"><a href="#asdasdad" class="headerlink" title="asdasdad"></a>asdasdad</h4><span id="more"></span>
-
-<figure class="highlight java"><table><tr><td class="code"><pre><span class="line"><span class="keyword">public</span> <span class="keyword">static</span> <span class="keyword">void</span> <span class="title function_">main</span><span class="params">(args[])</span>&#123;</span><br><span class="line">  Systems.out.println(<span class="string">&quot;Hello Word&quot;</span>);</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
-
-
-
-<p>asdasd </p>
-<p>this </p>
-]]></content>
-      <categories>
-        <category>xuexibiji</category>
-      </categories>
-      <tags>
-        <tag>try</tag>
-      </tags>
   </entry>
   <entry>
     <title>Hello World</title>
@@ -68,5 +34,24 @@
 <p>skjdhf akj</p>
 <p>kjsd f</p>
 ]]></content>
+  </entry>
+  <entry>
+    <title>Lec01</title>
+    <url>/2022/03/29/Lec01/</url>
+    <content><![CDATA[<p>[toc]</p>
+<p>MIT6.824 是关于分布式系统的</p>
+<!--- more --->
+
+<p>第一节课主要讲的是MapReduce</p>
+]]></content>
+      <categories>
+        <category>MIT 6.824</category>
+        <category>Distributed Systems</category>
+      </categories>
+      <tags>
+        <tag>Distributed Systems</tag>
+        <tag>MIT</tag>
+        <tag>MapReduce</tag>
+      </tags>
   </entry>
 </search>
