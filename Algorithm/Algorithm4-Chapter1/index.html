@@ -1,0 +1,624 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=2">
+<meta name="theme-color" content="#222">
+<meta name="generator" content="Hexo 6.1.0">
+  <link rel="apple-touch-icon" sizes="180x180" href="/images/apple-touch-icon-next.png">
+  <link rel="icon" type="image/png" sizes="32x32" href="/images/favicon-32x32-next.png">
+  <link rel="icon" type="image/png" sizes="16x16" href="/images/favicon-16x16-next.png">
+  <link rel="mask-icon" href="/images/logo.svg" color="#222">
+  <meta name="google-site-verification" content="8PaqjDEjjclkaTafEbNosHDhMjcCoFWL0eEGwg76laY">
+
+<link rel="stylesheet" href="/css/main.css">
+
+
+<link rel="stylesheet" href="/lib/font-awesome/css/all.min.css">
+  <link rel="stylesheet" href="//cdn.jsdelivr.net/gh/fancyapps/fancybox@3/dist/jquery.fancybox.min.css">
+
+<script id="hexo-configurations">
+    var NexT = window.NexT || {};
+    var CONFIG = {"hostname":"yu-yang.pro","root":"/","scheme":"Muse","version":"7.8.0","exturl":false,"sidebar":{"position":"left","display":"always","padding":18,"offset":12,"onmobile":false},"copycode":{"enable":true,"show_result":true,"style":"mac"},"back2top":{"enable":true,"sidebar":false,"scrollpercent":true},"bookmark":{"enable":false,"color":"#222","save":"auto"},"fancybox":true,"mediumzoom":false,"lazyload":false,"pangu":false,"comments":{"style":"tabs","active":null,"storage":true,"lazyload":false,"nav":null},"algolia":{"hits":{"per_page":10},"labels":{"input_placeholder":"Search for Posts","hits_empty":"We didn't find any results for the search: ${query}","hits_stats":"${hits} results found in ${time} ms"}},"localsearch":{"enable":true,"trigger":"auto","top_n_per_article":1,"unescape":false,"preload":false},"motion":{"enable":true,"async":false,"transition":{"post_block":"fadeIn","post_header":"slideDownIn","post_body":"slideDownIn","coll_header":"slideLeftIn","sidebar":"slideUpIn"}},"path":"search.xml"};
+  </script>
+
+  <meta name="description" content="前言由于是出于复习的目的，且是第二次看 算法4 有些基础的部分笼统的复习一遍，并没有记录下来。 每篇题目均会与Leecode上的题目联系起来">
+<meta property="og:type" content="article">
+<meta property="og:title" content="Algorithm4_Chapter1">
+<meta property="og:url" content="https://yu-yang.pro/Algorithm/Algorithm4-Chapter1/index.html">
+<meta property="og:site_name" content="Yuyang&#39;s 博客">
+<meta property="og:description" content="前言由于是出于复习的目的，且是第二次看 算法4 有些基础的部分笼统的复习一遍，并没有记录下来。 每篇题目均会与Leecode上的题目联系起来">
+<meta property="og:locale" content="en_US">
+<meta property="og:image" content="https://yu-yang.pro/Algorithm/Algorithm4-Chapter1/format,f_jpg.jpeg">
+<meta property="og:image" content="https://yu-yang.pro/Algorithm/Algorithm4-Chapter1/watermark,type_ZmFuZ3poZW5naGVpdGk,shadow_10,text_aHR0cHM6Ly9ibG9nLmNzZG4ubmV0L20wXzQ1MDk3MTg2,size_16,color_FFFFFF,t_70.png">
+<meta property="og:image" content="https://yu-yang.pro/Algorithm/Algorithm4-Chapter1/watermark,type_ZmFuZ3poZW5naGVpdGk,shadow_10,text_aHR0cHM6Ly9ibG9nLmNzZG4ubmV0L0t5cm90ZXg=,size_16,color_FFFFFF,t_70.png">
+<meta property="article:published_time" content="2022-03-30T04:47:18.000Z">
+<meta property="article:modified_time" content="2022-03-30T04:47:18.000Z">
+<meta property="article:author" content="Yuyang Zhang">
+<meta property="article:tag" content="Algorithm4">
+<meta property="article:tag" content="Data Structure">
+<meta property="article:tag" content="Leecode">
+<meta name="twitter:card" content="summary">
+<meta name="twitter:image" content="https://yu-yang.pro/Algorithm/Algorithm4-Chapter1/format,f_jpg.jpeg">
+
+<link rel="canonical" href="https://yu-yang.pro/Algorithm/Algorithm4-Chapter1/">
+
+
+<script id="page-configurations">
+  // https://hexo.io/docs/variables.html
+  CONFIG.page = {
+    sidebar: "",
+    isHome : false,
+    isPost : true,
+    lang   : 'en'
+  };
+</script>
+
+  <title>Algorithm4_Chapter1 | Yuyang's 博客</title>
+  
+
+
+
+
+
+
+  <noscript>
+  <style>
+  .use-motion .brand,
+  .use-motion .menu-item,
+  .sidebar-inner,
+  .use-motion .post-block,
+  .use-motion .pagination,
+  .use-motion .comments,
+  .use-motion .post-header,
+  .use-motion .post-body,
+  .use-motion .collection-header { opacity: initial; }
+
+  .use-motion .site-title,
+  .use-motion .site-subtitle {
+    opacity: initial;
+    top: initial;
+  }
+
+  .use-motion .logo-line-before i { left: initial; }
+  .use-motion .logo-line-after i { right: initial; }
+  </style>
+</noscript>
+
+</head>
+
+<body itemscope itemtype="http://schema.org/WebPage">
+  <div class="container use-motion">
+    <div class="headband"></div>
+
+    <header class="header" itemscope itemtype="http://schema.org/WPHeader">
+      <div class="header-inner"><div class="site-brand-container">
+  <div class="site-nav-toggle">
+    <div class="toggle" aria-label="Toggle navigation bar">
+      <span class="toggle-line toggle-line-first"></span>
+      <span class="toggle-line toggle-line-middle"></span>
+      <span class="toggle-line toggle-line-last"></span>
+    </div>
+  </div>
+
+  <div class="site-meta">
+
+    <a href="/" class="brand" rel="start">
+      <span class="logo-line-before"><i></i></span>
+      <h1 class="site-title">Yuyang's 博客</h1>
+      <span class="logo-line-after"><i></i></span>
+    </a>
+  </div>
+
+  <div class="site-nav-right">
+    <div class="toggle popup-trigger">
+        <i class="fa fa-search fa-fw fa-lg"></i>
+    </div>
+  </div>
+</div>
+
+
+
+
+<nav class="site-nav">
+  <ul id="menu" class="main-menu menu">
+        <li class="menu-item menu-item-home">
+
+    <a href="/" rel="section"><i class="fa fa-home fa-fw"></i>Home</a>
+
+  </li>
+        <li class="menu-item menu-item-tags">
+
+    <a href="/tags/" rel="section"><i class="fa fa-tags fa-fw"></i>Tags</a>
+
+  </li>
+        <li class="menu-item menu-item-categories">
+
+    <a href="/categories/" rel="section"><i class="fa fa-th fa-fw"></i>Categories</a>
+
+  </li>
+        <li class="menu-item menu-item-archives">
+
+    <a href="/archives/" rel="section"><i class="fa fa-archive fa-fw"></i>Archives</a>
+
+  </li>
+      <li class="menu-item menu-item-search">
+        <a role="button" class="popup-trigger"><i class="fa fa-search fa-fw"></i>Search
+        </a>
+      </li>
+  </ul>
+</nav>
+
+
+
+  <div class="search-pop-overlay">
+    <div class="popup search-popup">
+        <div class="search-header">
+  <span class="search-icon">
+    <i class="fa fa-search"></i>
+  </span>
+  <div class="search-input-container">
+    <input autocomplete="off" autocapitalize="off"
+           placeholder="Searching..." spellcheck="false"
+           type="search" class="search-input">
+  </div>
+  <span class="popup-btn-close">
+    <i class="fa fa-times-circle"></i>
+  </span>
+</div>
+<div id="search-result">
+  <div id="no-result">
+    <i class="fa fa-spinner fa-pulse fa-5x fa-fw"></i>
+  </div>
+</div>
+
+    </div>
+  </div>
+
+</div>
+    </header>
+
+    
+  <div class="back-to-top">
+    <i class="fa fa-arrow-up"></i>
+    <span>0%</span>
+  </div>
+  <div class="reading-progress-bar"></div>
+
+
+    <main class="main">
+      <div class="main-inner">
+        <div class="content-wrap">
+          
+
+          <div class="content post posts-expand">
+            
+
+    
+  
+  
+  <article itemscope itemtype="http://schema.org/Article" class="post-block" lang="en">
+    <link itemprop="mainEntityOfPage" href="https://yu-yang.pro/Algorithm/Algorithm4-Chapter1/">
+
+    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
+      <meta itemprop="image" content="/images/profile_img.jpg">
+      <meta itemprop="name" content="Yuyang Zhang">
+      <meta itemprop="description" content="stay hungry stay foolish">
+    </span>
+
+    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
+      <meta itemprop="name" content="Yuyang's 博客">
+    </span>
+      <header class="post-header">
+        <h1 class="post-title" itemprop="name headline">
+          Algorithm4_Chapter1
+        </h1>
+
+        <div class="post-meta">
+            <span class="post-meta-item">
+              <span class="post-meta-item-icon">
+                <i class="far fa-calendar"></i>
+              </span>
+              <span class="post-meta-item-text">Posted on</span>
+
+              <time title="Created: 2022-03-30 12:47:18" itemprop="dateCreated datePublished" datetime="2022-03-30T12:47:18+08:00">2022-03-30</time>
+            </span>
+            <span class="post-meta-item">
+              <span class="post-meta-item-icon">
+                <i class="far fa-folder"></i>
+              </span>
+              <span class="post-meta-item-text">In</span>
+                <span itemprop="about" itemscope itemtype="http://schema.org/Thing">
+                  <a href="/categories/Algorithm/" itemprop="url" rel="index"><span itemprop="name">Algorithm</span></a>
+                </span>
+            </span>
+
+          
+            <span class="post-meta-item" title="Views" id="busuanzi_container_page_pv" style="display: none;">
+              <span class="post-meta-item-icon">
+                <i class="fa fa-eye"></i>
+              </span>
+              <span class="post-meta-item-text">Views: </span>
+              <span id="busuanzi_value_page_pv"></span>
+            </span><br>
+            <span class="post-meta-item" title="Symbols count in article">
+              <span class="post-meta-item-icon">
+                <i class="far fa-file-word"></i>
+              </span>
+                <span class="post-meta-item-text">Symbols count in article: </span>
+              <span>7.7k</span>
+            </span>
+            <span class="post-meta-item" title="Reading time">
+              <span class="post-meta-item-icon">
+                <i class="far fa-clock"></i>
+              </span>
+                <span class="post-meta-item-text">Reading time &asymp;</span>
+              <span>7 mins.</span>
+            </span>
+
+        </div>
+      </header>
+
+    
+    
+    
+    <div class="post-body" itemprop="articleBody">
+
+      
+        <h2 id="前言"><a href="#前言" class="headerlink" title="前言"></a>前言</h2><p>由于是出于复习的目的，且是第二次看 算法4 有些基础的部分笼统的复习一遍，并没有记录下来。</p>
+<p>每篇题目均会与Leecode上的题目联系起来</p>
+<span id="more"></span>
+
+<h2 id="背包、队列和栈"><a href="#背包、队列和栈" class="headerlink" title="背包、队列和栈"></a>背包、队列和栈</h2><ul>
+<li>Bag（背包）：不支持从中删除元素的集合数据类型。背包的目的就是帮助用例收集元素并迭代遍历所有收集到的元素。</li>
+<li>Queue（队列）：先进先出（FIFO）</li>
+<li>Stack（栈）：先进后出（LIFO）<ul>
+<li>浏览网页：点击超链接 -&gt; 入栈。 退回 -&gt; 出栈</li>
+</ul>
+</li>
+</ul>
+<h3 id="算数表达式的求值（栈使用的例子）"><a href="#算数表达式的求值（栈使用的例子）" class="headerlink" title="算数表达式的求值（栈使用的例子）"></a>算数表达式的求值（栈使用的例子）</h3><p><a target="_blank" rel="noopener" href="https://leetcode.com/problems/basic-calculator/">Leecode224 Basic Caculator</a></p>
+<p>为了简单起见，这里定义的是 <strong>未省略括号</strong> 的算数表达式:</p>
+<p>​                                ( 1 + ( ( 2 + 3 ) * ( 4 * 5 ) ) )</p>
+<p>实现：</p>
+<ol>
+<li>new 出两个 Stack ，一个放操作数（1，2，3。。。） 另一个放 运算符（+，-，*，&#x2F;）</li>
+<li>根据以下4种情况， 逐个送入栈中处理<ul>
+<li>将 <strong>操作数</strong> 压入 <strong>操作数栈</strong></li>
+<li>将 <strong>运算符</strong> 压入 <strong>运算符栈</strong></li>
+<li>忽略 <strong>左括号</strong></li>
+<li>如果遇到 <strong>右括号</strong>，弹出一个 <strong>运算符</strong>， 并弹出所需数量的 <strong>操作数</strong>， 将运算的结果，压回 <strong>操作数栈</strong></li>
+</ul>
+</li>
+</ol>
+<p>在处理完 <strong>最后一个右括号</strong> 之后，操作数栈上只有一个值，及我们所求值</p>
+<p>代码实现:</p>
+<figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br></pre></td><td class="code"><pre><span class="line">Dijkstra</span><br><span class="line"><span class="keyword">public</span> <span class="keyword">class</span> <span class="title class_">Evaluate</span> &#123;</span><br><span class="line">    <span class="keyword">public</span> <span class="keyword">static</span> <span class="keyword">void</span> <span class="title function_">main</span><span class="params">(String[] args)</span> &#123; </span><br><span class="line">        Stack&lt;String&gt; ops  = <span class="keyword">new</span> <span class="title class_">Stack</span>&lt;String&gt;();</span><br><span class="line">        Stack&lt;Double&gt; vals = <span class="keyword">new</span> <span class="title class_">Stack</span>&lt;Double&gt;();</span><br><span class="line"></span><br><span class="line">        <span class="keyword">while</span> (!StdIn.isEmpty()) &#123;</span><br><span class="line">            <span class="type">String</span> <span class="variable">s</span> <span class="operator">=</span> StdIn.readString();</span><br><span class="line">          <span class="comment">// 将 运算符 压入 运算符栈</span></span><br><span class="line">            <span class="keyword">if</span>      (s.equals(<span class="string">&quot;(&quot;</span>))               ; <span class="comment">// 遇到左括号，忽略</span></span><br><span class="line">            <span class="keyword">else</span> <span class="keyword">if</span> (s.equals(<span class="string">&quot;+&quot;</span>))    ops.push(s);</span><br><span class="line">            <span class="keyword">else</span> <span class="keyword">if</span> (s.equals(<span class="string">&quot;-&quot;</span>))    ops.push(s);</span><br><span class="line">            <span class="keyword">else</span> <span class="keyword">if</span> (s.equals(<span class="string">&quot;*&quot;</span>))    ops.push(s);</span><br><span class="line">            <span class="keyword">else</span> <span class="keyword">if</span> (s.equals(<span class="string">&quot;/&quot;</span>))    ops.push(s);</span><br><span class="line">            <span class="keyword">else</span> <span class="keyword">if</span> (s.equals(<span class="string">&quot;sqrt&quot;</span>)) ops.push(s);</span><br><span class="line">            <span class="keyword">else</span> <span class="keyword">if</span> (s.equals(<span class="string">&quot;)&quot;</span>))  <span class="comment">// 遇到 右括号， 弹出运算符和操作数</span></span><br><span class="line">            &#123;</span><br><span class="line">                <span class="type">String</span> <span class="variable">op</span> <span class="operator">=</span> ops.pop(); <span class="comment">// 弹出运算符</span></span><br><span class="line">                <span class="type">double</span> <span class="variable">v</span> <span class="operator">=</span> vals.pop(); <span class="comment">// 弹出第一个操作数</span></span><br><span class="line">              <span class="comment">// 弹出操作数并且，且根据 运算符， 弹出第二个操作数</span></span><br><span class="line">                <span class="keyword">if</span>      (op.equals(<span class="string">&quot;+&quot;</span>))    v = vals.pop() + v;</span><br><span class="line">                <span class="keyword">else</span> <span class="keyword">if</span> (op.equals(<span class="string">&quot;-&quot;</span>))    v = vals.pop() - v;</span><br><span class="line">                <span class="keyword">else</span> <span class="keyword">if</span> (op.equals(<span class="string">&quot;*&quot;</span>))    v = vals.pop() * v;</span><br><span class="line">                <span class="keyword">else</span> <span class="keyword">if</span> (op.equals(<span class="string">&quot;/&quot;</span>))    v = vals.pop() / v;</span><br><span class="line">                <span class="keyword">else</span> <span class="keyword">if</span> (op.equals(<span class="string">&quot;sqrt&quot;</span>)) v = Math.sqrt(v);</span><br><span class="line">              <span class="comment">// 将返回的值压回栈</span></span><br><span class="line">                vals.push(v);</span><br><span class="line">            &#125;</span><br><span class="line">            <span class="keyword">else</span> vals.push(Double.parseDouble(s)); <span class="comment">// 将操作数压入操作数栈</span></span><br><span class="line">        &#125; </span><br><span class="line">        StdOut.println(vals.pop()); <span class="comment">// 返回结果</span></span><br><span class="line">    &#125;</span><br><span class="line">&#125;</span><br><span class="line"></span><br></pre></td></tr></table></figure>
+
+<p>此代码是一个简单的 “解释器”： 一个能够解释给定字符串所表达的运算并计算得到结果的程序</p>
+<blockquote>
+<p>解释器（<a target="_blank" rel="noopener" href="https://baike.baidu.com/item/%E8%8B%B1%E8%AF%AD/109997">英语</a>：Interpreter），又译为直译器，是一种电脑程序，能够把高级<a target="_blank" rel="noopener" href="https://baike.baidu.com/item/%E7%BC%96%E7%A8%8B%E8%AF%AD%E8%A8%80">编程语言</a>一行一行直接转译运行。解释器不会一次把整个程序转译出来，只像一位“中间人”，每次运行程序时都要先转成另一种语言再作运行，因此解释器的程序运行速度比较缓慢。它每转译一行程序叙述就立刻运行，然后再转译下一行，再运行，如此不停地进行下去</p>
+<p><img src="/Algorithm/Algorithm4-Chapter1/format,f_jpg.jpeg"></p>
+</blockquote>
+<h3 id="集合数据类型的实现"><a href="#集合数据类型的实现" class="headerlink" title="集合数据类型的实现"></a>集合数据类型的实现</h3><h4 id="定容栈的实现"><a href="#定容栈的实现" class="headerlink" title="定容栈的实现"></a>定容栈的实现</h4><ul>
+<li>定容栈： 容量固定的字符串栈的抽象类型</li>
+</ul>
+<figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">public</span> <span class="keyword">class</span> <span class="title class_">FixedCapacityStackOfStrings</span>&#123;</span><br><span class="line">    <span class="keyword">private</span> String[] a;  <span class="comment">// holds the items</span></span><br><span class="line">    <span class="keyword">private</span> <span class="type">int</span> N;       <span class="comment">// number of items in stack</span></span><br><span class="line"></span><br><span class="line">    <span class="comment">// create an empty stack with given capacity</span></span><br><span class="line">    <span class="keyword">public</span> <span class="title function_">FixedCapacityStackOfStrings</span><span class="params">(<span class="type">int</span> capacity)</span> &#123;</span><br><span class="line">        a = <span class="keyword">new</span> <span class="title class_">String</span>[capacity];</span><br><span class="line">        N = <span class="number">0</span>;</span><br><span class="line">    &#125;</span><br><span class="line"></span><br><span class="line">    <span class="keyword">public</span> <span class="type">boolean</span> <span class="title function_">isEmpty</span><span class="params">()</span>            &#123;  <span class="type">return</span> <span class="variable">N</span> <span class="operator">=</span>= <span class="number">0</span>;                    &#125;</span><br><span class="line">    <span class="keyword">public</span> <span class="type">boolean</span> <span class="title function_">isFull</span><span class="params">()</span>             &#123;  <span class="type">return</span> <span class="variable">N</span> <span class="operator">=</span>= a.length;             &#125;</span><br><span class="line">    <span class="keyword">public</span> <span class="keyword">void</span> <span class="title function_">push</span><span class="params">(String item)</span>       &#123;  a[N++] = item;                    &#125;</span><br><span class="line">    <span class="keyword">public</span> String <span class="title function_">pop</span><span class="params">()</span>                 &#123;  <span class="keyword">return</span> a[--N];                    &#125;</span><br><span class="line">    <span class="keyword">public</span> String <span class="title function_">peek</span><span class="params">()</span>                &#123;  <span class="keyword">return</span> a[N-<span class="number">1</span>];                    &#125;</span><br><span class="line">&#125; </span><br></pre></td></tr></table></figure>
+
+<p>缺点：只能有固定的String类型</p>
+<h4 id="定容栈的改善（泛型）"><a href="#定容栈的改善（泛型）" class="headerlink" title="定容栈的改善（泛型）"></a>定容栈的改善（泛型）</h4><p>通过泛型来解决，只能存储String的问题</p>
+<figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">public</span> <span class="keyword">class</span> <span class="title class_">FixedCapacityStack</span>&lt;Item&gt;</span><br><span class="line"><span class="comment">// Item 是一个类型参数，表示某种类型象征性的占位符</span></span><br></pre></td></tr></table></figure>
+
+<p><strong>注意</strong>： 要通过类型转换来实现泛型数组的创建</p>
+<figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">a = (Item[]) <span class="keyword">new</span> <span class="title class_">Object</span>[cap];</span><br></pre></td></tr></table></figure>
+
+<p>泛型定容栈的代码实现</p>
+<figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">public</span> <span class="keyword">class</span> <span class="title class_">FixedCapacityStack</span>&lt;Item&gt;&#123;</span><br><span class="line">    <span class="keyword">private</span> Item[] a;    <span class="comment">// holds the items</span></span><br><span class="line">    <span class="keyword">private</span> <span class="type">int</span> N;       <span class="comment">// number of items in stack</span></span><br><span class="line"></span><br><span class="line">    <span class="comment">// create an empty stack with given capacity</span></span><br><span class="line">    <span class="keyword">public</span> <span class="title function_">FixedCapacityStack</span><span class="params">(<span class="type">int</span> capacity)</span> &#123;</span><br><span class="line">        a = (Item[]) <span class="keyword">new</span> <span class="title class_">Object</span>[capacity];   <span class="comment">// no generic array creation</span></span><br><span class="line">        N = <span class="number">0</span>;</span><br><span class="line">    &#125;</span><br><span class="line"></span><br><span class="line">    <span class="keyword">public</span> <span class="type">boolean</span> <span class="title function_">isEmpty</span><span class="params">()</span>          &#123;  <span class="type">return</span> <span class="variable">N</span> <span class="operator">=</span>= <span class="number">0</span>;                    &#125;</span><br><span class="line">    <span class="keyword">public</span> <span class="keyword">void</span> <span class="title function_">push</span><span class="params">(Item item)</span>       &#123;  a[N++] = item;                    &#125;</span><br><span class="line">    <span class="keyword">public</span> Item <span class="title function_">pop</span><span class="params">()</span>                 &#123;  <span class="keyword">return</span> a[--N];                    &#125;</span><br><span class="line"></span><br><span class="line">&#125; </span><br></pre></td></tr></table></figure>
+
+<p>缺点：栈的长度固定，如果要插入的元素过多，会导致超出索引范围。相反，若插入的元素过少，则会浪费空间</p>
+<h4 id="定容栈的改善（调整数组大小）"><a href="#定容栈的改善（调整数组大小）" class="headerlink" title="定容栈的改善（调整数组大小）"></a>定容栈的改善（调整数组大小）</h4><p>通过一个resize的办法，实现调整数组的大小</p>
+<figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">private</span> <span class="keyword">void</span> <span class="title function_">resize</span><span class="params">(<span class="type">int</span> max)</span>&#123;</span><br><span class="line">  Item[] temp = (Item[]) <span class="keyword">new</span> <span class="title class_">Object</span>[max];</span><br><span class="line">  <span class="keyword">for</span>(<span class="type">int</span> <span class="variable">i</span> <span class="operator">=</span><span class="number">0</span>; i &lt; N;i++)&#123;</span><br><span class="line">    temp[i] = a[i];</span><br><span class="line">  &#125;</span><br><span class="line">  a = temp;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+<p>代码实现</p>
+<figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">public</span> <span class="keyword">class</span> <span class="title class_">ResizingArrayStack</span>&lt;Item&gt; &#123;</span><br><span class="line">    <span class="keyword">private</span> Item[] a;    <span class="comment">// holds the items</span></span><br><span class="line">    <span class="keyword">private</span> <span class="type">int</span> N;       <span class="comment">// number of items in stack</span></span><br><span class="line"></span><br><span class="line">    <span class="comment">// create an empty stack with given capacity</span></span><br><span class="line">    <span class="keyword">public</span> <span class="title function_">ResizingArrayStack</span><span class="params">(<span class="type">int</span> capacity)</span> &#123;</span><br><span class="line">        a = (Item[]) <span class="keyword">new</span> <span class="title class_">Object</span>[capacity];   <span class="comment">// no generic array creation</span></span><br><span class="line">        N = <span class="number">0</span>;</span><br><span class="line">    &#125;</span><br><span class="line"></span><br><span class="line">    <span class="keyword">public</span> <span class="type">boolean</span> <span class="title function_">isEmpty</span><span class="params">()</span>          &#123;  <span class="type">return</span> <span class="variable">N</span> <span class="operator">=</span>= <span class="number">0</span>;                    &#125;</span><br><span class="line">  </span><br><span class="line">    <span class="keyword">public</span> <span class="keyword">void</span> <span class="title function_">push</span><span class="params">(Item item)</span>&#123; </span><br><span class="line">      <span class="keyword">if</span>(N == a.length) resize(<span class="number">2</span>*a.length);</span><br><span class="line">      a[N++] = item;</span><br><span class="line">    &#125;</span><br><span class="line">  </span><br><span class="line">  <span class="comment">// 修改pop，当栈的大小小于原来的1/4 时，数组长度减半</span></span><br><span class="line">    <span class="keyword">public</span> Item <span class="title function_">pop</span><span class="params">()</span>&#123;  </span><br><span class="line">      <span class="type">Item</span> <span class="variable">item</span> <span class="operator">=</span> a[N-<span class="number">1</span>];</span><br><span class="line">      a[N-<span class="number">1</span>] = <span class="literal">null</span>;</span><br><span class="line">      N--;</span><br><span class="line">      <span class="keyword">if</span>(N&gt;<span class="number">0</span> &amp;&amp; N == a.length/<span class="number">4</span>) resize(a.length/<span class="number">2</span>);</span><br><span class="line">      <span class="keyword">return</span> item;               </span><br><span class="line">    &#125;</span><br><span class="line">  </span><br><span class="line">    <span class="keyword">private</span> <span class="keyword">void</span> <span class="title function_">resize</span><span class="params">(<span class="type">int</span> max)</span>&#123;</span><br><span class="line">      Item[] temp = (Item[]) <span class="keyword">new</span> <span class="title class_">Object</span>[max];</span><br><span class="line">      <span class="keyword">for</span>(<span class="type">int</span> <span class="variable">i</span> <span class="operator">=</span><span class="number">0</span>; i &lt; N;i++)&#123;</span><br><span class="line">        temp[i] = a[i];</span><br><span class="line">      &#125;</span><br><span class="line">      a = temp;</span><br><span class="line">  	 &#125;		</span><br><span class="line"></span><br><span class="line">&#125; </span><br></pre></td></tr></table></figure>
+
+
+
+<h4 id="对象游离"><a href="#对象游离" class="headerlink" title="对象游离"></a>对象游离</h4><p>Java 的垃圾回收（GC）回收所有无法访问的内存，在实现 pop( ) 的过程中，被弹出元素的引用仍存在于数组之中。实际上这个元素不会再被访问，但是垃圾回收器无法知道这一点，除非改引用被覆盖。要实现这一点，将弹出元素的值设为null。这将覆盖无用的引用，并且使系统可以在用例使用完被弹出元素后回收它的内存。</p>
+<figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">public</span> Item <span class="title function_">pop</span><span class="params">()</span>&#123;  </span><br><span class="line">      <span class="type">Item</span> <span class="variable">item</span> <span class="operator">=</span> a[N-<span class="number">1</span>];</span><br><span class="line">      a[N-<span class="number">1</span>] = <span class="literal">null</span>; <span class="comment">// 防止loitering</span></span><br><span class="line">      N--;</span><br><span class="line">      <span class="keyword">if</span>(N&gt;<span class="number">0</span> &amp;&amp; N == a.length/<span class="number">4</span>) resize(a.length/<span class="number">2</span>);</span><br><span class="line">      <span class="keyword">return</span> item;               </span><br><span class="line">    &#125;</span><br></pre></td></tr></table></figure>
+
+
+
+<h4 id="定容栈的改善（迭代"><a href="#定容栈的改善（迭代" class="headerlink" title="定容栈的改善（迭代)"></a>定容栈的改善（迭代)</h4><p>要想实现可迭代的集合数据类型，必须满足：</p>
+<ul>
+<li>集合数据类型实现一个 iterator() 的方法，并且返回一个Iterator对象</li>
+<li>Iterator类必须包含： hasNext() （返回boolean）和 next() （返回Item类型）</li>
+</ul>
+<p>在Java中，使用接口机制来指定一个类所要实现的办法。对于可迭代的类型，第一步就是在声明中加入对应的接口</p>
+<figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">public</span> <span class="keyword">class</span> <span class="title class_">ResizingArrayStack</span>&lt;Item&gt; <span class="keyword">implements</span> <span class="title class_">Iterable</span>&lt;Item&gt; </span><br></pre></td></tr></table></figure>
+
+<p>通过观察 Iterable&lt;Item&gt; 可知，</p>
+<figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment">// java.lang 包下</span></span><br><span class="line"><span class="keyword">public</span> <span class="keyword">interface</span> <span class="title class_">Iterable</span>&lt;Item&gt;</span><br><span class="line">&#123;</span><br><span class="line">  Iterator&lt;Item&gt; <span class="title function_">iterator</span><span class="params">()</span>;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+<p>要返回一个 Iterator。</p>
+<p>Iterator是什么： 一个实现了 hasNext 和 next 方法的类的对象。由以下接口定义</p>
+<figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment">// java.util 包下</span></span><br><span class="line"><span class="keyword">public</span> <span class="keyword">interface</span> <span class="title class_">Iterator</span>&lt;Item&gt;</span><br><span class="line">&#123;</span><br><span class="line">  <span class="type">boolean</span> <span class="title function_">hasNext</span><span class="params">()</span>;</span><br><span class="line">  Item <span class="title function_">next</span><span class="params">()</span>;</span><br><span class="line">  <span class="keyword">void</span> <span class="title function_">remove</span><span class="params">()</span>;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+<h4 id="Stack（能够动态调整数组大小的实现）"><a href="#Stack（能够动态调整数组大小的实现）" class="headerlink" title="Stack（能够动态调整数组大小的实现）"></a>Stack（能够动态调整数组大小的实现）</h4><p><img src="/Algorithm/Algorithm4-Chapter1/watermark,type_ZmFuZ3poZW5naGVpdGk,shadow_10,text_aHR0cHM6Ly9ibG9nLmNzZG4ubmV0L20wXzQ1MDk3MTg2,size_16,color_FFFFFF,t_70.png"></p>
+<figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br><span class="line">36</span><br><span class="line">37</span><br><span class="line">38</span><br><span class="line">39</span><br><span class="line">40</span><br><span class="line">41</span><br><span class="line">42</span><br><span class="line">43</span><br><span class="line">44</span><br><span class="line">45</span><br><span class="line">46</span><br><span class="line">47</span><br><span class="line">48</span><br><span class="line">49</span><br><span class="line">50</span><br><span class="line">51</span><br><span class="line">52</span><br><span class="line">53</span><br><span class="line">54</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">public</span> <span class="keyword">class</span> <span class="title class_">ResizingArrayStack</span>&lt;Item&gt; <span class="keyword">implements</span> <span class="title class_">Iterable</span>&lt;Item&gt; &#123;</span><br><span class="line"></span><br><span class="line">    <span class="keyword">private</span> Item[] a;    <span class="comment">// holds the items</span></span><br><span class="line">    <span class="keyword">private</span> <span class="type">int</span> N;       <span class="comment">// number of items in stack</span></span><br><span class="line"></span><br><span class="line">    <span class="comment">// create an empty stack with given capacity</span></span><br><span class="line">    <span class="keyword">public</span> <span class="title function_">ResizingArrayStack</span><span class="params">(<span class="type">int</span> capacity)</span> &#123;</span><br><span class="line">        a = (Item[]) <span class="keyword">new</span> <span class="title class_">Object</span>[capacity];   <span class="comment">// no generic array creation</span></span><br><span class="line">        N = <span class="number">0</span>;</span><br><span class="line">    &#125;</span><br><span class="line"></span><br><span class="line">    <span class="keyword">public</span> <span class="type">boolean</span> <span class="title function_">isEmpty</span><span class="params">()</span>          &#123;  <span class="type">return</span> <span class="variable">N</span> <span class="operator">=</span>= <span class="number">0</span>;                    &#125;</span><br><span class="line">  </span><br><span class="line">    <span class="keyword">public</span> <span class="keyword">void</span> <span class="title function_">push</span><span class="params">(Item item)</span>&#123; </span><br><span class="line">      <span class="keyword">if</span>(N == a.length) resize(<span class="number">2</span>*a.length);</span><br><span class="line">      a[N++] = item;</span><br><span class="line">    &#125;</span><br><span class="line">  </span><br><span class="line">  <span class="comment">// 修改pop，当栈的大小小于原来的1/4 时，数组长度减半</span></span><br><span class="line">    <span class="keyword">public</span> Item <span class="title function_">pop</span><span class="params">()</span>&#123;  </span><br><span class="line">      <span class="type">Item</span> <span class="variable">item</span> <span class="operator">=</span> a[N-<span class="number">1</span>];</span><br><span class="line">      a[N-<span class="number">1</span>] = <span class="literal">null</span>;</span><br><span class="line">      N--;</span><br><span class="line">      <span class="keyword">if</span>(N&gt;<span class="number">0</span> &amp;&amp; N == a.length/<span class="number">4</span>) resize(a.length/<span class="number">2</span>);</span><br><span class="line">      <span class="keyword">return</span> item;               </span><br><span class="line">    &#125;</span><br><span class="line">  </span><br><span class="line">    <span class="keyword">private</span> <span class="keyword">void</span> <span class="title function_">resize</span><span class="params">(<span class="type">int</span> max)</span>&#123;</span><br><span class="line">      Item[] temp = (Item[]) <span class="keyword">new</span> <span class="title class_">Object</span>[max];</span><br><span class="line">      <span class="keyword">for</span>(<span class="type">int</span> <span class="variable">i</span> <span class="operator">=</span><span class="number">0</span>; i &lt; N;i++)&#123;</span><br><span class="line">        temp[i] = a[i];</span><br><span class="line">      &#125;</span><br><span class="line">      a = temp;</span><br><span class="line">  	 &#125;		</span><br><span class="line"></span><br><span class="line"></span><br><span class="line">		<span class="comment">// 返回迭代器</span></span><br><span class="line">    <span class="keyword">public</span> Iterator&lt;Item&gt; <span class="title function_">iterator</span><span class="params">()</span> &#123;</span><br><span class="line">        <span class="keyword">return</span> <span class="keyword">new</span> <span class="title class_">ReverseArrayIterator</span>();</span><br><span class="line">    &#125;</span><br><span class="line"></span><br><span class="line">    <span class="comment">// an iterator, doesn&#x27;t implement remove() since it&#x27;s optional</span></span><br><span class="line">    <span class="keyword">private</span> <span class="keyword">class</span> <span class="title class_">ReverseArrayIterator</span> <span class="keyword">implements</span> <span class="title class_">Iterator</span>&lt;Item&gt; &#123;</span><br><span class="line">        <span class="keyword">private</span> <span class="type">int</span> <span class="variable">i</span> <span class="operator">=</span> N;</span><br><span class="line">        <span class="keyword">public</span> <span class="type">boolean</span> <span class="title function_">hasNext</span><span class="params">()</span> &#123;</span><br><span class="line">            <span class="keyword">return</span> i &gt; <span class="number">0</span>;</span><br><span class="line">        &#125;</span><br><span class="line">        <span class="keyword">public</span> <span class="keyword">void</span> <span class="title function_">remove</span><span class="params">()</span> &#123;</span><br><span class="line">        &#125;</span><br><span class="line">        <span class="keyword">public</span> Item <span class="title function_">next</span><span class="params">()</span> &#123;</span><br><span class="line">            <span class="keyword">if</span> (!hasNext()) <span class="keyword">throw</span> <span class="keyword">new</span> <span class="title class_">NoSuchElementException</span>();</span><br><span class="line">            <span class="keyword">return</span> a[--i];</span><br><span class="line">        &#125;</span><br><span class="line">    &#125;</span><br></pre></td></tr></table></figure>
+
+<h4 id="Queue（能够动态调整数组大小的实现）"><a href="#Queue（能够动态调整数组大小的实现）" class="headerlink" title="Queue（能够动态调整数组大小的实现）"></a>Queue（能够动态调整数组大小的实现）</h4><p><img src="/Algorithm/Algorithm4-Chapter1/watermark,type_ZmFuZ3poZW5naGVpdGk,shadow_10,text_aHR0cHM6Ly9ibG9nLmNzZG4ubmV0L0t5cm90ZXg=,size_16,color_FFFFFF,t_70.png"></p>
+<figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br><span class="line">36</span><br><span class="line">37</span><br><span class="line">38</span><br><span class="line">39</span><br><span class="line">40</span><br><span class="line">41</span><br><span class="line">42</span><br><span class="line">43</span><br><span class="line">44</span><br><span class="line">45</span><br><span class="line">46</span><br><span class="line">47</span><br><span class="line">48</span><br><span class="line">49</span><br><span class="line">50</span><br><span class="line">51</span><br><span class="line">52</span><br><span class="line">53</span><br><span class="line">54</span><br><span class="line">55</span><br><span class="line">56</span><br><span class="line">57</span><br><span class="line">58</span><br><span class="line">59</span><br><span class="line">60</span><br><span class="line">61</span><br><span class="line">62</span><br><span class="line">63</span><br><span class="line">64</span><br><span class="line">65</span><br><span class="line">66</span><br><span class="line">67</span><br><span class="line">68</span><br><span class="line">69</span><br><span class="line">70</span><br><span class="line">71</span><br><span class="line">72</span><br><span class="line">73</span><br><span class="line">74</span><br><span class="line">75</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">public</span> <span class="keyword">class</span> <span class="title class_">ResizingArrayQueue</span>&lt;Item&gt; <span class="keyword">implements</span> <span class="title class_">Iterable</span>&lt;Item&gt; &#123;</span><br><span class="line">    <span class="comment">// initial capacity of underlying resizing array</span></span><br><span class="line">    <span class="keyword">private</span> <span class="keyword">static</span> <span class="keyword">final</span> <span class="type">int</span> <span class="variable">INIT_CAPACITY</span> <span class="operator">=</span> <span class="number">8</span>;</span><br><span class="line"></span><br><span class="line">    <span class="keyword">private</span> Item[] q;       <span class="comment">// queue elements</span></span><br><span class="line">    <span class="keyword">private</span> <span class="type">int</span> n;          <span class="comment">// number of elements on queue</span></span><br><span class="line">    <span class="keyword">private</span> <span class="type">int</span> first;      <span class="comment">// index of first element of queue</span></span><br><span class="line">    <span class="keyword">private</span> <span class="type">int</span> last;       <span class="comment">// index of next available slot</span></span><br><span class="line"></span><br><span class="line">    <span class="keyword">public</span> <span class="title function_">ResizingArrayQueue</span><span class="params">()</span> &#123;</span><br><span class="line">        q = (Item[]) <span class="keyword">new</span> <span class="title class_">Object</span>[INIT_CAPACITY];</span><br><span class="line">        n = <span class="number">0</span>;</span><br><span class="line">        first = <span class="number">0</span>;</span><br><span class="line">        last = <span class="number">0</span>;</span><br><span class="line">    &#125;</span><br><span class="line"></span><br><span class="line">    <span class="keyword">public</span> <span class="type">boolean</span> <span class="title function_">isEmpty</span><span class="params">()</span> &#123;</span><br><span class="line">        <span class="type">return</span> <span class="variable">n</span> <span class="operator">=</span>= <span class="number">0</span>;</span><br><span class="line">    &#125;</span><br><span class="line">    <span class="keyword">public</span> <span class="type">int</span> <span class="title function_">size</span><span class="params">()</span> &#123;</span><br><span class="line">        <span class="keyword">return</span> n;</span><br><span class="line">    &#125;</span><br><span class="line"></span><br><span class="line">    <span class="comment">// resize the underlying array</span></span><br><span class="line">    <span class="keyword">private</span> <span class="keyword">void</span> <span class="title function_">resize</span><span class="params">(<span class="type">int</span> capacity)</span> &#123;</span><br><span class="line">        <span class="keyword">assert</span> capacity &gt;= n;</span><br><span class="line">        Item[] copy = (Item[]) <span class="keyword">new</span> <span class="title class_">Object</span>[capacity];</span><br><span class="line">        <span class="keyword">for</span> (<span class="type">int</span> <span class="variable">i</span> <span class="operator">=</span> <span class="number">0</span>; i &lt; n; i++) &#123;</span><br><span class="line">            copy[i] = q[(first + i) % q.length];</span><br><span class="line">        &#125;</span><br><span class="line">        q = copy;</span><br><span class="line">        first = <span class="number">0</span>;</span><br><span class="line">        last  = n;</span><br><span class="line">    &#125;</span><br><span class="line">  </span><br><span class="line">    <span class="keyword">public</span> <span class="keyword">void</span> <span class="title function_">enqueue</span><span class="params">(Item item)</span> &#123;</span><br><span class="line">        <span class="comment">// double size of array if necessary and recopy to front of array</span></span><br><span class="line">        <span class="keyword">if</span> (n == q.length) resize(<span class="number">2</span>*q.length);   <span class="comment">// double size of array if necessary</span></span><br><span class="line">        q[last++] = item;                        <span class="comment">// add item</span></span><br><span class="line">        <span class="keyword">if</span> (last == q.length) last = <span class="number">0</span>;          <span class="comment">// wrap-around</span></span><br><span class="line">        n++;</span><br><span class="line">    &#125;</span><br><span class="line"></span><br><span class="line">    <span class="keyword">public</span> Item <span class="title function_">dequeue</span><span class="params">()</span> &#123;</span><br><span class="line">        <span class="keyword">if</span> (isEmpty()) <span class="keyword">throw</span> <span class="keyword">new</span> <span class="title class_">NoSuchElementException</span>(<span class="string">&quot;Queue underflow&quot;</span>);</span><br><span class="line">        <span class="type">Item</span> <span class="variable">item</span> <span class="operator">=</span> q[first];</span><br><span class="line">        q[first] = <span class="literal">null</span>;                            <span class="comment">// to avoid loitering</span></span><br><span class="line">        n--;</span><br><span class="line">        first++;</span><br><span class="line">        <span class="keyword">if</span> (first == q.length) first = <span class="number">0</span>;           <span class="comment">// wrap-around</span></span><br><span class="line">        <span class="comment">// shrink size of array if necessary</span></span><br><span class="line">        <span class="keyword">if</span> (n &gt; <span class="number">0</span> &amp;&amp; n == q.length/<span class="number">4</span>) resize(q.length/<span class="number">2</span>); </span><br><span class="line">        <span class="keyword">return</span> item;</span><br><span class="line">    &#125;</span><br><span class="line"></span><br><span class="line">    <span class="keyword">public</span> Item <span class="title function_">peek</span><span class="params">()</span> &#123;</span><br><span class="line">        <span class="keyword">if</span> (isEmpty()) <span class="keyword">throw</span> <span class="keyword">new</span> <span class="title class_">NoSuchElementException</span>(<span class="string">&quot;Queue underflow&quot;</span>);</span><br><span class="line">        <span class="keyword">return</span> q[first];</span><br><span class="line">    &#125;</span><br><span class="line">  </span><br><span class="line">    <span class="keyword">public</span> Iterator&lt;Item&gt; <span class="title function_">iterator</span><span class="params">()</span> &#123;</span><br><span class="line">        <span class="keyword">return</span> <span class="keyword">new</span> <span class="title class_">ArrayIterator</span>();</span><br><span class="line">    &#125;</span><br><span class="line">    <span class="keyword">private</span> <span class="keyword">class</span> <span class="title class_">ArrayIterator</span> <span class="keyword">implements</span> <span class="title class_">Iterator</span>&lt;Item&gt; &#123;</span><br><span class="line">        <span class="keyword">private</span> <span class="type">int</span> <span class="variable">i</span> <span class="operator">=</span> <span class="number">0</span>;</span><br><span class="line">        <span class="keyword">public</span> <span class="type">boolean</span> <span class="title function_">hasNext</span><span class="params">()</span>  &#123; <span class="keyword">return</span> i &lt; n;                               &#125;</span><br><span class="line">        <span class="keyword">public</span> <span class="keyword">void</span> <span class="title function_">remove</span><span class="params">()</span>      &#123; <span class="keyword">throw</span> <span class="keyword">new</span> <span class="title class_">UnsupportedOperationException</span>();  &#125;</span><br><span class="line"></span><br><span class="line">        <span class="keyword">public</span> Item <span class="title function_">next</span><span class="params">()</span> &#123;</span><br><span class="line">            <span class="keyword">if</span> (!hasNext()) <span class="keyword">throw</span> <span class="keyword">new</span> <span class="title class_">NoSuchElementException</span>();</span><br><span class="line">            <span class="type">Item</span> <span class="variable">item</span> <span class="operator">=</span> q[(i + first) % q.length];</span><br><span class="line">            i++;</span><br><span class="line">            <span class="keyword">return</span> item;</span><br><span class="line">        &#125;</span><br><span class="line">    &#125;</span><br></pre></td></tr></table></figure>
+
+
+    </div>
+
+    
+    
+    
+    
+        
+
+<div>
+<ul class="post-copyright">
+  <li class="post-copyright-author">
+    <strong>Post author:  </strong>Yuyang Zhang
+  </li>
+  <li class="post-copyright-link">
+    <strong>Post link: </strong>
+    <a href="https://yu-yang.pro/Algorithm/Algorithm4-Chapter1/" title="Algorithm4_Chapter1">https://yu-yang.pro/Algorithm/Algorithm4-Chapter1/</a>
+  </li>
+  <li class="post-copyright-license">
+    <strong>Copyright Notice:  </strong>All articles in this blog are licensed under <a href="https://creativecommons.org/licenses/by-nc-sa/4.0/" rel="noopener" target="_blank"><i class="fab fa-fw fa-creative-commons"></i>BY-NC-SA</a> unless stating additionally.
+  </li>
+</ul>
+</div>
+
+
+      <footer class="post-footer">
+          <div class="post-tags">
+              <a href="/tags/Algorithm4/" rel="tag"><i class="fa fa-tag"></i> Algorithm4</a>
+              <a href="/tags/Data-Structure/" rel="tag"><i class="fa fa-tag"></i> Data Structure</a>
+              <a href="/tags/Leecode/" rel="tag"><i class="fa fa-tag"></i> Leecode</a>
+          </div>
+
+        
+
+
+        
+    <div class="post-nav">
+      <div class="post-nav-item">
+    <a href="/Distributed-Systems/MIT-6-824-Lec03/" rel="prev" title="MIT_6-824_Lec03">
+      <i class="fa fa-chevron-left"></i> MIT_6-824_Lec03
+    </a></div>
+      <div class="post-nav-item"></div>
+    </div>
+      </footer>
+    
+  </article>
+  
+  
+  
+
+
+
+          </div>
+          
+
+<script>
+  window.addEventListener('tabs:register', () => {
+    let { activeClass } = CONFIG.comments;
+    if (CONFIG.comments.storage) {
+      activeClass = localStorage.getItem('comments_active') || activeClass;
+    }
+    if (activeClass) {
+      let activeTab = document.querySelector(`a[href="#comment-${activeClass}"]`);
+      if (activeTab) {
+        activeTab.click();
+      }
+    }
+  });
+  if (CONFIG.comments.storage) {
+    window.addEventListener('tabs:click', event => {
+      if (!event.target.matches('.tabs-comment .tab-content .tab-pane')) return;
+      let commentClass = event.target.classList[1];
+      localStorage.setItem('comments_active', commentClass);
+    });
+  }
+</script>
+
+        </div>
+          
+  
+  <div class="toggle sidebar-toggle">
+    <span class="toggle-line toggle-line-first"></span>
+    <span class="toggle-line toggle-line-middle"></span>
+    <span class="toggle-line toggle-line-last"></span>
+  </div>
+
+  <aside class="sidebar">
+    <div class="sidebar-inner">
+
+      <ul class="sidebar-nav motion-element">
+        <li class="sidebar-nav-toc">
+          Table of Contents
+        </li>
+        <li class="sidebar-nav-overview">
+          Overview
+        </li>
+      </ul>
+
+      <!--noindex-->
+      <div class="post-toc-wrap sidebar-panel">
+          <div class="post-toc motion-element"><ol class="nav"><li class="nav-item nav-level-2"><a class="nav-link" href="#%E5%89%8D%E8%A8%80"><span class="nav-number">1.</span> <span class="nav-text">前言</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#%E8%83%8C%E5%8C%85%E3%80%81%E9%98%9F%E5%88%97%E5%92%8C%E6%A0%88"><span class="nav-number">2.</span> <span class="nav-text">背包、队列和栈</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#%E7%AE%97%E6%95%B0%E8%A1%A8%E8%BE%BE%E5%BC%8F%E7%9A%84%E6%B1%82%E5%80%BC%EF%BC%88%E6%A0%88%E4%BD%BF%E7%94%A8%E7%9A%84%E4%BE%8B%E5%AD%90%EF%BC%89"><span class="nav-number">2.1.</span> <span class="nav-text">算数表达式的求值（栈使用的例子）</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#%E9%9B%86%E5%90%88%E6%95%B0%E6%8D%AE%E7%B1%BB%E5%9E%8B%E7%9A%84%E5%AE%9E%E7%8E%B0"><span class="nav-number">2.2.</span> <span class="nav-text">集合数据类型的实现</span></a><ol class="nav-child"><li class="nav-item nav-level-4"><a class="nav-link" href="#%E5%AE%9A%E5%AE%B9%E6%A0%88%E7%9A%84%E5%AE%9E%E7%8E%B0"><span class="nav-number">2.2.1.</span> <span class="nav-text">定容栈的实现</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#%E5%AE%9A%E5%AE%B9%E6%A0%88%E7%9A%84%E6%94%B9%E5%96%84%EF%BC%88%E6%B3%9B%E5%9E%8B%EF%BC%89"><span class="nav-number">2.2.2.</span> <span class="nav-text">定容栈的改善（泛型）</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#%E5%AE%9A%E5%AE%B9%E6%A0%88%E7%9A%84%E6%94%B9%E5%96%84%EF%BC%88%E8%B0%83%E6%95%B4%E6%95%B0%E7%BB%84%E5%A4%A7%E5%B0%8F%EF%BC%89"><span class="nav-number">2.2.3.</span> <span class="nav-text">定容栈的改善（调整数组大小）</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#%E5%AF%B9%E8%B1%A1%E6%B8%B8%E7%A6%BB"><span class="nav-number">2.2.4.</span> <span class="nav-text">对象游离</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#%E5%AE%9A%E5%AE%B9%E6%A0%88%E7%9A%84%E6%94%B9%E5%96%84%EF%BC%88%E8%BF%AD%E4%BB%A3"><span class="nav-number">2.2.5.</span> <span class="nav-text">定容栈的改善（迭代)</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#Stack%EF%BC%88%E8%83%BD%E5%A4%9F%E5%8A%A8%E6%80%81%E8%B0%83%E6%95%B4%E6%95%B0%E7%BB%84%E5%A4%A7%E5%B0%8F%E7%9A%84%E5%AE%9E%E7%8E%B0%EF%BC%89"><span class="nav-number">2.2.6.</span> <span class="nav-text">Stack（能够动态调整数组大小的实现）</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#Queue%EF%BC%88%E8%83%BD%E5%A4%9F%E5%8A%A8%E6%80%81%E8%B0%83%E6%95%B4%E6%95%B0%E7%BB%84%E5%A4%A7%E5%B0%8F%E7%9A%84%E5%AE%9E%E7%8E%B0%EF%BC%89"><span class="nav-number">2.2.7.</span> <span class="nav-text">Queue（能够动态调整数组大小的实现）</span></a></li></ol></li></ol></li></ol></div>
+      </div>
+      <!--/noindex-->
+
+      <div class="site-overview-wrap sidebar-panel">
+        <div class="site-author motion-element" itemprop="author" itemscope itemtype="http://schema.org/Person">
+    <img class="site-author-image" itemprop="image" alt="Yuyang Zhang"
+      src="/images/profile_img.jpg">
+  <p class="site-author-name" itemprop="name">Yuyang Zhang</p>
+  <div class="site-description" itemprop="description">stay hungry stay foolish</div>
+</div>
+<div class="site-state-wrap motion-element">
+  <nav class="site-state">
+      <div class="site-state-item site-state-posts">
+          <a href="/archives/">
+        
+          <span class="site-state-item-count">5</span>
+          <span class="site-state-item-name">posts</span>
+        </a>
+      </div>
+      <div class="site-state-item site-state-categories">
+            <a href="/categories/">
+          
+        <span class="site-state-item-count">2</span>
+        <span class="site-state-item-name">categories</span></a>
+      </div>
+      <div class="site-state-item site-state-tags">
+            <a href="/tags/">
+          
+        <span class="site-state-item-count">8</span>
+        <span class="site-state-item-name">tags</span></a>
+      </div>
+  </nav>
+</div>
+  <div class="links-of-author motion-element">
+      <span class="links-of-author-item">
+        <a href="mailto:zhangyuyang1211@gmail.com" title="E-Mail → mailto:zhangyuyang1211@gmail.com" rel="noopener" target="_blank"><i class="fa fa-envelope fa-fw"></i>E-Mail</a>
+      </span>
+  </div>
+
+
+  <div class="links-of-blogroll motion-element">
+    <div class="links-of-blogroll-title"><i class="fa fa-link fa-fw"></i>
+      Links
+    </div>
+    <ul class="links-of-blogroll-list">
+        <li class="links-of-blogroll-item">
+          <a href="http://nil.csail.mit.edu/6.824/2021/schedule.html" title="http:&#x2F;&#x2F;nil.csail.mit.edu&#x2F;6.824&#x2F;2021&#x2F;schedule.html" rel="noopener" target="_blank">MIT 6.824 Distributed Systems</a>
+        </li>
+    </ul>
+  </div>
+
+      </div>
+
+      
+      
+
+    </div>
+  </aside>
+  <div id="sidebar-dimmer"></div>
+
+
+      </div>
+    </main>
+
+    <footer class="footer">
+      <div class="footer-inner">
+        
+
+        
+
+<div class="copyright">
+  
+  &copy; 
+  <span itemprop="copyrightYear">2022</span>
+  <span class="with-love">
+    <i class="fa fa-heart"></i>
+  </span>
+  <span class="author" itemprop="copyrightHolder">Yuyang Zhang</span>
+    <span class="post-meta-divider">|</span>
+    <span class="post-meta-item-icon">
+      <i class="fa fa-chart-area"></i>
+    </span>
+    <span title="Symbols count total">8k</span>
+    <span class="post-meta-divider">|</span>
+    <span class="post-meta-item-icon">
+      <i class="fa fa-coffee"></i>
+    </span>
+    <span title="Reading time total">7 mins.</span>
+</div>
+
+        
+<div class="busuanzi-count">
+  <script async src="https://busuanzi.ibruce.info/busuanzi/2.3/busuanzi.pure.mini.js"></script>
+    <span class="post-meta-item" id="busuanzi_container_site_uv" style="display: none;">
+      <span class="post-meta-item-icon">
+        <i class="fa fa-user"></i>
+      </span>
+      <span class="site-uv" title="Total Visitors">
+        <span id="busuanzi_value_site_uv"></span>
+      </span>
+    </span>
+    <span class="post-meta-divider">|</span>
+    <span class="post-meta-item" id="busuanzi_container_site_pv" style="display: none;">
+      <span class="post-meta-item-icon">
+        <i class="fa fa-eye"></i>
+      </span>
+      <span class="site-pv" title="Total Views">
+        <span id="busuanzi_value_site_pv"></span>
+      </span>
+    </span>
+</div>
+
+
+
+
+
+
+
+
+      </div>
+    </footer>
+  </div>
+
+  
+  <script src="/lib/anime.min.js"></script>
+  <script src="//cdn.jsdelivr.net/npm/jquery@3/dist/jquery.min.js"></script>
+  <script src="//cdn.jsdelivr.net/gh/fancyapps/fancybox@3/dist/jquery.fancybox.min.js"></script>
+  <script src="/lib/velocity/velocity.min.js"></script>
+  <script src="/lib/velocity/velocity.ui.min.js"></script>
+
+<script src="/js/utils.js"></script>
+
+<script src="/js/motion.js"></script>
+
+
+<script src="/js/schemes/muse.js"></script>
+
+
+<script src="/js/next-boot.js"></script>
+
+
+
+
+  
+
+
+
+
+  
+<script src="/js/local-search.js"></script>
+
+
+
+
+
+
+
+
+
+
+
+
+
+  
+
+  
+
+  
+
+<script src="/live2dw/lib/L2Dwidget.min.js?094cbace49a39548bed64abff5988b05"></script><script>L2Dwidget.init({"pluginRootPath":"live2dw/","pluginJsPath":"lib/","pluginModelPath":"assets/","tagMode":false,"log":false,"model":{"jsonPath":"/live2dw/assets/wanko.model.json"},"display":{"position":"right","width":150,"height":300},"mobile":{"show":true}});</script></body>
+</html>
