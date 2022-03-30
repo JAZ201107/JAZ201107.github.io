@@ -6,7 +6,68 @@
     <content><![CDATA[<p>Lec01 介绍这个课程的架构，以及以MapReduce为例子，介绍分布式架构</p>
 <span id="more"></span>
 
-<p>第一节课主要讲的是</p>
+<h1 id="课程绪论"><a href="#课程绪论" class="headerlink" title="课程绪论"></a>课程绪论</h1><h2 id="什么是分布式系统？"><a href="#什么是分布式系统？" class="headerlink" title="什么是分布式系统？"></a>什么是分布式系统？</h2><ul>
+<li>A distributed system is a computing environment in which various components are spread across multiple computers (or other computing devices) on a network. These devices split up the work, coordinating their efforts to complete the job more efficiently than if a single device had been responsible for the task.</li>
+</ul>
+<h2 id="为什么需要分布式系统？"><a href="#为什么需要分布式系统？" class="headerlink" title="为什么需要分布式系统？"></a>为什么需要分布式系统？</h2><ul>
+<li>to increase capacity via parallelism <ul>
+<li>通过并行处理获得更高的能力</li>
+</ul>
+</li>
+<li>to tolerate faults via replication<ul>
+<li>通过replication 来实现 容错</li>
+</ul>
+</li>
+<li>to place computing physically close to external entities<ul>
+<li>物理上的扩展</li>
+</ul>
+</li>
+<li>to achieve security via isolation<ul>
+<li>通过隔离来实现安全的需求</li>
+</ul>
+</li>
+</ul>
+<h2 id="面对的困难"><a href="#面对的困难" class="headerlink" title="面对的困难"></a>面对的困难</h2><ul>
+<li>many concurrent parts, complex interactions<ul>
+<li>并发，难交流</li>
+</ul>
+</li>
+<li>must cope with partial failure<ul>
+<li>需要解决部分的failure</li>
+</ul>
+</li>
+<li>tricky to realize performance potential<ul>
+<li>难以获得预期的performance</li>
+</ul>
+</li>
+</ul>
+<h2 id="课程的内容"><a href="#课程的内容" class="headerlink" title="课程的内容"></a>课程的内容</h2><p>This is a course about infrastructure for applications.</p>
+<ul>
+<li>Storage.</li>
+<li>Communication. RPC</li>
+<li>Computation.</li>
+</ul>
+<h3 id="Topic-fault-tolerance"><a href="#Topic-fault-tolerance" class="headerlink" title="Topic: fault tolerance"></a>Topic: fault tolerance</h3><p>1000s of servers, big network  –&gt; always something broken<br> We’d like to hide these failures from the application.</p>
+<p>we wants：</p>
+<ul>
+<li>Availability – app can make progress despite failures -&gt; replication</li>
+<li>Recoverability – app will come back to life when failures are repaired -&gt; logging or transactions</li>
+</ul>
+<p>Big idea: replicated servers.</p>
+<p>If one server crashes, can proceed using the other(s).<br>    Very hard to get right：  server may not have crashed, but just unreachable for some<br>        but still serving requests from clients</p>
+<h3 id="Topic-consistency"><a href="#Topic-consistency" class="headerlink" title="Topic: consistency"></a>Topic: consistency</h3><p>General-purpose infrastructure needs well-defined behavior</p>
+<ul>
+<li>E.g:  “Get(k) yields the value from the most recent Put(k,v).”</li>
+</ul>
+<p>Problems: “Replica” servers are hard to keep identical.</p>
+<h3 id="Topic-performance"><a href="#Topic-performance" class="headerlink" title="Topic: performance:"></a>Topic: performance:</h3><ul>
+<li>throughout</li>
+<li>latency</li>
+</ul>
+<p>The goal: scalable throughput</p>
+<h3 id="Topic：Fault-tolerance-consistency-and-performance-are-enemies"><a href="#Topic：Fault-tolerance-consistency-and-performance-are-enemies" class="headerlink" title="Topic：Fault-tolerance, consistency, and performance are enemies."></a>Topic：Fault-tolerance, consistency, and performance are enemies.</h3><p>Strong fault tolerance requires communication<br>    e.g., send data to backup<br>  Strong consistency requires communication,<br>    e.g. Get() must check for a recent Put().<br>  Many designs provide only weak consistency, to gain speed.<br>    e.g. Get() does <em>not</em> yield the latest Put()!<br>    Painful for application programmers but may be a good trade-off.<br>  Many design points are possible in the consistency&#x2F;performance spectrum!</p>
+<h3 id="Topic-implementation"><a href="#Topic-implementation" class="headerlink" title="Topic: implementation"></a>Topic: implementation</h3><p>  RPC, threads, concurrency control.</p>
+<h2 id="以MapReduce为例，看是如何解决这些问题的？"><a href="#以MapReduce为例，看是如何解决这些问题的？" class="headerlink" title="以MapReduce为例，看是如何解决这些问题的？"></a>以MapReduce为例，看是如何解决这些问题的？</h2><p><a href="../MapReduce">MapReduce论文阅读</a></p>
 ]]></content>
       <categories>
         <category>Distributed Systems</category>
@@ -172,6 +233,125 @@
         <tag>Leecode</tag>
         <tag>Algorithms 4</tag>
         <tag>Stack Queue Bag</tag>
+      </tags>
+  </entry>
+  <entry>
+    <title>MapReduce</title>
+    <url>/papers/MapReduce/</url>
+    <content><![CDATA[<p>本片文章是MapReduce经典论文的阅读</p>
+<span id="more"></span>
+
+<p><a href="https://static.googleusercontent.com/media/research.google.com/en//archive/mapreduce-osdi04.pdf">MapReduce Paper</a></p>
+<h1 id="Abstract"><a href="#Abstract" class="headerlink" title="Abstract"></a>Abstract</h1><p>​    MapReduce is a <font color="red">programming model</font> and an associated implementation for processing and generating large data sets. Users specify a <font color="red">map function </font> that processes a key&#x2F;value pair to generate a set of intermediate key&#x2F;value pairs, and a r<font color="red">educe function </font>that merges all intermediate values associated with the same intermediate key. Many real world tasks are expressible in this model, as shown in the paper. </p>
+<p>​    Programs written in this functional style are <font color="red">automatically parallelized </font>and executed on a large cluster of commodity machines. The run-time system takes care of the details of partitioning the input data, scheduling the program’s execution across a set of machines, handling machine failures, and managing the required inter-machine communication. This allows programmers without any experience with parallel and distributed systems to easily utilize the resources of a large distributed system. </p>
+<p>​    Our implementation of MapReduce runs on a large cluster of commodity machines and is highly scalable: a typical MapReduce computation processes many terabytes of data on thousands of machines. Programmers find the system easy to use: hundreds of MapReduce programs have been implemented and upwards of one thousand MapReduce jobs are executed on Google’s clusters every day.</p>
+<div class="note info">
+            <p><font color="black">MapReduce 是一个 programming model， 用户只需要指定 Map function 和 Reduce function， 系统就会完成，分布式计算。在大量商用计算机上自动运行并行化计算。</font></p>
+          </div> 
+
+<h1 id="1-Introduction"><a href="#1-Introduction" class="headerlink" title="1 Introduction"></a>1 Introduction</h1><p>​    Over the past five years, the authors and many others at Google have implemented hundreds of special-purpose computations that process large amounts of raw data, such as crawled documents, web request logs, etc., to compute various kinds of derived data, such as inverted indices, various representations of the graph structure of web documents, summaries of the number of pages crawled per host, the set of most frequent queries in a given day, etc. Most such <font color="red">computations are conceptually straightforward</font>. However, the input data is usually large and the computations have to be distributed across hundreds or thousands of machines in order to finish in a reasonable amount of time. The issues of how to <font color="red">parallelize the computation, distribute the data, and handle failures</font> conspire to obscure the original simple computation with large amounts of complex code to deal with these issues</p>
+<div class="note info">
+            <ul><li><font color="black"> MapReduce处理的问题类型: 需要的computation比较简单，但是有海量的数据，使的问题棘手起来。</font></li><li><font color="black">如何 parallelize the computation，distribute the data ，handle failures 使问题变得复杂</font></li></ul>
+          </div> 
+
+<p>​    As a reaction to this complexity, we designed a new abstraction that allows us to express the simple computations we were trying to perform but hides the messy details of parallelization, fault-tolerance, data distribution and load balancing in a library. Our <font color="red"> abstraction</font> is inspired by the map and reduce primitives present in Lisp and many other functional languages. We realized that most of our computations involved applying a map operation to each logical “record” in our input in order to compute a set of intermediate key&#x2F;value pairs, and then applying a reduce operation to all the values that shared the same key, in order to combine the derived data appropriately. Our use of a functional model with userspecified map and reduce operations allows us to parallelize large computations easily and to use <font color="red">re-execution</font> as the primary mechanism for fault tolerance.</p>
+<div class="note info">
+            <ul><li><font color="black">通过抽象的方式，封装底层细节</font></li><li><font color="black">通过用户调用的operations 容易并行处理大数量级</font></li><li><font color="black">通过重新运行的方式，提供fault tolerance</font></li></ul>
+          </div> 
+
+<p>The major contributions of this work are a simple and powerful interface that enables automatic parallelization and distribution of large-scale computations, combined with an implementation of this interface that achieves high performance on large clusters of commodity PCs.</p>
+<p>Section 2 describes the basic programming model and gives several examples. Section 3 describes an implementation of the MapReduce interface tailored towards our cluster-based computing environment. Section 4 describes several refinements of the programming model that we have found useful. Section 5 has performance measurements of our implementation for a variety of tasks. Section 6 explores the use of MapReduce within Google including our experiences in using it as the basis To appear in OSDI 2004 1 for a rewrite of our production indexing system. Section 7 discusses related and future work.</p>
+<h1 id="2-Programming-Model"><a href="#2-Programming-Model" class="headerlink" title="2 Programming Model"></a>2 Programming Model</h1><p>​    The computation takes a set of input key&#x2F;value pairs, and produces a set of output key&#x2F;value pairs. The user of the MapReduce library expresses the computation as two functions: Map and Reduce. </p>
+<p>Map, written by the user, takes an input pair and produces a set of intermediate key&#x2F;value pairs. The MapReduce library<font color="red"> groups together</font> all intermediate values associated with the same intermediate <font color="yellow">key I</font> and passes them to the Reduce function. </p>
+<p>The Reduce function, also written by the user, accepts an intermediate <font color="yellow">key I</font> and a set of values for that key. It merges together these values to form a possibly smaller set of values. Typically just zero or one output value is produced per Reduce invocation. The intermediate values are supplied to the user’s reduce function <font color="red">via an iterator</font>. This allows us to handle lists of values that are too large to fit in memory.</p>
+<div class="note info">
+            <ul><li><font color="black">Map 方法，接受input pair， 产生中间 key&#x2F;vaue并排序，group together储存在本地磁盘上</font></li><li><font color="black">Reduce方法： 接受中间 key&#x2F;value。将这些合并在一起并返回。通过迭代器的方式，接受中间key&#x2F;value</font></li></ul>
+          </div> 
+
+<h2 id="2-1-Example"><a href="#2-1-Example" class="headerlink" title="2.1 Example"></a>2.1 Example</h2><p>​    Consider the problem of counting the number of occurrences of each word in a large collection of documents. The user would write code similar to the following pseudo-code: </p>
+<figure class="highlight plaintext"><table><tr><td class="code"><pre><span class="line">map(String key, String value):</span><br><span class="line">	// key: document name </span><br><span class="line">	// value: document contents </span><br><span class="line">	for each word w in value: </span><br><span class="line">		EmitIntermediate(w, &quot;1&quot;);</span><br><span class="line">		</span><br><span class="line">reduce(String key, Iterator values): </span><br><span class="line">	// key: a word </span><br><span class="line">	// values: a list of counts </span><br><span class="line">	int result = 0; </span><br><span class="line">	for each v in values:</span><br><span class="line">  		result += ParseInt(v); </span><br><span class="line">	Emit(AsString(result)); </span><br></pre></td></tr></table></figure>
+
+<p>​    The map function emits each word plus an associated count of occurrences (just ‘1’ in this simple example). The reduce function sums together all counts emitted for a particular word. In addition, the user writes code to fill in a mapreduce specification object with the names of the input and output files, and optional tuning parameters. The user then invokes the MapReduce function, passing it the specification object. The user’s code is linked together with the MapReduce library (implemented in C++). Appendix A contains the full program text for this example.</p>
+<p><img src="/papers/MapReduce/mapreduce_work.jpg"></p>
+<h2 id="2-2-Types"><a href="#2-2-Types" class="headerlink" title="2.2 Types"></a>2.2 Types</h2><p>Even though the previous pseudo-code is written in terms of string inputs and outputs, conceptually the map and reduce functions supplied by the user have associated types: </p>
+<p>​            map (k1,v1) → list(k2,v2)</p>
+<p>​            reduce (k2,list(v2)) → list(v2) </p>
+<p>​    I.e., the input keys and values are drawn from a different domain than the output keys and values. Furthermore, the intermediate keys and values are from the same domain as the output keys and values. Our C++ implementation passes strings to and from the user-defined functions and leaves it to the user code to convert between strings and appropriate types.</p>
+<h2 id="2-3-More-Examples"><a href="#2-3-More-Examples" class="headerlink" title="2.3 More Examples"></a>2.3 More Examples</h2><p>Here are a few simple examples of interesting programs that can be easily expressed as MapReduce computations.</p>
+<p>**Distributed Grep: **The map function emits a line if it matches a supplied pattern. The reduce function is an identity function that just copies the supplied intermediate data to the output.</p>
+<p><strong>Count of URL Access Frequency:</strong> The map function processes logs of web page requests and outputs &lt;URL, 1&gt;. The reduce function adds together all values for the same URL and emits a &lt;URL, total count&gt; pair.</p>
+<p><strong>Reverse Web-Link Graph</strong>: The map function outputs &lt;target, source&gt; pairs for each link to a target URL found in a page named source. The reduce function concatenates the list of all source URLs associated with a given target URL and emits the pair: &lt;target, list(source)&gt;</p>
+<p><strong>Term-Vector per Host:</strong> A term vector summarizes the most important words that occur in a document or a set of documents as a list of &lt;word, frequency&gt; pairs. The map function emits a &lt;hostname, term vector&gt; pair for each input document (where the hostname is extracted from the URL of the document). The reduce function is passed all per-document term vectors for a given host. It adds these term vectors together, throwing away infrequent terms, and then emits a final &lt;hostname, term vector&gt; pair.</p>
+<p><strong>Inverted Index:</strong> The map function parses each document, and emits a sequence of &lt;word, document ID&gt; pairs. The reduce function accepts all pairs for a given word, sorts the corresponding document IDs and emits a &lt;word, list(document ID)&gt; pair. The set of all output pairs forms a simple inverted index. It is easy to augment this computation to keep track of word positions. </p>
+<p><strong>Distributed Sort:</strong> The map function extracts the key from each record, and emits a &lt;key, record&gt; pair. The reduce function emits all pairs unchanged. This computation depends on the partitioning facilities described in Section 4.1 and the ordering properties described in Section 4.2.</p>
+<h1 id="3-Implementation"><a href="#3-Implementation" class="headerlink" title="3 Implementation"></a>3 Implementation</h1><p><font color="red">Many different implementations of the MapReduce interface are possible</font>. The right choice depends on the environment. For example, one implementation may be suitable for a small shared-memory machine, another for a large NUMA multi-processor, and yet another for an even larger collection of networked machines.</p>
+<div class="note info">
+            <ul><li><font color="black">MR接口可以有很多的实现方法</font></li></ul>
+          </div> 
+
+<p>This section describes an implementation targeted to the computing environment in wide use at Google: large clusters of commodity PCs connected together with switched Ethernet [4]. In our environment: </p>
+<p>(1) Machines are typically dual-processor x86 processors running Linux, with 2-4 GB of memory per machine.</p>
+<p> (2) Commodity networking hardware is used – typically either 100 megabits&#x2F;second or 1 gigabit&#x2F;second at the machine level, but averaging considerably less in overall bisection bandwidth.</p>
+<p> (3) A cluster consists of hundreds or thousands of machines, and therefore machine failures are common.</p>
+<p> (4) Storage is provided by inexpensive IDE disks attached directly to individual machines. A distributed file system [8] developed in-house is used to manage the data stored on these disks. The file system uses replication to provide availability and reliability on top of unreliable hardware.</p>
+<p> (5) Users submit jobs to a scheduling system. Each job consists of a set of tasks, and is mapped by the scheduler to a set of available machines within a cluster</p>
+<div class="note info">
+            <ol><li><font color="black">x86 processors running Linux, with 2-4 GB of memory per machine</font></li><li><font color="black">Commodity networking hardware</font></li><li><font color="black">failures are common</font></li><li><font color="black">uses replication to provide availability and reliability on top of unreliable hardware</font></li><li><font color="black">jobs submit to scheduling. job consist of a set of task. job mapped to available by the scheduler</font></li></ol>
+          </div> 
+
+<h2 id="3-1-Execution-Overview"><a href="#3-1-Execution-Overview" class="headerlink" title="3.1 Execution Overview"></a>3.1 Execution Overview</h2><p>The Map invocations are distributed across multiple machines by automatically partitioning the input data into a set of M splits. The input splits can be processed in parallel by different machines. Reduce invocations are distributed by partitioning the intermediate key space into R pieces using a partitioning function <font color="red">(e.g., hash(key) mod R)</font>. The number of partitions (R) and the partitioning function are <font color="red">specified by the user</font>. Figure 1 shows the overall flow of a MapReduce operation in our implementation. When the user program calls the MapReduce function, the following sequence of actions occurs (the numbered labels in Figure 1 correspond to the numbers in the list below):</p>
+<p><img src="/Users/zhangyuyang/Desktop/blog/source/_posts/MapReduce/1*4m9UTM4e1lrwWhdMJX29SQ.png"></p>
+<ol>
+<li>The MapReduce library in the user program first splits the input files into M peices of typically 16 megabytes to 64 megabytes(MB) per piece (controllable)by the user via an optional parameter). It then starts up <font color="red">many copies of the program</font> on a cluster of machines.</li>
+<li>One of the copies of the program in special - the master. The rest are workers that are assigned work by the master. There are workers that assigned work by the master. There are M map tasks and R reduce tasks to assign. The master pricks <font color="red">idle workers</font> and assigns each one a map task or a reduce task.</li>
+<li>A worker who is assigned a map taks reads the contents of the corresponding input split. It parses key&#x2F;value pairs out of the input data and passes each paries to the user-defined Map function. The intermediate key&#x2F;value pairs produced by the Map function are <font color="red"> buffered in memory.</font></li>
+<li>Periodically, the <font color="red">buffered pairs are written to local disk</font>, partitioned into R regions by the partitioning function. The locations of these buffered pairs onthe local disk are passed back to the master, who is responsible for forwarding these locations to the reduce workers.</li>
+<li>When a reduce worker is notified by the master about these locations, it uses <font color="red">remote procedure calls </font> to read the buffered data from the <font color="red">local disks of the map workers.</font> When a reduce worker has read all intermediate data, it <font color="red">sorts it by the intermediate keys</font> so that all occurences of the samekey are grouped together. The sorting is need because typically many different keys map to the same reduce taks. If the amount of intermediate data is too larger to fit in memory, an <font color="red">external sorts</font> is used.</li>
+<li>The reduce worker iterates over the sorted intermediate data and for each unique intermediate key encountered, it passes the key and the corresponding set of intermediate values to the user’s Reduce function. The output of the Reduce function is appended to a final output file for this reduce partition.</li>
+<li>When all map tasks and reduce tasks have been completed, the master <font color="red">wakes up the user program</font>. At this point, the MapReduce call in the user program returns back to the user code.</li>
+</ol>
+<p>After successful completion, the output of the mapreduce execution is available in the R output files (one per reduce task, with file names as specified by the user). Typically, users do not need to combine these R output files into one file – they often pass these files as input to another MapReduce call, or use them from another distributed application that is able to deal with input that is partitioned into multiple files.</p>
+<div class="note info">
+            <p><font color="black">MapReduce 的步骤</font>:</p><ol><li><font color="black">输入文件按照大小split成M份（16-64M），分发程序副本到各个worker上</font></li><li><font color="black">master控制任务流程，将M个Map任务与N个Reduce任务(用户指定输出桶数)分配给空闲的worker执行</font></li><li><font color="black">map任务读取输入split，将输入key&#x2F;value传递给Map函数，产生中间key&#x2F;value，并缓存在内存中</font></li><li><font color="black">缓存中的key&#x2F;value通过分区函数分成R个region，并周期性写到本地磁盘中。中间结果再磁盘中的位置会告知master，再由master告知reduce任务</font></li><li><font color="black">Reduce worker接收到master发来的存储位置后，RPC读取磁盘中的中间结果。不同map的中间结果虽然有序，但全局无序，所以当所有中间结果读取完后，会进行全局排序(内存排序，不够会外排)。</font></li><li><font color="black">Reduce worker读取排序后的结果。对每一个key值，与中间value集合会调用一次reduce函数。reduce的输出会被追加到所属桶的输出文件中。</font></li><li><font color="black">当所有map任务、reduce任务完成后，master唤醒用户程序，调用返回。</font></li></ol><p><font color="black">若存在后续计算，可将当前输出的N个文件作为下一个MapReduce任务的输入。</font></p>
+          </div>
+
+<h2 id="3-2-Mater-Data-Structures"><a href="#3-2-Mater-Data-Structures" class="headerlink" title="3.2 Mater Data Structures"></a>3.2 Mater Data Structures</h2><p>The master keeps several data structures. For each <font color="red">map task and reduce tas</font>k, it stores the state <font color="red">(idle, in-progress, or completed),</font> and the <font color="red">identity of the worker machine (for non-idle tasks).</font> </p>
+<p>The master is the conduit through which the location of intermediate file regions is propagated from map tasks to reduce tasks. Therefore, for each completed map task, the master stores the <font color="red">locations and sizes of the R intermediate file regions</font> produced by the map task. Updates to this location and size information are received as map tasks are completed. The information is pushed incrementally to workers that have <font color="red">in-progress</font> reduce tasks.</p>
+<div class="note info">
+            <p><font color="black">Master 储存 state(map taks 和 reduce task的state) 和 identity of 闲置的workers，以及locations 和 sizes of R intermediate file regions</font></p>
+          </div>
+
+<h2 id="3-3-Fault-Tolerance"><a href="#3-3-Fault-Tolerance" class="headerlink" title="3.3 Fault Tolerance"></a>3.3 Fault Tolerance</h2><p>Since the MapReduce library is designed to help process very large amounts of data using hundreds or thousands of machines, the library must tolerate machine failures gracefully.</p>
+<h3 id="Worker-Failure"><a href="#Worker-Failure" class="headerlink" title="Worker Failure"></a>Worker Failure</h3><p>The master <font color="red">pings every worker periodically</font>. If no response is received from a worker in a certain amount of time, the master marks the worker as failed. <font color="red">Any map tasks completed by the worker are reset back to their initial idle state</font>, and therefore become eligible for scheduling on other workers. Similarly, any map task or reduce task in progress on a failed worker is also reset to idle and becomes eligible for rescheduling</p>
+<p>Completed map tasks are re-executed on a failure because their output is stored on the local disk(s) of the failed machine and is therefore inaccessible. Completed reduce tasks do not need to be re-executed since their output is stored in a global file system</p>
+<p>When a map task is executed first by worker A and then later executed by worker B (because A failed), all workers executing reduce tasks are notified of the reexecution. Any reduce task that has not already read the data from worker A will read the data from worker B.</p>
+<p>MapReduce is resilient to large-scale worker failures. For example, during one MapReduce operation, network maintenance on a running cluster was causing groups of 80 machines at a time to become unreachable for several minutes. The MapReduce mastersimply re-executed the work done by the unreachable worker machines, and continued to make forward progress, eventually completing the MapReduce operation.</p>
+<h3 id="Master-Failure"><a href="#Master-Failure" class="headerlink" title="Master Failure"></a>Master Failure</h3><p>It is easy to make the master <font color="red">write periodic checkpoints of the master data structures</font> described above. If the master task dies, a new copy can be started from the last checkpointed state. However, given that there is only a single master, its failure is unlikely; therefore our current implementation aborts the MapReduce computation if the master fails. Clients can check for this condition and retry the MapReduce operation if they desire.</p>
+<h3 id="Semantics-in-the-Presence-of-Failures"><a href="#Semantics-in-the-Presence-of-Failures" class="headerlink" title="Semantics in the Presence of Failures"></a>Semantics in the Presence of Failures</h3><p>When the user-supplied map and reduce operators are deterministic functions of their input values, our distributed implementation produces the same output as would have been produced by a non-faulting sequential execution of the entire program. </p>
+<p>We rely on atomic commits of map and reduce task outputs to achieve this property. Each in-progress task writes its output to private temporary files. A reduce task produces one such file, and a map task produces R such files (one per reduce task). </p>
+<p>When a map task completes, the worker sends a message to the master and includes the names of the R temporary files in the message. If the master receives a completion message for an already completed map task, it ignores the message. Otherwise, it records the names of R files in a master data structure. When a reduce task completes, the reduce worker atomically renames its temporary output file to the final output file. If the same reduce task is executed on multiple machines, multiple rename calls will be executed for the same final output file. We rely on the atomic rename operation provided by the underlying file system to guarantee that the final file system state contains just the data produced by one execution of the reduce task. </p>
+<p>The vast majority of our map and reduce operators are deterministic, and the fact that our semantics are equivalent to a sequential execution in this case makes it very easy for programmersto reason about their program’s behavior. When the map and&#x2F;or reduce operators are nondeterministic, we provide weaker but still reasonable semantics. In the presence of non-deterministic operators, the output of a particular reduce task R1 is equivalent to the output for R1 produced by a sequential execution of the non-deterministic program. However, the output for a different reduce task R2 may correspond to the output for R2 produced by a different sequential execution of the non-deterministic program.</p>
+<p>Consider map task M and reduce tasks R1 and R2. Let e(Ri) be the execution of Ri that committed (there is exactly one such execution). The weaker semantics arise because e(R1) may have read the output produced by one execution of M and e(R2) may have read the output produced by a different execution of M.</p>
+<div class="note info">
+            <p>MP的容错机制</p>
+          </div>
+
+<h2 id="3-4-Locality"><a href="#3-4-Locality" class="headerlink" title="3.4 Locality"></a>3.4 Locality</h2><p>Network bandwidth is a relatively scarce resource in our computing environment. We conserve network bandwidth by taking advantage of the fact that the input data (managed by GFS [8]) is stored on the local disks of the machines that make up our cluster. GFS divides each file into 64 MB blocks, and stores several copies of each block (typically 3 copies) on different machines. The MapReduce master takes the location information of the input files into account and attempts to schedule a map task on a machine that contains a replica of the corresponding input data. Failing that, it attempts to schedule a map task near a replica of that task’s input data (e.g., on a worker machine that is on the same network switch as the machine containing the data). When running large MapReduce operations on a significant fraction of the workers in a cluster, most input data is read locally and consumes no network bandwidth.</p>
+<h2 id="3-5-Task-Granularity"><a href="#3-5-Task-Granularity" class="headerlink" title="3.5 Task Granularity"></a>3.5 Task Granularity</h2><p>We subdivide the map phase into M pieces and the reduce phase into R pieces, as described above. Ideally, M and R should be much larger than the number of worker machines. Having each worker perform many different tasks improves dynamic load balancing, and also speeds up recovery when a worker fails: the many map tasks it has completed can be spread out across all the other worker machines.</p>
+<p>There are practical bounds on how large M and R can be in our implementation, since the master must make O(M + R) scheduling decisions and keeps O(M ∗ R) state in memory as described above. (The constant factors for memory usage are small however: the O(M ∗R) piece of the state consists of approximately one byte of data per map task&#x2F;reduce task pair.)</p>
+<p>Furthermore, R is often constrained by users because the output of each reduce task ends up in a separate output file. In practice, we tend to choose M so that each individual task is roughly 16 MB to 64 MB of input data (so that the locality optimization described above is most effective), and we make R a small multiple of the number of worker machines we expect to use. We often perform MapReduce computations with M &#x3D; 200, 000 and R &#x3D; 5, 000, using 2,000 worker machines.</p>
+<h2 id="3-6-Backup-Tasks"><a href="#3-6-Backup-Tasks" class="headerlink" title="3.6 Backup Tasks"></a>3.6 Backup Tasks</h2><p>One of the common causes that lengthens the total time taken for a MapReduce operation is a “straggler”: a machine that takes an unusually long time to complete one of the last few map or reduce tasks in the computation. Stragglers can arise for a whole host of reasons. For example, a machine with a bad disk may experience frequent correctable errors that slow its read performance from 30 MB&#x2F;s to 1 MB&#x2F;s. The cluster scheduling system may have scheduled other tasks on the machine, causing it to execute the MapReduce code more slowly due to competition for CPU, memory, local disk, or network bandwidth. A recent problem we experienced was a bug in machine initialization code that caused processor caches to be disabled: computations on affected machines slowed down by over a factor of one hundred. </p>
+<p>We have a general mechanism to alleviate the problem of stragglers. When a MapReduce operation is close to completion, the master schedules backup executions of the remaining in-progress tasks. The task is marked as completed whenever either the primary or the backup execution completes. We have tuned this mechanism so that it typically increases the computational resources used by the operation by no more than a few percent. We have found that this significantly reduces the time to complete large MapReduce operations. As an example, the sort program described in Section 5.3 takes 44% longer to complete when the backup task mechanism is disabled.</p>
+]]></content>
+      <categories>
+        <category>Distributed Systems</category>
+        <category>papers</category>
+      </categories>
+      <tags>
+        <tag>Distributed Systems</tag>
+        <tag>MIT 6.824</tag>
+        <tag>MapReduce</tag>
+        <tag>classic paper</tag>
       </tags>
   </entry>
 </search>
