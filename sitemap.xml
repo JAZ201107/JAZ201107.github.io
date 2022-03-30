@@ -2,7 +2,7 @@
 <urlset xmlns="http://www.sitemaps.org/schemas/sitemap/0.9">
   
   <url>
-    <loc>https://jinanzhang.icu/Distributed-Systems/MIT-6-824-Lec03/</loc>
+    <loc>https://yu-yang.pro/Distributed-Systems/MIT-6-824-Lec03/</loc>
     
     <lastmod>2022-03-29</lastmod>
     
@@ -11,7 +11,7 @@
   </url>
   
   <url>
-    <loc>https://jinanzhang.icu/Distributed-Systems/MIT-6-824-Lec02/</loc>
+    <loc>https://yu-yang.pro/Distributed-Systems/MIT-6-824-Lec02/</loc>
     
     <lastmod>2022-03-29</lastmod>
     
@@ -20,7 +20,7 @@
   </url>
   
   <url>
-    <loc>https://jinanzhang.icu/Distributed-Systems/MIT-6-824-Lec01/</loc>
+    <loc>https://yu-yang.pro/Distributed-Systems/MIT-6-824-Lec01/</loc>
     
     <lastmod>2022-03-29</lastmod>
     
@@ -29,7 +29,7 @@
   </url>
   
   <url>
-    <loc>https://jinanzhang.icu/uncategorized/hello-world/</loc>
+    <loc>https://yu-yang.pro/uncategorized/hello-world/</loc>
     
     <lastmod>2022-03-29</lastmod>
     
@@ -38,7 +38,7 @@
   </url>
   
   <url>
-    <loc>https://jinanzhang.icu/tags/index.html</loc>
+    <loc>https://yu-yang.pro/tags/index.html</loc>
     
     <lastmod>2022-03-28</lastmod>
     
@@ -47,7 +47,7 @@
   </url>
   
   <url>
-    <loc>https://jinanzhang.icu/categories/index.html</loc>
+    <loc>https://yu-yang.pro/categories/index.html</loc>
     
     <lastmod>2022-03-28</lastmod>
     
@@ -57,7 +57,7 @@
   
 
   <url>
-    <loc>https://jinanzhang.icu/</loc>
+    <loc>https://yu-yang.pro/</loc>
     <lastmod>2022-03-30</lastmod>
     <changefreq>daily</changefreq>
     <priority>1.0</priority>
@@ -65,35 +65,35 @@
 
   
   <url>
-    <loc>https://jinanzhang.icu/tags/Distributed-Systems/</loc>
+    <loc>https://yu-yang.pro/tags/Distributed-Systems/</loc>
     <lastmod>2022-03-30</lastmod>
     <changefreq>weekly</changefreq>
     <priority>0.2</priority>
   </url>
   
   <url>
-    <loc>https://jinanzhang.icu/tags/MIT-6-824/</loc>
+    <loc>https://yu-yang.pro/tags/MIT-6-824/</loc>
     <lastmod>2022-03-30</lastmod>
     <changefreq>weekly</changefreq>
     <priority>0.2</priority>
   </url>
   
   <url>
-    <loc>https://jinanzhang.icu/tags/MapReduce/</loc>
+    <loc>https://yu-yang.pro/tags/MapReduce/</loc>
     <lastmod>2022-03-30</lastmod>
     <changefreq>weekly</changefreq>
     <priority>0.2</priority>
   </url>
   
   <url>
-    <loc>https://jinanzhang.icu/tags/Google-File-Systems/</loc>
+    <loc>https://yu-yang.pro/tags/Go/</loc>
     <lastmod>2022-03-30</lastmod>
     <changefreq>weekly</changefreq>
     <priority>0.2</priority>
   </url>
   
   <url>
-    <loc>https://jinanzhang.icu/tags/Go/</loc>
+    <loc>https://yu-yang.pro/tags/Google-File-Systems/</loc>
     <lastmod>2022-03-30</lastmod>
     <changefreq>weekly</changefreq>
     <priority>0.2</priority>
@@ -102,7 +102,7 @@
 
   
   <url>
-    <loc>https://jinanzhang.icu/categories/Distributed-Systems/</loc>
+    <loc>https://yu-yang.pro/categories/Distributed-Systems/</loc>
     <lastmod>2022-03-30</lastmod>
     <changefreq>weekly</changefreq>
     <priority>0.2</priority>

@@ -18,6 +18,19 @@
       </tags>
   </entry>
   <entry>
+    <title>MIT_6-824_Lec02</title>
+    <url>/Distributed-Systems/MIT-6-824-Lec02/</url>
+    <content><![CDATA[]]></content>
+      <categories>
+        <category>Distributed Systems</category>
+      </categories>
+      <tags>
+        <tag>Distributed Systems</tag>
+        <tag>MIT 6.824</tag>
+        <tag>Go</tag>
+      </tags>
+  </entry>
+  <entry>
     <title>MIT_6-824_Lec03</title>
     <url>/Distributed-Systems/MIT-6-824-Lec03/</url>
     <content><![CDATA[<p>Lec3 是关于Google File Systems</p>
@@ -37,19 +50,6 @@
         <tag>Distributed Systems</tag>
         <tag>MIT 6.824</tag>
         <tag>Google File Systems</tag>
-      </tags>
-  </entry>
-  <entry>
-    <title>MIT_6-824_Lec02</title>
-    <url>/Distributed-Systems/MIT-6-824-Lec02/</url>
-    <content><![CDATA[]]></content>
-      <categories>
-        <category>Distributed Systems</category>
-      </categories>
-      <tags>
-        <tag>Distributed Systems</tag>
-        <tag>MIT 6.824</tag>
-        <tag>Go</tag>
       </tags>
   </entry>
   <entry>
