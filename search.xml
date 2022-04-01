@@ -437,7 +437,7 @@
     <content><![CDATA[<p>Lec04 是关于基于虚拟机的容错</p>
 <span id="more"></span>
 
-<h1 id="Prepare"><a href="#Prepare" class="headerlink" title="Prepare"></a>Prepare</h1><h2 id="论文阅读"><a href="#论文阅读" class="headerlink" title="论文阅读"></a>论文阅读</h2><p><a href="../FTVM">The Design of a Practical System for Fault-Tolerant Virtual Machines</a></p>
+<h1 id="Prepare"><a href="#Prepare" class="headerlink" title="Prepare"></a>Prepare</h1><h2 id="论文阅读"><a href="#论文阅读" class="headerlink" title="论文阅读"></a>论文阅读</h2><p><a href="/papers/FTVM">The Design of a Practical System for Fault-Tolerant Virtual Machines</a></p>
 <h2 id="FAQ"><a href="#FAQ" class="headerlink" title="FAQ"></a>FAQ</h2><h3 id="为什么deterministic-execution在-physical-servers-上比在-VMs-上更难实现？"><a href="#为什么deterministic-execution在-physical-servers-上比在-VMs-上更难实现？" class="headerlink" title="为什么deterministic execution在 physical servers 上比在 VMs 上更难实现？"></a>为什么deterministic execution在 physical servers 上比在 VMs 上更难实现？</h3><blockquote>
 <p>Ensuring determinism is easier on a VM because the hypervisor<br>emulates and controls many aspects of the hardware that might differ<br>between primary and backup executions, for example the precise timing<br>of interrupt delivery.</p>
 </blockquote>
