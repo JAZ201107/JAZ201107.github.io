@@ -1,3 +1,5 @@
+https://yu-yang.pro/papers/FTVM/
+https://yu-yang.pro/Distributed-Systems/MIT-6-824-Lec04/
 https://yu-yang.pro/papers/MapReduce/
 https://yu-yang.pro/Algorithm/Algorithms-4/Algorithm4-Chapter1/
 https://yu-yang.pro/Distributed-Systems/MIT-6-824-Lec03/
@@ -17,6 +19,8 @@ https://yu-yang.pro/tags/Leecode/
 https://yu-yang.pro/tags/Algorithms-4/
 https://yu-yang.pro/tags/Stack-Queue-Bag/
 https://yu-yang.pro/tags/classic-paper/
+https://yu-yang.pro/tags/Fault-Tolerant/
+https://yu-yang.pro/tags/Fault-Tolerant-Virtual-Machine/
 https://yu-yang.pro/categories/Distributed-Systems/
 https://yu-yang.pro/categories/Algorithm/
 https://yu-yang.pro/categories/Algorithm/Algorithms-4/
