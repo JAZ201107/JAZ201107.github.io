@@ -1,139 +1,23 @@
 <?xml version="1.0" encoding="utf-8"?>
 <search>
   <entry>
-    <title>MIT_6-824_Lec01</title>
-    <url>/Distributed-Systems/MIT-6-824-Lec01/</url>
-    <content><![CDATA[<p>Lec01 介绍这个课程的架构，以及以MapReduce为例子，介绍分布式架构</p>
+    <title>The Design of a Practical System for Fault-Tolerant Virtual Machines</title>
+    <url>/papers/FTVM/</url>
+    <content><![CDATA[<p>本片文章是 The Design of a Practical System for Fault-Tolerant Virtual Machines经典论文的阅读</p>
 <span id="more"></span>
 
-<h1 id="课程绪论"><a href="#课程绪论" class="headerlink" title="课程绪论"></a>课程绪论</h1><h2 id="什么是分布式系统？"><a href="#什么是分布式系统？" class="headerlink" title="什么是分布式系统？"></a>什么是分布式系统？</h2><ul>
-<li>A distributed system is a computing environment in which various components are spread across multiple computers (or other computing devices) on a network. These devices split up the work, coordinating their efforts to complete the job more efficiently than if a single device had been responsible for the task.</li>
-</ul>
-<h2 id="为什么需要分布式系统？"><a href="#为什么需要分布式系统？" class="headerlink" title="为什么需要分布式系统？"></a>为什么需要分布式系统？</h2><ul>
-<li>to increase capacity via parallelism <ul>
-<li>通过并行处理获得更高的能力</li>
-</ul>
-</li>
-<li>to tolerate faults via replication<ul>
-<li>通过replication 来实现 容错</li>
-</ul>
-</li>
-<li>to place computing physically close to external entities<ul>
-<li>物理上的扩展</li>
-</ul>
-</li>
-<li>to achieve security via isolation<ul>
-<li>通过隔离来实现安全的需求</li>
-</ul>
-</li>
-</ul>
-<h2 id="面对的困难"><a href="#面对的困难" class="headerlink" title="面对的困难"></a>面对的困难</h2><ul>
-<li>many concurrent parts, complex interactions<ul>
-<li>并发，难交流</li>
-</ul>
-</li>
-<li>must cope with partial failure<ul>
-<li>需要解决部分的failure</li>
-</ul>
-</li>
-<li>tricky to realize performance potential<ul>
-<li>难以获得预期的performance</li>
-</ul>
-</li>
-</ul>
-<h2 id="课程的内容"><a href="#课程的内容" class="headerlink" title="课程的内容"></a>课程的内容</h2><p>This is a course about infrastructure for applications.</p>
-<ul>
-<li>Storage.</li>
-<li>Communication. RPC</li>
-<li>Computation.</li>
-</ul>
-<h3 id="Topic-fault-tolerance"><a href="#Topic-fault-tolerance" class="headerlink" title="Topic: fault tolerance"></a>Topic: fault tolerance</h3><p>1000s of servers, big network  –&gt; always something broken<br> We’d like to hide these failures from the application.</p>
-<p>we wants：</p>
-<ul>
-<li>Availability – app can make progress despite failures -&gt; replication</li>
-<li>Recoverability – app will come back to life when failures are repaired -&gt; logging or transactions</li>
-</ul>
-<p>Big idea: replicated servers.</p>
-<p>If one server crashes, can proceed using the other(s).<br>    Very hard to get right：  server may not have crashed, but just unreachable for some<br>        but still serving requests from clients</p>
-<h3 id="Topic-consistency"><a href="#Topic-consistency" class="headerlink" title="Topic: consistency"></a>Topic: consistency</h3><p>General-purpose infrastructure needs well-defined behavior</p>
-<ul>
-<li>E.g:  “Get(k) yields the value from the most recent Put(k,v).”</li>
-</ul>
-<p>Problems: “Replica” servers are hard to keep identical.</p>
-<h3 id="Topic-performance"><a href="#Topic-performance" class="headerlink" title="Topic: performance:"></a>Topic: performance:</h3><ul>
-<li>throughout</li>
-<li>latency</li>
-</ul>
-<p>The goal: scalable throughput</p>
-<h3 id="Topic：Fault-tolerance-consistency-and-performance-are-enemies"><a href="#Topic：Fault-tolerance-consistency-and-performance-are-enemies" class="headerlink" title="Topic：Fault-tolerance, consistency, and performance are enemies."></a>Topic：Fault-tolerance, consistency, and performance are enemies.</h3><p>Strong fault tolerance requires communication<br>    e.g., send data to backup<br>  Strong consistency requires communication,<br>    e.g. Get() must check for a recent Put().<br>  Many designs provide only weak consistency, to gain speed.<br>    e.g. Get() does <em>not</em> yield the latest Put()!<br>    Painful for application programmers but may be a good trade-off.<br>  Many design points are possible in the consistency&#x2F;performance spectrum!</p>
-<h3 id="Topic-implementation"><a href="#Topic-implementation" class="headerlink" title="Topic: implementation"></a>Topic: implementation</h3><p>  RPC, threads, concurrency control.</p>
-<h2 id="以MapReduce为例，看是如何解决这些问题的？"><a href="#以MapReduce为例，看是如何解决这些问题的？" class="headerlink" title="以MapReduce为例，看是如何解决这些问题的？"></a>以MapReduce为例，看是如何解决这些问题的？</h2><p><a href="../MapReduce">MapReduce论文阅读</a></p>
+<p><a href="https://pdos.csail.mit.edu/6.824/papers/vm-ft.pdf">The Design of a Practical System for Fault-Tolerant Virtual Machines Paper</a></p>
 ]]></content>
       <categories>
         <category>Distributed Systems</category>
+        <category>papers</category>
       </categories>
       <tags>
         <tag>Distributed Systems</tag>
         <tag>MIT 6.824</tag>
-        <tag>MapReduce</tag>
+        <tag>Fault Tolerant</tag>
+        <tag>classic paper</tag>
       </tags>
-  </entry>
-  <entry>
-    <title>MIT_6-824_Lec02</title>
-    <url>/Distributed-Systems/MIT-6-824-Lec02/</url>
-    <content><![CDATA[]]></content>
-      <categories>
-        <category>Distributed Systems</category>
-      </categories>
-      <tags>
-        <tag>Distributed Systems</tag>
-        <tag>MIT 6.824</tag>
-        <tag>Go</tag>
-      </tags>
-  </entry>
-  <entry>
-    <title>MIT_6-824_Lec03</title>
-    <url>/Distributed-Systems/MIT-6-824-Lec03/</url>
-    <content><![CDATA[<p>Lec3 是关于Google File Systems</p>
-<span id="more"></span> 
-
-
-
-
-
-<p><a href="../MIT-6-824-Lec01">Lac01</a></p>
-<p><a href="https://blog.csdn.net/qw8880000/article/details/80235648">Try01</a></p>
-]]></content>
-      <categories>
-        <category>Distributed Systems</category>
-      </categories>
-      <tags>
-        <tag>Distributed Systems</tag>
-        <tag>MIT 6.824</tag>
-        <tag>Google File Systems</tag>
-      </tags>
-  </entry>
-  <entry>
-    <title>Hello World</title>
-    <url>/uncategorized/hello-world/</url>
-    <content><![CDATA[<p>Welcome to <a href="https://hexo.io/">Hexo</a>! This is your very first post. Check <a href="https://hexo.io/docs/">documentation</a> for more info. If you get any problems when using Hexo, you can find the answer in <a href="https://hexo.io/docs/troubleshooting.html">troubleshooting</a> or you can ask me on <a href="https://github.com/hexojs/hexo/issues">GitHub</a>.</p>
-<h2 id="Quick-Start"><a href="#Quick-Start" class="headerlink" title="Quick Start"></a>Quick Start</h2><h3 id="Create-a-new-post"><a href="#Create-a-new-post" class="headerlink" title="Create a new post"></a>Create a new post</h3><figure class="highlight bash"><table><tr><td class="code"><pre><span class="line">$ hexo new <span class="string">&quot;My New Post&quot;</span></span><br></pre></td></tr></table></figure>
-
-<p>More info: <a href="https://hexo.io/docs/writing.html">Writing</a></p>
-<span id="more"></span>
-
-
-
-<h3 id="Run-server"><a href="#Run-server" class="headerlink" title="Run server"></a>Run server</h3><figure class="highlight bash"><table><tr><td class="code"><pre><span class="line">$ hexo server</span><br></pre></td></tr></table></figure>
-
-<p>More info: <a href="https://hexo.io/docs/server.html">Server</a></p>
-<h3 id="Generate-static-files"><a href="#Generate-static-files" class="headerlink" title="Generate static files"></a>Generate static files</h3><figure class="highlight bash"><table><tr><td class="code"><pre><span class="line">$ hexo generate</span><br></pre></td></tr></table></figure>
-
-<p>More info: <a href="https://hexo.io/docs/generating.html">Generating</a></p>
-<h3 id="Deploy-to-remote-sites"><a href="#Deploy-to-remote-sites" class="headerlink" title="Deploy to remote sites"></a>Deploy to remote sites</h3><figure class="highlight bash"><table><tr><td class="code"><pre><span class="line">$ hexo deploy</span><br></pre></td></tr></table></figure>
-
-<p>More info: <a href="https://hexo.io/docs/one-command-deployment.html">Deployment</a></p>
-]]></content>
   </entry>
   <entry>
     <title>Algorithm4_Chapter1</title>
@@ -287,10 +171,174 @@
         <category>Algorithms 4</category>
       </categories>
       <tags>
+        <tag>Algorithms 4</tag>
         <tag>Data Structure</tag>
         <tag>Leecode</tag>
-        <tag>Algorithms 4</tag>
         <tag>Stack Queue Bag</tag>
+      </tags>
+  </entry>
+  <entry>
+    <title>Linux</title>
+    <url>/Linux/Linux/</url>
+    <content><![CDATA[<h3 id="查看系统版本"><a href="#查看系统版本" class="headerlink" title="查看系统版本"></a>查看系统版本</h3><blockquote>
+<p>uname -a</p>
+<figure class="highlight bash"><table><tr><td class="code"><pre><span class="line">[root@VM-8-9-centos ~]<span class="comment"># uname -a</span></span><br><span class="line">Linux VM-8-9-centos 4.18.0-305.3.1.el8.x86_64 <span class="comment">#1 SMP Tue Jun 1 16:14:33 UTC 2021 x86_64 x86_64 x86_64 GNU/Linux</span></span><br></pre></td></tr></table></figure>
+</blockquote>
+<h2 id="文件"><a href="#文件" class="headerlink" title="文件"></a>文件</h2><h3 id="转移文件-x2F-重命名文件"><a href="#转移文件-x2F-重命名文件" class="headerlink" title="转移文件&#x2F;重命名文件"></a>转移文件&#x2F;重命名文件</h3><blockquote>
+<p>mv</p>
+<figure class="highlight bash"><table><tr><td class="code"><pre><span class="line">[root@VM-8-9-centos ~]<span class="comment"># mv hadoop-2.10.1.tar.gz /usr/local/hadoop/</span></span><br><span class="line"></span><br><span class="line">[root@VM-8-9-centos hadoop]<span class="comment"># mv hadoop-2.10.1.tar.gz.3 hadoop-2.10.1.tar.gz</span></span><br></pre></td></tr></table></figure>
+</blockquote>
+<h3 id="删除文件"><a href="#删除文件" class="headerlink" title="删除文件"></a>删除文件</h3><blockquote>
+<p>rm</p>
+</blockquote>
+<h3 id="设置环境变量"><a href="#设置环境变量" class="headerlink" title="设置环境变量"></a>设置环境变量</h3><figure class="highlight bash"><table><tr><td class="code"><pre><span class="line"><span class="built_in">export</span> HADOOP_HOME=/usr/local/hadoop/hadoop-2.10.1 <span class="comment">#设置环境变量</span></span><br><span class="line">[root@VM-8-9-centos hadoop-2.10.1]<span class="comment"># export PATH=$PATH:$HADOOP_HOME:bin:$HADOOP_HOME:sbin  #往存在的环境变量中新增</span></span><br></pre></td></tr></table></figure>
+
+]]></content>
+      <categories>
+        <category>Linux</category>
+      </categories>
+      <tags>
+        <tag>Linux</tag>
+        <tag>Command Line</tag>
+      </tags>
+  </entry>
+  <entry>
+    <title>MIT_6-824_Lec01</title>
+    <url>/Distributed-Systems/MIT-6-824-Lec01/</url>
+    <content><![CDATA[<p>Lec01 介绍这个课程的架构，以及以MapReduce为例子，介绍分布式架构</p>
+<span id="more"></span>
+
+<h1 id="课程绪论"><a href="#课程绪论" class="headerlink" title="课程绪论"></a>课程绪论</h1><h2 id="什么是分布式系统？"><a href="#什么是分布式系统？" class="headerlink" title="什么是分布式系统？"></a>什么是分布式系统？</h2><ul>
+<li>A distributed system is a computing environment in which various components are spread across multiple computers (or other computing devices) on a network. These devices split up the work, coordinating their efforts to complete the job more efficiently than if a single device had been responsible for the task.</li>
+</ul>
+<h2 id="为什么需要分布式系统？"><a href="#为什么需要分布式系统？" class="headerlink" title="为什么需要分布式系统？"></a>为什么需要分布式系统？</h2><ul>
+<li>to increase capacity via parallelism <ul>
+<li>通过并行处理获得更高的能力</li>
+</ul>
+</li>
+<li>to tolerate faults via replication<ul>
+<li>通过replication 来实现 容错</li>
+</ul>
+</li>
+<li>to place computing physically close to external entities<ul>
+<li>物理上的扩展</li>
+</ul>
+</li>
+<li>to achieve security via isolation<ul>
+<li>通过隔离来实现安全的需求</li>
+</ul>
+</li>
+</ul>
+<h2 id="面对的困难"><a href="#面对的困难" class="headerlink" title="面对的困难"></a>面对的困难</h2><ul>
+<li>many concurrent parts, complex interactions<ul>
+<li>并发，难交流</li>
+</ul>
+</li>
+<li>must cope with partial failure<ul>
+<li>需要解决部分的failure</li>
+</ul>
+</li>
+<li>tricky to realize performance potential<ul>
+<li>难以获得预期的performance</li>
+</ul>
+</li>
+</ul>
+<h2 id="课程的内容"><a href="#课程的内容" class="headerlink" title="课程的内容"></a>课程的内容</h2><p>This is a course about infrastructure for applications.</p>
+<ul>
+<li>Storage.</li>
+<li>Communication. RPC</li>
+<li>Computation.</li>
+</ul>
+<h3 id="Topic-fault-tolerance"><a href="#Topic-fault-tolerance" class="headerlink" title="Topic: fault tolerance"></a>Topic: fault tolerance</h3><p>1000s of servers, big network  –&gt; always something broken<br> We’d like to hide these failures from the application.</p>
+<p>we wants：</p>
+<ul>
+<li>Availability – app can make progress despite failures -&gt; replication</li>
+<li>Recoverability – app will come back to life when failures are repaired -&gt; logging or transactions</li>
+</ul>
+<p>Big idea: replicated servers.</p>
+<p>If one server crashes, can proceed using the other(s).<br>    Very hard to get right：  server may not have crashed, but just unreachable for some<br>        but still serving requests from clients</p>
+<h3 id="Topic-consistency"><a href="#Topic-consistency" class="headerlink" title="Topic: consistency"></a>Topic: consistency</h3><p>General-purpose infrastructure needs well-defined behavior</p>
+<ul>
+<li>E.g:  “Get(k) yields the value from the most recent Put(k,v).”</li>
+</ul>
+<p>Problems: “Replica” servers are hard to keep identical.</p>
+<h3 id="Topic-performance"><a href="#Topic-performance" class="headerlink" title="Topic: performance:"></a>Topic: performance:</h3><ul>
+<li>throughout</li>
+<li>latency</li>
+</ul>
+<p>The goal: scalable throughput</p>
+<h3 id="Topic：Fault-tolerance-consistency-and-performance-are-enemies"><a href="#Topic：Fault-tolerance-consistency-and-performance-are-enemies" class="headerlink" title="Topic：Fault-tolerance, consistency, and performance are enemies."></a>Topic：Fault-tolerance, consistency, and performance are enemies.</h3><p>Strong fault tolerance requires communication<br>    e.g., send data to backup<br>  Strong consistency requires communication,<br>    e.g. Get() must check for a recent Put().<br>  Many designs provide only weak consistency, to gain speed.<br>    e.g. Get() does <em>not</em> yield the latest Put()!<br>    Painful for application programmers but may be a good trade-off.<br>  Many design points are possible in the consistency&#x2F;performance spectrum!</p>
+<h3 id="Topic-implementation"><a href="#Topic-implementation" class="headerlink" title="Topic: implementation"></a>Topic: implementation</h3><p>  RPC, threads, concurrency control.</p>
+<h2 id="以MapReduce为例，看是如何解决这些问题的？"><a href="#以MapReduce为例，看是如何解决这些问题的？" class="headerlink" title="以MapReduce为例，看是如何解决这些问题的？"></a>以MapReduce为例，看是如何解决这些问题的？</h2><p><a href="../MapReduce">MapReduce论文阅读</a></p>
+]]></content>
+      <categories>
+        <category>Distributed Systems</category>
+      </categories>
+      <tags>
+        <tag>Distributed Systems</tag>
+        <tag>MIT 6.824</tag>
+        <tag>MapReduce</tag>
+      </tags>
+  </entry>
+  <entry>
+    <title>MIT_6-824_Lec02</title>
+    <url>/Distributed-Systems/MIT-6-824-Lec02/</url>
+    <content><![CDATA[]]></content>
+      <categories>
+        <category>Distributed Systems</category>
+      </categories>
+      <tags>
+        <tag>Distributed Systems</tag>
+        <tag>MIT 6.824</tag>
+        <tag>Go</tag>
+      </tags>
+  </entry>
+  <entry>
+    <title>MIT_6-824_Lec03</title>
+    <url>/Distributed-Systems/MIT-6-824-Lec03/</url>
+    <content><![CDATA[<p>Lec3 是关于Google File Systems</p>
+<span id="more"></span> 
+
+
+
+
+
+<p><a href="../MIT-6-824-Lec01">Lac01</a></p>
+<p><a href="https://blog.csdn.net/qw8880000/article/details/80235648">Try01</a></p>
+]]></content>
+      <categories>
+        <category>Distributed Systems</category>
+      </categories>
+      <tags>
+        <tag>Distributed Systems</tag>
+        <tag>MIT 6.824</tag>
+        <tag>Google File Systems</tag>
+      </tags>
+  </entry>
+  <entry>
+    <title>MIT-6-824-Lec04</title>
+    <url>/Distributed-Systems/MIT-6-824-Lec04/</url>
+    <content><![CDATA[<p>Lec04 是关于基于虚拟机的容错</p>
+<span id="more"></span>
+
+<h1 id="Prepare"><a href="#Prepare" class="headerlink" title="Prepare"></a>Prepare</h1><h2 id="论文阅读"><a href="#论文阅读" class="headerlink" title="论文阅读"></a>论文阅读</h2><p><a href="/papers/FTVM">The Design of a Practical System for Fault-Tolerant Virtual Machines</a></p>
+<h2 id="FAQ"><a href="#FAQ" class="headerlink" title="FAQ"></a>FAQ</h2><h3 id="为什么deterministic-execution在-physical-servers-上比在-VMs-上更难实现？"><a href="#为什么deterministic-execution在-physical-servers-上比在-VMs-上更难实现？" class="headerlink" title="为什么deterministic execution在 physical servers 上比在 VMs 上更难实现？"></a>为什么deterministic execution在 physical servers 上比在 VMs 上更难实现？</h3><blockquote>
+<p>Ensuring determinism is easier on a VM because the hypervisor<br>emulates and controls many aspects of the hardware that might differ<br>between primary and backup executions, for example the precise timing<br>of interrupt delivery.</p>
+</blockquote>
+<h3 id="什么是hypervisor？"><a href="#什么是hypervisor？" class="headerlink" title="什么是hypervisor？"></a>什么是hypervisor？</h3><p><strong>Hypervisor</strong>，也称为虚拟机监控器 **VMM ( virtual machine monitor )**，可用于创建和运行虚拟机 (<a href="https://www.vmware.com/cn/topics/glossary/content/virtual-machine.html">VM</a>) 的进程。它是一种中间软件层，运行在基础物理服务器和操作系统之间，可允许多个操作系统和应用共享硬件。通过让Hypervisor以虚拟化的方式共享其资源（如内存和处理资源），一台主机计算机可以支持多台客户机虚拟机。</p>
+<p> Hypervisor 一般分为两种类型：第 1 类被称为“裸机 hypervisor”，直接在主机硬件上运行。第 2 类被称为“托管 hypervisor”，作为软件层在操作系统上运行，就像其他计算机程序一样。 </p>
+<p><img src="https://img.vembu.com/wp-content/uploads/2019/12/Hypervisor-Types.png"></p>
+<h3 id="为什么要使用-Hypervisor？"><a href="#为什么要使用-Hypervisor？" class="headerlink" title="为什么要使用 Hypervisor？"></a>为什么要使用 Hypervisor？</h3><p>Hypervisor 是所有虚拟化技术的核心。 非中断地支持多工作负载迁移的能力是其基本功能。通过 Hypervisor，可以更充分地利用系统可用资源并提升 IT 移动性。因为客户机虚拟机不依赖于主机硬件，这意味着它们可以轻松地在不同服务器之间移动。软硬件架构和管理更高效、更灵活，硬件的效能能够更好地发挥出来。</p>
+<h3 id="Both-GFS-and-VMware-FT-provide-fault-tolerance-How-should-we-think-about-when-one-or-the-other-is-better"><a href="#Both-GFS-and-VMware-FT-provide-fault-tolerance-How-should-we-think-about-when-one-or-the-other-is-better" class="headerlink" title="Both GFS and VMware FT provide fault tolerance. How should we think about when one or the other is better?"></a>Both GFS and VMware FT provide fault tolerance. How should we think about when one or the other is better?</h3><p><strong>FT replicates computation:</strong> 可以 透明的添加到任何已经存在的 network server。 FT provides fairly strict consistency and is transparent to server and client. E.g make an existing mail server fault-tolerant.</p>
+<p><strong>GFS</strong>: provides fault-tolerance just for storage.</p>
+]]></content>
+      <categories>
+        <category>Distributed Systems</category>
+      </categories>
+      <tags>
+        <tag>Distributed Systems</tag>
+        <tag>MIT 6.824</tag>
+        <tag>Fault-Tolerant Virtual Machine</tag>
       </tags>
   </entry>
   <entry>
@@ -300,9 +348,11 @@
 <span id="more"></span>
 
 <p><a href="https://static.googleusercontent.com/media/research.google.com/en//archive/mapreduce-osdi04.pdf">MapReduce Paper</a></p>
-<h1 id="Abstract"><a href="#Abstract" class="headerlink" title="Abstract"></a>Abstract</h1><p>​    MapReduce is a <font color="red">programming model</font> and an associated implementation for processing and generating large data sets. Users specify a <font color="red">map function </font> that processes a key&#x2F;value pair to generate a set of intermediate key&#x2F;value pairs, and a r<font color="red">educe function </font>that merges all intermediate values associated with the same intermediate key. Many real world tasks are expressible in this model, as shown in the paper. </p>
+<h1 id="Abstract"><a href="#Abstract" class="headerlink" title="Abstract"></a>Abstract</h1><blockquote>
+<p>​    MapReduce is a <font color="red">programming model</font> and an associated implementation for processing and generating large data sets. Users specify a <font color="red">map function </font> that processes a key&#x2F;value pair to generate a set of intermediate key&#x2F;value pairs, and a r<font color="red">educe function </font>that merges all intermediate values associated with the same intermediate key. Many real world tasks are expressible in this model, as shown in the paper. </p>
 <p>​    Programs written in this functional style are <font color="red">automatically parallelized </font>and executed on a large cluster of commodity machines. The run-time system takes care of the details of partitioning the input data, scheduling the program’s execution across a set of machines, handling machine failures, and managing the required inter-machine communication. This allows programmers without any experience with parallel and distributed systems to easily utilize the resources of a large distributed system. </p>
-<p>​    Our implementation of MapReduce runs on a large cluster of commodity machines and is highly scalable: a typical MapReduce computation processes many terabytes of data on thousands of machines. Programmers find the system easy to use: hundreds of MapReduce programs have been implemented and upwards of one thousand MapReduce jobs are executed on Google’s clusters every day.</p>
+<p>​    Our implementation of MapReduce runs on a large cluster of commodity machines and is highly scalable: a typical MapReduce computation processes many terabytes of data on thousands of machines. Programmers find the system easy to use: hundreds of MapReduce programs have been implemented and upwards of one thousand MapReduce jobs are executed on Google’s clusters every day.    </p>
+</blockquote>
 <div class="note info">
             <p><font color="black">MapReduce 是一个 programming model， 用户只需要指定 Map function 和 Reduce function， 系统就会完成，分布式计算。在大量商用计算机上自动运行并行化计算。</font></p>
           </div> 
@@ -408,53 +458,30 @@
       <tags>
         <tag>Distributed Systems</tag>
         <tag>MIT 6.824</tag>
+        <tag>classic paper</tag>
         <tag>MapReduce</tag>
-        <tag>classic paper</tag>
       </tags>
   </entry>
   <entry>
-    <title>The Design of a Practical System for Fault-Tolerant Virtual Machines</title>
-    <url>/papers/FTVM/</url>
-    <content><![CDATA[<p>本片文章是 The Design of a Practical System for Fault-Tolerant Virtual Machines经典论文的阅读</p>
+    <title>Hello World</title>
+    <url>/uncategorized/hello-world/</url>
+    <content><![CDATA[<p>Welcome to <a href="https://hexo.io/">Hexo</a>! This is your very first post. Check <a href="https://hexo.io/docs/">documentation</a> for more info. If you get any problems when using Hexo, you can find the answer in <a href="https://hexo.io/docs/troubleshooting.html">troubleshooting</a> or you can ask me on <a href="https://github.com/hexojs/hexo/issues">GitHub</a>.</p>
+<h2 id="Quick-Start"><a href="#Quick-Start" class="headerlink" title="Quick Start"></a>Quick Start</h2><h3 id="Create-a-new-post"><a href="#Create-a-new-post" class="headerlink" title="Create a new post"></a>Create a new post</h3><figure class="highlight bash"><table><tr><td class="code"><pre><span class="line">$ hexo new <span class="string">&quot;My New Post&quot;</span></span><br></pre></td></tr></table></figure>
+
+<p>More info: <a href="https://hexo.io/docs/writing.html">Writing</a></p>
 <span id="more"></span>
 
-<p><a href="https://pdos.csail.mit.edu/6.824/papers/vm-ft.pdf">The Design of a Practical System for Fault-Tolerant Virtual Machines Paper</a></p>
-]]></content>
-      <categories>
-        <category>Distributed Systems</category>
-        <category>papers</category>
-      </categories>
-      <tags>
-        <tag>Distributed Systems</tag>
-        <tag>MIT 6.824</tag>
-        <tag>classic paper</tag>
-        <tag>Fault Tolerant</tag>
-      </tags>
-  </entry>
-  <entry>
-    <title>MIT-6-824-Lec04</title>
-    <url>/Distributed-Systems/MIT-6-824-Lec04/</url>
-    <content><![CDATA[<p>Lec04 是关于基于虚拟机的容错</p>
-<span id="more"></span>
 
-<h1 id="Prepare"><a href="#Prepare" class="headerlink" title="Prepare"></a>Prepare</h1><h2 id="论文阅读"><a href="#论文阅读" class="headerlink" title="论文阅读"></a>论文阅读</h2><p><a href="/papers/FTVM">The Design of a Practical System for Fault-Tolerant Virtual Machines</a></p>
-<h2 id="FAQ"><a href="#FAQ" class="headerlink" title="FAQ"></a>FAQ</h2><h3 id="为什么deterministic-execution在-physical-servers-上比在-VMs-上更难实现？"><a href="#为什么deterministic-execution在-physical-servers-上比在-VMs-上更难实现？" class="headerlink" title="为什么deterministic execution在 physical servers 上比在 VMs 上更难实现？"></a>为什么deterministic execution在 physical servers 上比在 VMs 上更难实现？</h3><blockquote>
-<p>Ensuring determinism is easier on a VM because the hypervisor<br>emulates and controls many aspects of the hardware that might differ<br>between primary and backup executions, for example the precise timing<br>of interrupt delivery.</p>
-</blockquote>
-<h3 id="什么是hypervisor？"><a href="#什么是hypervisor？" class="headerlink" title="什么是hypervisor？"></a>什么是hypervisor？</h3><p><strong>Hypervisor</strong>，也称为虚拟机监控器 **VMM ( virtual machine monitor )**，可用于创建和运行虚拟机 (<a href="https://www.vmware.com/cn/topics/glossary/content/virtual-machine.html">VM</a>) 的进程。它是一种中间软件层，运行在基础物理服务器和操作系统之间，可允许多个操作系统和应用共享硬件。通过让Hypervisor以虚拟化的方式共享其资源（如内存和处理资源），一台主机计算机可以支持多台客户机虚拟机。</p>
-<p> Hypervisor 一般分为两种类型：第 1 类被称为“裸机 hypervisor”，直接在主机硬件上运行。第 2 类被称为“托管 hypervisor”，作为软件层在操作系统上运行，就像其他计算机程序一样。 </p>
-<p><img src="https://img.vembu.com/wp-content/uploads/2019/12/Hypervisor-Types.png"></p>
-<h3 id="为什么要使用-Hypervisor？"><a href="#为什么要使用-Hypervisor？" class="headerlink" title="为什么要使用 Hypervisor？"></a>为什么要使用 Hypervisor？</h3><p>Hypervisor 是所有虚拟化技术的核心。 非中断地支持多工作负载迁移的能力是其基本功能。通过 Hypervisor，可以更充分地利用系统可用资源并提升 IT 移动性。因为客户机虚拟机不依赖于主机硬件，这意味着它们可以轻松地在不同服务器之间移动。软硬件架构和管理更高效、更灵活，硬件的效能能够更好地发挥出来。</p>
-<h3 id="Both-GFS-and-VMware-FT-provide-fault-tolerance-How-should-we-think-about-when-one-or-the-other-is-better"><a href="#Both-GFS-and-VMware-FT-provide-fault-tolerance-How-should-we-think-about-when-one-or-the-other-is-better" class="headerlink" title="Both GFS and VMware FT provide fault tolerance. How should we think about when one or the other is better?"></a>Both GFS and VMware FT provide fault tolerance. How should we think about when one or the other is better?</h3><p><strong>FT replicates computation:</strong> 可以 透明的添加到任何已经存在的 network server。 FT provides fairly strict consistency and is transparent to server and client. E.g make an existing mail server fault-tolerant.</p>
-<p><strong>GFS</strong>: provides fault-tolerance just for storage.</p>
+
+<h3 id="Run-server"><a href="#Run-server" class="headerlink" title="Run server"></a>Run server</h3><figure class="highlight bash"><table><tr><td class="code"><pre><span class="line">$ hexo server</span><br></pre></td></tr></table></figure>
+
+<p>More info: <a href="https://hexo.io/docs/server.html">Server</a></p>
+<h3 id="Generate-static-files"><a href="#Generate-static-files" class="headerlink" title="Generate static files"></a>Generate static files</h3><figure class="highlight bash"><table><tr><td class="code"><pre><span class="line">$ hexo generate</span><br></pre></td></tr></table></figure>
+
+<p>More info: <a href="https://hexo.io/docs/generating.html">Generating</a></p>
+<h3 id="Deploy-to-remote-sites"><a href="#Deploy-to-remote-sites" class="headerlink" title="Deploy to remote sites"></a>Deploy to remote sites</h3><figure class="highlight bash"><table><tr><td class="code"><pre><span class="line">$ hexo deploy</span><br></pre></td></tr></table></figure>
+
+<p>More info: <a href="https://hexo.io/docs/one-command-deployment.html">Deployment</a></p>
 ]]></content>
-      <categories>
-        <category>Distributed Systems</category>
-      </categories>
-      <tags>
-        <tag>Distributed Systems</tag>
-        <tag>MIT 6.824</tag>
-        <tag>Fault-Tolerant Virtual Machine</tag>
-      </tags>
   </entry>
 </search>
