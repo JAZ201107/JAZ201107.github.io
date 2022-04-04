@@ -3,7 +3,7 @@
   <entry>
     <title>The Design of a Practical System for Fault-Tolerant Virtual Machines</title>
     <url>/papers/FTVM/</url>
-    <content><![CDATA[<p>本片文章是 The Design of a Practical System for Fault-Tolerant Virtual Machines经典论文的阅读</p>
+    <content><![CDATA[<p>本片文章是关于The Design of a Practical System for Fault-Tolerant Virtual Machines经典论文的阅读</p>
 <span id="more"></span>
 
 <p><a href="https://pdos.csail.mit.edu/6.824/papers/vm-ft.pdf">The Design of a Practical System for Fault-Tolerant Virtual Machines Paper</a></p>
@@ -22,7 +22,8 @@
   <entry>
     <title>Algorithm4_Chapter1</title>
     <url>/Algorithm/Algorithms-4/Algorithm4-Chapter1/</url>
-    <content><![CDATA[<h2 id="前言"><a href="#前言" class="headerlink" title="前言"></a>前言</h2><p>由于是出于复习的目的，且是第二次看 算法4 有些基础的部分笼统的复习一遍，并没有记录下来。</p>
+    <content><![CDATA[<p>[toc]</p>
+<h2 id="前言"><a href="#前言" class="headerlink" title="前言"></a>前言</h2><p>由于是出于复习的目的，且是第二次看 算法4 有些基础的部分笼统的复习一遍，并没有记录下来。</p>
 <p>每篇题目均会与Leecode上的题目联系起来</p>
 <span id="more"></span>
 
@@ -193,6 +194,14 @@
 </blockquote>
 <h3 id="设置环境变量"><a href="#设置环境变量" class="headerlink" title="设置环境变量"></a>设置环境变量</h3><figure class="highlight bash"><table><tr><td class="code"><pre><span class="line"><span class="built_in">export</span> HADOOP_HOME=/usr/local/hadoop/hadoop-2.10.1 <span class="comment">#设置环境变量</span></span><br><span class="line">[root@VM-8-9-centos hadoop-2.10.1]<span class="comment"># export PATH=$PATH:$HADOOP_HOME:bin:$HADOOP_HOME:sbin  #往存在的环境变量中新增</span></span><br></pre></td></tr></table></figure>
 
+
+
+<h3 id="查看网络端口"><a href="#查看网络端口" class="headerlink" title="查看网络端口"></a>查看网络端口</h3><figure class="highlight bash"><table><tr><td class="code"><pre><span class="line">$ netstat -ntlp </span><br></pre></td></tr></table></figure>
+
+<p>![Screenshot 2022-04-04 at 11.12.49](&#x2F;Users&#x2F;zhangyuyang&#x2F;Desktop&#x2F;blog&#x2F;source&#x2F;_posts&#x2F;Linux&#x2F;Screenshot 2022-04-04 at 11.12.49.png)</p>
+<h3 id="定时任务-crontab"><a href="#定时任务-crontab" class="headerlink" title="定时任务 crontab"></a>定时任务 crontab</h3><p>使用<a href="https://so.csdn.net/so/search?q=crontab&spm=1001.2101.3001.7020">crontab</a>你可以在指定的时间执行一个shell脚本或者一系列Linux命令</p>
+<p>![Screenshot 2022-04-04 at 11.17.20](&#x2F;Users&#x2F;zhangyuyang&#x2F;Desktop&#x2F;blog&#x2F;source&#x2F;_posts&#x2F;Linux&#x2F;Screenshot 2022-04-04 at 11.17.20.png)</p>
+<p>![Screenshot 2022-04-04 at 11.18.04](&#x2F;Users&#x2F;zhangyuyang&#x2F;Desktop&#x2F;blog&#x2F;source&#x2F;_posts&#x2F;Linux&#x2F;Screenshot 2022-04-04 at 11.18.04.png)</p>
 ]]></content>
       <categories>
         <category>Linux</category>
@@ -483,5 +492,98 @@
 
 <p>More info: <a href="https://hexo.io/docs/one-command-deployment.html">Deployment</a></p>
 ]]></content>
+  </entry>
+  <entry>
+    <title>The Hadoop Distributed File System</title>
+    <url>/papers/The-Hadoop-Distributed-File-System/</url>
+    <content><![CDATA[<p>本片文章是关于 The Hadoop Distributed File System 经典论文的阅读</p>
+<span id="more"></span>
+
+<h1 id="Prerequisite"><a href="#Prerequisite" class="headerlink" title="Prerequisite"></a>Prerequisite</h1><h2 id="文件系统的定义"><a href="#文件系统的定义" class="headerlink" title="文件系统的定义"></a>文件系统的定义</h2><ul>
+<li>文件系统是一种<strong>存储和组织数据</strong>的方法，实现了数据的存储，分级组织，访问和获取等操作，使用户对文件的访问和查找变得简单</li>
+<li>文件系统使用 <strong>树形目录</strong> 的抽象逻辑代替了硬盘等物理设备使用数据块的概念，使用户不必关心数据底层存在硬盘的哪里，只需要记住这个文件的所属目录和文件名即可</li>
+<li>文件系统通常使用硬盘和光盘这样的存储设备，并维护文件在设备中的物理位置</li>
+<li>![Screenshot 2022-04-04 at 11.54.14](&#x2F;Users&#x2F;zhangyuyang&#x2F;Desktop&#x2F;blog&#x2F;source&#x2F;_posts&#x2F;The-Hadoop-Distributed-File-System&#x2F;Screenshot 2022-04-04 at 11.54.14.png)</li>
+</ul>
+<h2 id="传统的常见的文件系统"><a href="#传统的常见的文件系统" class="headerlink" title="传统的常见的文件系统"></a>传统的常见的文件系统</h2><ul>
+<li>单机的文件系统，底层不会横跨多台机器实现。比如windows操作系统上的文件系统，Linux上的文件系统</li>
+<li>这些文件系统的共同特征<ol>
+<li>带有<strong>抽象的目录树</strong>结构，树都是从 &#x2F; 根目录下开始往下蔓延</li>
+<li>树中结点分为两类：目录和文件</li>
+<li>从根目录开始，结点路径具有<strong>唯一性</strong></li>
+</ol>
+</li>
+</ul>
+]]></content>
+      <categories>
+        <category>Distributed Systems</category>
+        <category>papers</category>
+      </categories>
+      <tags>
+        <tag>Distributed Systems</tag>
+        <tag>classic paper</tag>
+        <tag>Hadoop</tag>
+      </tags>
+  </entry>
+  <entry>
+    <title>杂记</title>
+    <url>/%E6%9D%82%E8%AE%B0/%E6%9D%82%E8%AE%B0/</url>
+    <content><![CDATA[<p>[toc]</p>
+<h1 id="Hadoop-安装"><a href="#Hadoop-安装" class="headerlink" title="Hadoop 安装"></a>Hadoop 安装</h1><h2 id="单机"><a href="#单机" class="headerlink" title="单机"></a>单机</h2><h3 id="Java-安装"><a href="#Java-安装" class="headerlink" title="Java 安装"></a>Java 安装</h3><figure class="highlight bash"><table><tr><td class="code"><pre><span class="line">yum search java|grep jdk  <span class="comment">#查看版本</span></span><br><span class="line">yum install -y java-11-openjdk <span class="comment"># 安装所需要的版本</span></span><br><span class="line">java -version 	<span class="comment"># 是否安装成功</span></span><br></pre></td></tr></table></figure>
+
+<h3 id="Hadoop-下载"><a href="#Hadoop-下载" class="headerlink" title="Hadoop 下载"></a>Hadoop 下载</h3><ol>
+<li><p><a href="https://hadoop.apache.org/releases.html">官网</a>查看安装包 binary download</p>
+</li>
+<li><p>下载 wget </p>
+</li>
+<li><p><font color="red">注意！！！</font> </p>
+<p>安装在 cd  &#x2F;usr&#x2F;local&#x2F;hadoop&#x2F; 目录下</p>
+<blockquote>
+<p> wget <a href="https://www.apache.org/dyn/closer.cgi/hadoop/common/hadoop-2.10.1/hadoop-2.10.1.tar.gz">https://www.apache.org/dyn/closer.cgi/hadoop/common/hadoop-2.10.1/hadoop-2.10.1.tar.gz</a> 是从官网下载，如果，返回的是</p>
+<p><img src="/Users/zhangyuyang/Desktop/blog/source/_posts/%E6%9D%82%E8%AE%B0/QQ20220402-194936@2x.png" alt="QQ20220402-194936@2x">说明在的不是压缩包，用</p>
+<p>tar -zxvf hadoop-2.10.1.tar.gz</p>
+<p>会报错</p>
+<blockquote>
+<p>gzip: stdin: not in gzip format<br>tar: Child returned status 1<br>tar: Error is not recoverable: exiting now</p>
+</blockquote>
+<p>因此，使用清华镜像安装</p>
+<p><a href="https://mirrors.tuna.tsinghua.edu.cn/apache/hadoop/common/hadoop-2.10.1/">https://mirrors.tuna.tsinghua.edu.cn/apache/hadoop/common/hadoop-2.10.1/</a></p>
+</blockquote>
+</li>
+<li><p>解压</p>
+<blockquote>
+<figure class="highlight bash"><table><tr><td class="code"><pre><span class="line">[root@VM-8-9-centos hadoop]<span class="comment"># tar -zxvf hadoop-2.10.1.tar.gz </span></span><br><span class="line">[root@VM-8-9-centos hadoop]<span class="comment"># cd hadoop-2.10.1/</span></span><br><span class="line">[root@VM-8-9-centos hadoop-2.10.1]<span class="comment"># ls</span></span><br><span class="line">bin  etc  include  lib  libexec  LICENSE.txt  NOTICE.txt  README.txt  sbin  share</span><br></pre></td></tr></table></figure>
+</blockquote>
+</li>
+<li><p>将Hadoop的目录，导入环境变量</p>
+<blockquote>
+<figure class="highlight bash"><table><tr><td class="code"><pre><span class="line">[root@VM-8-9-centos hadoop-2.10.1]<span class="comment"># export HADOOP_HOME=/usr/local/hadoop/hadoop-2.10.1</span></span><br><span class="line">[root@VM-8-9-centos hadoop-2.10.1]<span class="comment"># export $HADOOP_HOME </span></span><br><span class="line">-bash: <span class="built_in">export</span>: `/usr/local/hadoop/hadoop-2.10.1<span class="string">&#x27;: not a valid identifier</span></span><br></pre></td></tr></table></figure>
+
+</blockquote>
+<blockquote>
+<p>export 导出的环境变量是临时的，关机就会失效，要想永久有效，需写入</p>
+<ol>
+<li>&#x2F;etc&#x2F;profile 变量中 然后 source &#x2F;etc&#x2F;profile使的修改生效。 改方法对所有用户有效，且是永久的</li>
+<li>在 ~&#x2F;.bash_profile  然后 source  ~&#x2F;.bash_profile</li>
+<li>在 ~&#x2F;.bashrc 中写入 然后 source  ~&#x2F;.bashrc</li>
+</ol>
+<p>![Screenshot 2022-04-04 at 10.59.03](&#x2F;Users&#x2F;zhangyuyang&#x2F;Desktop&#x2F;blog&#x2F;source&#x2F;_posts&#x2F;杂记&#x2F;Screenshot 2022-04-04 at 10.59.03.png)</p>
+</blockquote>
+</li>
+<li><p>配置JAVA_HOME</p>
+<blockquote>
+<p>找到JDK所在的路径</p>
+<figure class="highlight bash"><table><tr><td class="code"><pre><span class="line">$ whereis java <span class="comment"># 找到Java的执行文件</span></span><br><span class="line">$ <span class="built_in">ls</span> -lrt /usr/bin/java <span class="comment">#根据执行文件找到相应的文件路径</span></span><br><span class="line">$ <span class="built_in">ls</span> -lrt /etc/alternatives/java <span class="comment"># 还不是源文件</span></span><br></pre></td></tr></table></figure>
+
+<p>![Screenshot 2022-04-04 at 11.08.26](&#x2F;Users&#x2F;zhangyuyang&#x2F;Desktop&#x2F;blog&#x2F;source&#x2F;_posts&#x2F;杂记&#x2F;Screenshot 2022-04-04 at 11.08.26.png)</p>
+<p>找到 JDK的路径： &#x2F;etc&#x2F;java&#x2F;java-11-openjdk&#x2F;java-11-openjdk-11.0.13.0.8-4.el8_5.x86_64</p>
+</blockquote>
+</li>
+</ol>
+<h2 id="注意事项"><a href="#注意事项" class="headerlink" title="注意事项"></a>注意事项</h2><p>当Hadoop运行时，会对外网打开端口，可能会被植入木马。所以最好改变Hadoop的默认端口</p>
+]]></content>
+      <categories>
+        <category>杂记</category>
+      </categories>
   </entry>
 </search>

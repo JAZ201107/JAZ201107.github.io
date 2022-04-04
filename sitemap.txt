@@ -1,5 +1,7 @@
-https://yu-yang.pro/Linux/Linux/
 https://yu-yang.pro/Algorithm/Algorithms-4/Algorithm4-Chapter1/
+https://yu-yang.pro/papers/The-Hadoop-Distributed-File-System/
+https://yu-yang.pro/%E6%9D%82%E8%AE%B0/%E6%9D%82%E8%AE%B0/
+https://yu-yang.pro/Linux/Linux/
 https://yu-yang.pro/papers/FTVM/
 https://yu-yang.pro/Distributed-Systems/MIT-6-824-Lec04/
 https://yu-yang.pro/papers/MapReduce/
@@ -24,8 +26,10 @@ https://yu-yang.pro/tags/MapReduce/
 https://yu-yang.pro/tags/Go/
 https://yu-yang.pro/tags/Google-File-Systems/
 https://yu-yang.pro/tags/Fault-Tolerant-Virtual-Machine/
+https://yu-yang.pro/tags/Hadoop/
 https://yu-yang.pro/categories/Distributed-Systems/
 https://yu-yang.pro/categories/Algorithm/
 https://yu-yang.pro/categories/Linux/
 https://yu-yang.pro/categories/papers/
 https://yu-yang.pro/categories/Algorithm/Algorithms-4/
+https://yu-yang.pro/categories/%E6%9D%82%E8%AE%B0/
