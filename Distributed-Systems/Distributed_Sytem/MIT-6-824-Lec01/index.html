@@ -22,22 +22,22 @@
     var CONFIG = {"hostname":"yu-yang.pro","root":"/","scheme":"Muse","version":"7.8.0","exturl":false,"sidebar":{"position":"left","display":"always","padding":18,"offset":12,"onmobile":false},"copycode":{"enable":true,"show_result":true,"style":"mac"},"back2top":{"enable":true,"sidebar":false,"scrollpercent":true},"bookmark":{"enable":false,"color":"#222","save":"auto"},"fancybox":true,"mediumzoom":false,"lazyload":false,"pangu":false,"comments":{"style":"tabs","active":null,"storage":true,"lazyload":false,"nav":null},"algolia":{"hits":{"per_page":10},"labels":{"input_placeholder":"Search for Posts","hits_empty":"We didn't find any results for the search: ${query}","hits_stats":"${hits} results found in ${time} ms"}},"localsearch":{"enable":true,"trigger":"auto","top_n_per_article":1,"unescape":false,"preload":false},"motion":{"enable":true,"async":false,"transition":{"post_block":"fadeIn","post_header":"slideDownIn","post_body":"slideDownIn","coll_header":"slideLeftIn","sidebar":"slideUpIn"}},"path":"search.xml"};
   </script>
 
-  <meta name="description" content="Lec3 是关于Google File Systems">
+  <meta name="description" content="Lec01 介绍这个课程的架构，以及以MapReduce为例子，介绍分布式架构">
 <meta property="og:type" content="article">
-<meta property="og:title" content="MIT_6-824_Lec03">
-<meta property="og:url" content="https://yu-yang.pro/Distributed-Systems/MIT-6-824-Lec03/index.html">
+<meta property="og:title" content="MIT_6-824_Lec01">
+<meta property="og:url" content="https://yu-yang.pro/Distributed-Systems/Distributed_Sytem/MIT-6-824-Lec01/index.html">
 <meta property="og:site_name" content="Yuyang&#39;s 博客">
-<meta property="og:description" content="Lec3 是关于Google File Systems">
+<meta property="og:description" content="Lec01 介绍这个课程的架构，以及以MapReduce为例子，介绍分布式架构">
 <meta property="og:locale" content="en_US">
-<meta property="article:published_time" content="2022-03-29T15:03:01.000Z">
-<meta property="article:modified_time" content="2022-03-29T15:03:01.000Z">
+<meta property="article:published_time" content="2022-03-29T15:02:53.000Z">
+<meta property="article:modified_time" content="2022-03-29T15:02:53.000Z">
 <meta property="article:author" content="Yuyang Zhang">
 <meta property="article:tag" content="Distributed Systems">
 <meta property="article:tag" content="MIT 6.824">
-<meta property="article:tag" content="Google File Systems">
+<meta property="article:tag" content="MapReduce">
 <meta name="twitter:card" content="summary">
 
-<link rel="canonical" href="https://yu-yang.pro/Distributed-Systems/MIT-6-824-Lec03/">
+<link rel="canonical" href="https://yu-yang.pro/Distributed-Systems/Distributed_Sytem/MIT-6-824-Lec01/">
 
 
 <script id="page-configurations">
@@ -50,7 +50,7 @@
   };
 </script>
 
-  <title>MIT_6-824_Lec03 | Yuyang's 博客</title>
+  <title>MIT_6-824_Lec01 | Yuyang's 博客</title>
   
 
 
@@ -194,7 +194,7 @@
   
   
   <article itemscope itemtype="http://schema.org/Article" class="post-block" lang="en">
-    <link itemprop="mainEntityOfPage" href="https://yu-yang.pro/Distributed-Systems/MIT-6-824-Lec03/">
+    <link itemprop="mainEntityOfPage" href="https://yu-yang.pro/Distributed-Systems/Distributed_Sytem/MIT-6-824-Lec01/">
 
     <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
       <meta itemprop="image" content="/images/profile_img.jpg">
@@ -207,7 +207,7 @@
     </span>
       <header class="post-header">
         <h1 class="post-title" itemprop="name headline">
-          MIT_6-824_Lec03
+          MIT_6-824_Lec01
         </h1>
 
         <div class="post-meta">
@@ -217,7 +217,7 @@
               </span>
               <span class="post-meta-item-text">Posted on</span>
 
-              <time title="Created: 2022-03-29 23:03:01" itemprop="dateCreated datePublished" datetime="2022-03-29T23:03:01+08:00">2022-03-29</time>
+              <time title="Created: 2022-03-29 23:02:53" itemprop="dateCreated datePublished" datetime="2022-03-29T23:02:53+08:00">2022-03-29</time>
             </span>
             <span class="post-meta-item">
               <span class="post-meta-item-icon">
@@ -242,14 +242,14 @@
                 <i class="far fa-file-word"></i>
               </span>
                 <span class="post-meta-item-text">Symbols count in article: </span>
-              <span>34</span>
+              <span>1.9k</span>
             </span>
             <span class="post-meta-item" title="Reading time">
               <span class="post-meta-item-icon">
                 <i class="far fa-clock"></i>
               </span>
                 <span class="post-meta-item-text">Reading time &asymp;</span>
-              <span>1 mins.</span>
+              <span>2 mins.</span>
             </span>
 
         </div>
@@ -261,15 +261,71 @@
     <div class="post-body" itemprop="articleBody">
 
       
-        <p>Lec3 是关于Google File Systems</p>
-<span id="more"></span> 
+        <p>Lec01 介绍这个课程的架构，以及以MapReduce为例子，介绍分布式架构</p>
+<span id="more"></span>
 
-
-
-
-
-<p><a href="../MIT-6-824-Lec01">Lac01</a></p>
-<p><a target="_blank" rel="noopener" href="https://blog.csdn.net/qw8880000/article/details/80235648">Try01</a></p>
+<h1 id="课程绪论"><a href="#课程绪论" class="headerlink" title="课程绪论"></a>课程绪论</h1><h2 id="什么是分布式系统？"><a href="#什么是分布式系统？" class="headerlink" title="什么是分布式系统？"></a>什么是分布式系统？</h2><ul>
+<li>A distributed system is a computing environment in which various components are spread across multiple computers (or other computing devices) on a network. These devices split up the work, coordinating their efforts to complete the job more efficiently than if a single device had been responsible for the task.</li>
+</ul>
+<h2 id="为什么需要分布式系统？"><a href="#为什么需要分布式系统？" class="headerlink" title="为什么需要分布式系统？"></a>为什么需要分布式系统？</h2><ul>
+<li>to increase capacity via parallelism <ul>
+<li>通过并行处理获得更高的能力</li>
+</ul>
+</li>
+<li>to tolerate faults via replication<ul>
+<li>通过replication 来实现 容错</li>
+</ul>
+</li>
+<li>to place computing physically close to external entities<ul>
+<li>物理上的扩展</li>
+</ul>
+</li>
+<li>to achieve security via isolation<ul>
+<li>通过隔离来实现安全的需求</li>
+</ul>
+</li>
+</ul>
+<h2 id="面对的困难"><a href="#面对的困难" class="headerlink" title="面对的困难"></a>面对的困难</h2><ul>
+<li>many concurrent parts, complex interactions<ul>
+<li>并发，难交流</li>
+</ul>
+</li>
+<li>must cope with partial failure<ul>
+<li>需要解决部分的failure</li>
+</ul>
+</li>
+<li>tricky to realize performance potential<ul>
+<li>难以获得预期的performance</li>
+</ul>
+</li>
+</ul>
+<h2 id="课程的内容"><a href="#课程的内容" class="headerlink" title="课程的内容"></a>课程的内容</h2><p>This is a course about infrastructure for applications.</p>
+<ul>
+<li>Storage.</li>
+<li>Communication. RPC</li>
+<li>Computation.</li>
+</ul>
+<h3 id="Topic-fault-tolerance"><a href="#Topic-fault-tolerance" class="headerlink" title="Topic: fault tolerance"></a>Topic: fault tolerance</h3><p>1000s of servers, big network  –&gt; always something broken<br> We’d like to hide these failures from the application.</p>
+<p>we wants：</p>
+<ul>
+<li>Availability – app can make progress despite failures -&gt; replication</li>
+<li>Recoverability – app will come back to life when failures are repaired -&gt; logging or transactions</li>
+</ul>
+<p>Big idea: replicated servers.</p>
+<p>If one server crashes, can proceed using the other(s).<br>    Very hard to get right：  server may not have crashed, but just unreachable for some<br>        but still serving requests from clients</p>
+<h3 id="Topic-consistency"><a href="#Topic-consistency" class="headerlink" title="Topic: consistency"></a>Topic: consistency</h3><p>General-purpose infrastructure needs well-defined behavior</p>
+<ul>
+<li>E.g:  “Get(k) yields the value from the most recent Put(k,v).”</li>
+</ul>
+<p>Problems: “Replica” servers are hard to keep identical.</p>
+<h3 id="Topic-performance"><a href="#Topic-performance" class="headerlink" title="Topic: performance:"></a>Topic: performance:</h3><ul>
+<li>throughout</li>
+<li>latency</li>
+</ul>
+<p>The goal: scalable throughput</p>
+<h3 id="Topic：Fault-tolerance-consistency-and-performance-are-enemies"><a href="#Topic：Fault-tolerance-consistency-and-performance-are-enemies" class="headerlink" title="Topic：Fault-tolerance, consistency, and performance are enemies."></a>Topic：Fault-tolerance, consistency, and performance are enemies.</h3><p>Strong fault tolerance requires communication<br>    e.g., send data to backup<br>  Strong consistency requires communication,<br>    e.g. Get() must check for a recent Put().<br>  Many designs provide only weak consistency, to gain speed.<br>    e.g. Get() does <em>not</em> yield the latest Put()!<br>    Painful for application programmers but may be a good trade-off.<br>  Many design points are possible in the consistency&#x2F;performance spectrum!</p>
+<h3 id="Topic-implementation"><a href="#Topic-implementation" class="headerlink" title="Topic: implementation"></a>Topic: implementation</h3><p>  RPC, threads, concurrency control.</p>
+<h2 id="以MapReduce为例，看是如何解决这些问题的？"><a href="#以MapReduce为例，看是如何解决这些问题的？" class="headerlink" title="以MapReduce为例，看是如何解决这些问题的？"></a>以MapReduce为例，看是如何解决这些问题的？</h2><p><a href="../MapReduce">MapReduce论文阅读</a></p>
 
     </div>
 
@@ -286,7 +342,7 @@
   </li>
   <li class="post-copyright-link">
     <strong>Post link: </strong>
-    <a href="https://yu-yang.pro/Distributed-Systems/MIT-6-824-Lec03/" title="MIT_6-824_Lec03">https://yu-yang.pro/Distributed-Systems/MIT-6-824-Lec03/</a>
+    <a href="https://yu-yang.pro/Distributed-Systems/Distributed_Sytem/MIT-6-824-Lec01/" title="MIT_6-824_Lec01">https://yu-yang.pro/Distributed-Systems/Distributed_Sytem/MIT-6-824-Lec01/</a>
   </li>
   <li class="post-copyright-license">
     <strong>Copyright Notice:  </strong>All articles in this blog are licensed under <a href="https://creativecommons.org/licenses/by-nc-sa/4.0/" rel="noopener" target="_blank"><i class="fab fa-fw fa-creative-commons"></i>BY-NC-SA</a> unless stating additionally.
@@ -299,7 +355,7 @@
           <div class="post-tags">
               <a href="/tags/Distributed-Systems/" rel="tag"><i class="fa fa-tag"></i> Distributed Systems</a>
               <a href="/tags/MIT-6-824/" rel="tag"><i class="fa fa-tag"></i> MIT 6.824</a>
-              <a href="/tags/Google-File-Systems/" rel="tag"><i class="fa fa-tag"></i> Google File Systems</a>
+              <a href="/tags/MapReduce/" rel="tag"><i class="fa fa-tag"></i> MapReduce</a>
           </div>
 
         
@@ -308,12 +364,12 @@
         
     <div class="post-nav">
       <div class="post-nav-item">
-    <a href="/Distributed-Systems/MIT-6-824-Lec02/" rel="prev" title="MIT_6-824_Lec02">
-      <i class="fa fa-chevron-left"></i> MIT_6-824_Lec02
+    <a href="/uncategorized/hello-world/" rel="prev" title="Hello World">
+      <i class="fa fa-chevron-left"></i> Hello World
     </a></div>
       <div class="post-nav-item">
-    <a href="/Algorithm/Algorithms-4/Algorithm4-Chapter1/" rel="next" title="Algorithm4_Chapter1">
-      Algorithm4_Chapter1 <i class="fa fa-chevron-right"></i>
+    <a href="/Distributed-Systems/Distributed_Sytem/MIT-6-824-Lec02/" rel="next" title="MIT_6-824_Lec02">
+      MIT_6-824_Lec02 <i class="fa fa-chevron-right"></i>
     </a></div>
     </div>
       </footer>
@@ -373,6 +429,7 @@
 
       <!--noindex-->
       <div class="post-toc-wrap sidebar-panel">
+          <div class="post-toc motion-element"><ol class="nav"><li class="nav-item nav-level-1"><a class="nav-link" href="#%E8%AF%BE%E7%A8%8B%E7%BB%AA%E8%AE%BA"><span class="nav-number">1.</span> <span class="nav-text">课程绪论</span></a><ol class="nav-child"><li class="nav-item nav-level-2"><a class="nav-link" href="#%E4%BB%80%E4%B9%88%E6%98%AF%E5%88%86%E5%B8%83%E5%BC%8F%E7%B3%BB%E7%BB%9F%EF%BC%9F"><span class="nav-number">1.1.</span> <span class="nav-text">什么是分布式系统？</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#%E4%B8%BA%E4%BB%80%E4%B9%88%E9%9C%80%E8%A6%81%E5%88%86%E5%B8%83%E5%BC%8F%E7%B3%BB%E7%BB%9F%EF%BC%9F"><span class="nav-number">1.2.</span> <span class="nav-text">为什么需要分布式系统？</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#%E9%9D%A2%E5%AF%B9%E7%9A%84%E5%9B%B0%E9%9A%BE"><span class="nav-number">1.3.</span> <span class="nav-text">面对的困难</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#%E8%AF%BE%E7%A8%8B%E7%9A%84%E5%86%85%E5%AE%B9"><span class="nav-number">1.4.</span> <span class="nav-text">课程的内容</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#Topic-fault-tolerance"><span class="nav-number">1.4.1.</span> <span class="nav-text">Topic: fault tolerance</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#Topic-consistency"><span class="nav-number">1.4.2.</span> <span class="nav-text">Topic: consistency</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#Topic-performance"><span class="nav-number">1.4.3.</span> <span class="nav-text">Topic: performance:</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#Topic%EF%BC%9AFault-tolerance-consistency-and-performance-are-enemies"><span class="nav-number">1.4.4.</span> <span class="nav-text">Topic：Fault-tolerance, consistency, and performance are enemies.</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#Topic-implementation"><span class="nav-number">1.4.5.</span> <span class="nav-text">Topic: implementation</span></a></li></ol></li><li class="nav-item nav-level-2"><a class="nav-link" href="#%E4%BB%A5MapReduce%E4%B8%BA%E4%BE%8B%EF%BC%8C%E7%9C%8B%E6%98%AF%E5%A6%82%E4%BD%95%E8%A7%A3%E5%86%B3%E8%BF%99%E4%BA%9B%E9%97%AE%E9%A2%98%E7%9A%84%EF%BC%9F"><span class="nav-number">1.5.</span> <span class="nav-text">以MapReduce为例，看是如何解决这些问题的？</span></a></li></ol></li></ol></div>
       </div>
       <!--/noindex-->
 
@@ -388,7 +445,7 @@
       <div class="site-state-item site-state-posts">
           <a href="/archives/">
         
-          <span class="site-state-item-count">11</span>
+          <span class="site-state-item-count">12</span>
           <span class="site-state-item-name">posts</span>
         </a>
       </div>
@@ -422,7 +479,7 @@
           <a href="http://nil.csail.mit.edu/6.824/2021/schedule.html" title="http:&#x2F;&#x2F;nil.csail.mit.edu&#x2F;6.824&#x2F;2021&#x2F;schedule.html" rel="noopener" target="_blank">MIT 6.824 Distributed Systems</a>
         </li>
         <li class="links-of-blogroll-item">
-          <a href="https://ds.super.site/" title="https:&#x2F;&#x2F;ds.super.site&#x2F;" rel="noopener" target="_blank">Distributed System</a>
+          <a href="https://yuyang-dissys.super.site/" title="https:&#x2F;&#x2F;yuyang-dissys.super.site&#x2F;" rel="noopener" target="_blank">Distributed System</a>
         </li>
     </ul>
   </div>
