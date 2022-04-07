@@ -1,8 +1,11 @@
+https://yu-yang.pro/Distributed-Systems/Books/Designing-Data-Intensive-Application/Distributed_Sytem/Designing-data-intensive-applications/part2/
+https://yu-yang.pro/Distributed-Systems/Books/Designing-Data-Intensive-Application/Distributed_Sytem/Designing-data-intensive-applications/part3/
+https://yu-yang.pro/Distributed-Systems/Books/Designing-Data-Intensive-Application/Distributed_Sytem/Designing-data-intensive-applications/part1/
+https://yu-yang.pro/Linux/Linux/
 https://yu-yang.pro/uncategorized/Distributed_Sytem/MIT-6-824-Lec05/
 https://yu-yang.pro/Algorithm/Algorithms-4/Algorithm/Algorithm4-Chapter1/
 https://yu-yang.pro/papers/Distributed_Sytem/The-Hadoop-Distributed-File-System/
 https://yu-yang.pro/%E6%9D%82%E8%AE%B0/%E6%9D%82%E8%AE%B0/
-https://yu-yang.pro/Linux/Linux/
 https://yu-yang.pro/papers/Distributed_Sytem/FTVM/
 https://yu-yang.pro/Distributed-Systems/Distributed_Sytem/MIT-6-824-Lec04/
 https://yu-yang.pro/papers/Distributed_Sytem/MapReduce/
@@ -28,9 +31,12 @@ https://yu-yang.pro/tags/Go/
 https://yu-yang.pro/tags/Google-File-Systems/
 https://yu-yang.pro/tags/Fault-Tolerant-Virtual-Machine/
 https://yu-yang.pro/tags/Hadoop/
+https://yu-yang.pro/tags/Book/
 https://yu-yang.pro/categories/Distributed-Systems/
 https://yu-yang.pro/categories/Algorithm/
 https://yu-yang.pro/categories/Linux/
 https://yu-yang.pro/categories/papers/
 https://yu-yang.pro/categories/Algorithm/Algorithms-4/
 https://yu-yang.pro/categories/%E6%9D%82%E8%AE%B0/
+https://yu-yang.pro/categories/Distributed-Systems/Books/
+https://yu-yang.pro/categories/Distributed-Systems/Books/Designing-Data-Intensive-Application/

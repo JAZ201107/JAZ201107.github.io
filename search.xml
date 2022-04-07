@@ -24,6 +24,16 @@
 <h3 id="定时任务-crontab"><a href="#定时任务-crontab" class="headerlink" title="定时任务 crontab"></a>定时任务 crontab</h3><p>使用<a href="https://so.csdn.net/so/search?q=crontab&spm=1001.2101.3001.7020">crontab</a>你可以在指定的时间执行一个shell脚本或者一系列Linux命令</p>
 <p>![Screenshot 2022-04-04 at 11.17.20](&#x2F;Users&#x2F;zhangyuyang&#x2F;Desktop&#x2F;blog&#x2F;source&#x2F;_posts&#x2F;Linux&#x2F;Screenshot 2022-04-04 at 11.17.20.png)</p>
 <p>![Screenshot 2022-04-04 at 11.18.04](&#x2F;Users&#x2F;zhangyuyang&#x2F;Desktop&#x2F;blog&#x2F;source&#x2F;_posts&#x2F;Linux&#x2F;Screenshot 2022-04-04 at 11.18.04.png)</p>
+<h2 id="图形界面变成文字界面"><a href="#图形界面变成文字界面" class="headerlink" title="图形界面变成文字界面"></a>图形界面变成文字界面</h2><p>修改GRUB的配置文件</p>
+<p>file: &#x2F;etc&#x2F;default&#x2F;grub</p>
+<p>将 。。  改为： ![Screenshot 2022-04-07 at 23.14.04](&#x2F;Users&#x2F;zhangyuyang&#x2F;Desktop&#x2F;blog&#x2F;source&#x2F;_posts&#x2F;Linux&#x2F;Screenshot 2022-04-07 at 23.14.04.png)</p>
+<p>![Screenshot 2022-04-07 at 23.15.09](&#x2F;Users&#x2F;zhangyuyang&#x2F;Desktop&#x2F;blog&#x2F;source&#x2F;_posts&#x2F;Linux&#x2F;Screenshot 2022-04-07 at 23.15.09.png)</p>
+<p>保存后，重新加载</p>
+<figure class="highlight bash"><table><tr><td class="code"><pre><span class="line">$ sudo update-grub</span><br></pre></td></tr></table></figure>
+
+<p>然后重启：</p>
+<figure class="highlight bash"><table><tr><td class="code"><pre><span class="line">$ sudo reboot</span><br></pre></td></tr></table></figure>
+
 ]]></content>
       <categories>
         <category>Linux</category>
@@ -589,6 +599,48 @@
         <tag>Distributed Systems</tag>
         <tag>classic paper</tag>
         <tag>Hadoop</tag>
+      </tags>
+  </entry>
+  <entry>
+    <title>Designing Data Intensive Application Part1</title>
+    <url>/Distributed-Systems/Books/Designing-Data-Intensive-Application/Distributed_Sytem/Designing-data-intensive-applications/part1/</url>
+    <content><![CDATA[]]></content>
+      <categories>
+        <category>Distributed Systems</category>
+        <category>Books</category>
+        <category>Designing Data Intensive Application</category>
+      </categories>
+      <tags>
+        <tag>Distributed Systems</tag>
+        <tag>Book</tag>
+      </tags>
+  </entry>
+  <entry>
+    <title>Designing Data Intensive Application Part2</title>
+    <url>/Distributed-Systems/Books/Designing-Data-Intensive-Application/Distributed_Sytem/Designing-data-intensive-applications/part2/</url>
+    <content><![CDATA[]]></content>
+      <categories>
+        <category>Distributed Systems</category>
+        <category>Books</category>
+        <category>Designing Data Intensive Application</category>
+      </categories>
+      <tags>
+        <tag>Distributed Systems</tag>
+        <tag>Book</tag>
+      </tags>
+  </entry>
+  <entry>
+    <title>Designing Data Intensive Application Part3</title>
+    <url>/Distributed-Systems/Books/Designing-Data-Intensive-Application/Distributed_Sytem/Designing-data-intensive-applications/part3/</url>
+    <content><![CDATA[]]></content>
+      <categories>
+        <category>Distributed Systems</category>
+        <category>Books</category>
+        <category>Designing Data Intensive Application</category>
+      </categories>
+      <tags>
+        <tag>Distributed Systems</tag>
+        <tag>Book</tag>
       </tags>
   </entry>
 </search>

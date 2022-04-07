@@ -2,6 +2,42 @@
 <urlset xmlns="http://www.sitemaps.org/schemas/sitemap/0.9">
   
   <url>
+    <loc>https://yu-yang.pro/Distributed-Systems/Books/Designing-Data-Intensive-Application/Distributed_Sytem/Designing-data-intensive-applications/part2/</loc>
+    
+    <lastmod>2022-04-07</lastmod>
+    
+    <changefreq>monthly</changefreq>
+    <priority>0.6</priority>
+  </url>
+  
+  <url>
+    <loc>https://yu-yang.pro/Distributed-Systems/Books/Designing-Data-Intensive-Application/Distributed_Sytem/Designing-data-intensive-applications/part3/</loc>
+    
+    <lastmod>2022-04-07</lastmod>
+    
+    <changefreq>monthly</changefreq>
+    <priority>0.6</priority>
+  </url>
+  
+  <url>
+    <loc>https://yu-yang.pro/Distributed-Systems/Books/Designing-Data-Intensive-Application/Distributed_Sytem/Designing-data-intensive-applications/part1/</loc>
+    
+    <lastmod>2022-04-07</lastmod>
+    
+    <changefreq>monthly</changefreq>
+    <priority>0.6</priority>
+  </url>
+  
+  <url>
+    <loc>https://yu-yang.pro/Linux/Linux/</loc>
+    
+    <lastmod>2022-04-07</lastmod>
+    
+    <changefreq>monthly</changefreq>
+    <priority>0.6</priority>
+  </url>
+  
+  <url>
     <loc>https://yu-yang.pro/uncategorized/Distributed_Sytem/MIT-6-824-Lec05/</loc>
     
     <lastmod>2022-04-04</lastmod>
@@ -30,15 +66,6 @@
   
   <url>
     <loc>https://yu-yang.pro/%E6%9D%82%E8%AE%B0/%E6%9D%82%E8%AE%B0/</loc>
-    
-    <lastmod>2022-04-04</lastmod>
-    
-    <changefreq>monthly</changefreq>
-    <priority>0.6</priority>
-  </url>
-  
-  <url>
-    <loc>https://yu-yang.pro/Linux/Linux/</loc>
     
     <lastmod>2022-04-04</lastmod>
     
@@ -241,6 +268,13 @@
     <priority>0.2</priority>
   </url>
   
+  <url>
+    <loc>https://yu-yang.pro/tags/Book/</loc>
+    <lastmod>2022-04-07</lastmod>
+    <changefreq>weekly</changefreq>
+    <priority>0.2</priority>
+  </url>
+  
 
   
   <url>
@@ -280,6 +314,20 @@
   
   <url>
     <loc>https://yu-yang.pro/categories/%E6%9D%82%E8%AE%B0/</loc>
+    <lastmod>2022-04-07</lastmod>
+    <changefreq>weekly</changefreq>
+    <priority>0.2</priority>
+  </url>
+  
+  <url>
+    <loc>https://yu-yang.pro/categories/Distributed-Systems/Books/</loc>
+    <lastmod>2022-04-07</lastmod>
+    <changefreq>weekly</changefreq>
+    <priority>0.2</priority>
+  </url>
+  
+  <url>
+    <loc>https://yu-yang.pro/categories/Distributed-Systems/Books/Designing-Data-Intensive-Application/</loc>
     <lastmod>2022-04-07</lastmod>
     <changefreq>weekly</changefreq>
     <priority>0.2</priority>
