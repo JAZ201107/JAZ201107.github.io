@@ -616,7 +616,163 @@
   <entry>
     <title>Designing Data Intensive Application Part2</title>
     <url>/Distributed-Systems/Distributed_Sytem/Designing-data-intensive-applications/part2/</url>
-    <content><![CDATA[]]></content>
+    <content><![CDATA[<p>第一部分讨论了单台机器存储系统的主要技术。第二部分讨论的是多台机器提供数据存储（storage）和检索服务（retrieval of data）</p>
+<span id="more"></span>
+
+<p>[toc]</p>
+<h1 id="前言"><a href="#前言" class="headerlink" title="前言"></a>前言</h1><p>有以下的几个目的：</p>
+<ol>
+<li>扩展性（Scalability）： 数据量超出单台机器的处理上线</li>
+<li>容错（Fault Tolerant）和高可用性（high availability）：通过多台机器提供冗余。</li>
+<li>低延迟性（latency）：就近提供数据，避免跨越半个地球才能到达目标</li>
+<li>安全性（MIT 6.824）：通过isolation，来获取security</li>
+</ol>
+<hr>
+<p><strong>Scaling to Higher Load</strong></p>
+<p>有共享的结构：（vertical scaling or scaling up）</p>
+<ul>
+<li>shared memory architecture</li>
+<li>shared disk architecture</li>
+</ul>
+<p>当需要更强的处理能力时，首先是：</p>
+<p>购买更强大的机器， 共享内存结构（shared memory architecture），但是这个方法的问题是：</p>
+<ol>
+<li>成本高：CPU增加一倍，RAM增加一倍 等， 所需的成本不止增加一倍</li>
+<li>性能不好：由于性能瓶颈的原因，有两倍硬件指标，不一定能处理两倍负载</li>
+<li>有限的容错能力：局限于某个特定的地理位置，无法提供异地容错能力</li>
+</ol>
+<p>另一种方法 共享磁盘架构（shared disk architecture）：</p>
+<p>有多台服务器，独立的CPU和RAM，共享的磁盘阵列（array of disks），通过高速网络连接（NAS或SAN）。存在的问题：</p>
+<p>资源竞争和锁的开销，限制其扩展能力。</p>
+<blockquote>
+<p>什么是 NAS（ Network Attached Storage）： </p>
+<p>连接在网络上，具备资料存储功能的装置，因此也称为“网络存储器”。它是一种专用数据[存储服务器]。它以数据为中心，将存储设备与服务器彻底分离，集中管理数据，从而释放带宽、提高性能、降低总拥有成本、保护投资。其成本远远低于使用服务器存储，而效率却远远高于后者。</p>
+<p>支持多种协议（如<a href="https://baike.baidu.com/item/NFS">NFS</a>、<a href="https://baike.baidu.com/item/CIFS">CIFS</a>、<a href="https://baike.baidu.com/item/FTP">FTP</a>、<a href="https://baike.baidu.com/item/HTTP">HTTP</a>等）</p>
+<p>什么是 SAN（Storage Area Network）： 企业最常用的存储网络架构，要求高吞吐量和低延迟的<a href="https://www.netapp.com/zh-hans/enterprise-applications">业务关键型应用</a>往往采用这类架构运行。</p>
+<p>两者区别：</p>
+<p>![](Screenshot 2022-04-08 at 00.47.38.png)</p>
+</blockquote>
+<p>无共享的结构（horizontal scaling or scaling out）</p>
+<p>运行数据库软件的机器或者虚拟机叫做节点（node）， 每个node有自己的 CPU，RAM 和 disk。node 之间的合作通过传统网络（以太网），在软件层面实现。</p>
+<p>优点：</p>
+<ul>
+<li>不需要专门的硬件：有较高的性价比</li>
+<li>跨地区分布：减少延迟</li>
+<li>高容错能力：数据中心发生灾难时，仍可以工作</li>
+</ul>
+<p>缺点：</p>
+<ul>
+<li>更多复杂性</li>
+<li>可能会限制实际可用的数据模型</li>
+</ul>
+<p><strong>复制（replication） 与 分区（partitioning）</strong></p>
+<p>数据分布多nodes有两种常见的办法：</p>
+<ul>
+<li>replication： 多个nodes保持相同的数据副本</li>
+<li>partitioning： 将一个大的数据库拆分为小的dataset叫做partitions。因此不同的partitions可以分不在不同的nodes上（sharding）</li>
+</ul>
+<p>这两种不同的机制，通常和在一起用（eg： MapReduce）</p>
+<h1 id="复制（Replication）"><a href="#复制（Replication）" class="headerlink" title="复制（Replication）"></a>复制（Replication）</h1><p>有三种常用的replication的方法：</p>
+<ul>
+<li>single-leader（主从复制）</li>
+<li>multi-leader（多主节点复制）</li>
+<li>leaderless（无主节点复制）</li>
+</ul>
+<h2 id="主节点与从节点（Leader-and-Follwer）"><a href="#主节点与从节点（Leader-and-Follwer）" class="headerlink" title="主节点与从节点（Leader and Follwer）"></a>主节点与从节点（Leader and Follwer）</h2><p>每个保存数据库完整数据集的节点称为 副本。</p>
+<p>问题：如何保持副本的一致性？</p>
+<p>最常见的方法： 主从复制。</p>
+<p>![Screenshot 2022-04-08 at 10.20.47](&#x2F;Users&#x2F;zhangyuyang&#x2F;Desktop&#x2F;blog&#x2F;source&#x2F;_posts&#x2F;Distributed_Sytem&#x2F;Designing-data-intensive-applications&#x2F;part2&#x2F;Screenshot 2022-04-08 at 10.20.47.png)</p>
+<ol>
+<li>指定一个副本为leader（或叫做master or primary），当用户想写入数据库时，必须将请求先发送给leader，leader首先将数据写入本地存储</li>
+<li>其他replica称作follower（或 salve，secondaries）。当leader把数据写入local storage之后，通过 replication log 或者 change stream的形式，将数据的变化发送给 follower。follwer获得log之后，将其更新到本地，且严格保持与leader 写入的顺序相同</li>
+<li>client可以从，leader或者 follower读取数据，但只能通过leader写数据</li>
+</ol>
+<h3 id="同步（Synchronous）与异步（Asynchronous）复制"><a href="#同步（Synchronous）与异步（Asynchronous）复制" class="headerlink" title="同步（Synchronous）与异步（Asynchronous）复制"></a>同步（Synchronous）与异步（Asynchronous）复制</h3><p>![Screenshot 2022-04-08 at 10.29.19](&#x2F;Users&#x2F;zhangyuyang&#x2F;Desktop&#x2F;blog&#x2F;source&#x2F;_posts&#x2F;Distributed_Sytem&#x2F;Designing-data-intensive-applications&#x2F;part2&#x2F;Screenshot 2022-04-08 at 10.29.19.png)</p>
+<p>follower1 的复制是同步的： leader需要等待follower1确认变更了数据，才会向用户报告，并且将最新的写入对其他客户端可见</p>
+<p>follower2 的复制是异步的：leader发送给follwer2之后，立即回应给client，无需等到follwer2的回应</p>
+<p>同步：</p>
+<ul>
+<li>优点：一旦leader返回给client， 就说明follower一定完成了与leader的更新同步</li>
+<li>缺点：一旦follower没有response（follower崩溃或网络阻塞），写入就不能视为成功。leader会阻塞其后所有的写操作，直到replica完成</li>
+</ul>
+<p>在实际开发中，如果数据库采用了 同步复制，意味着： 某一个follower是同步的，其他的异步的，如果这个同步的follower不可用或者性能下降，那么将另一个异步的follower提升为同步模式。这种配置叫做半同步（semi-synchronous）</p>
+<p>异步：</p>
+<ul>
+<li>优点：leader可以持续相应写的请求，即使follower 数据滞后，吞吐性能更好</li>
+<li>缺点：如果leader发生失败或不可恢复，那么尚未复制的写请求将丢失，这意味着，即使向client确认了写的操作，却无法保证数据的持久化（durable）</li>
+</ul>
+<p>在follower数量巨大，或者follower分布距离广泛的情况下，异步复制被广泛的使用。</p>
+<blockquote>
+<p>研究人员尝试通过别的方法来提高复制性能和可用性：</p>
+<p>eg：链式复制（chain replication），是一种同步复制的变体。</p>
+</blockquote>
+<h3 id="新增follwer（Setting-up-new-follwers）"><a href="#新增follwer（Setting-up-new-follwers）" class="headerlink" title="新增follwer（Setting up new follwers）"></a>新增follwer（Setting up new follwers）</h3><p>如何确定新增follwer与leader的数据一致性？</p>
+<ol>
+<li>简单的将文件从一个节点复制到另一节点？</li>
+</ol>
+<p>存在问题： client仍在写入数据，数据始终在变化，这种方法会导致不同节点上呈现不同时间点的数据。</p>
+<ol start="2">
+<li>在服务不中断的前提下完成添加新的follower。<ol>
+<li>在某个时间点上，对leader的数据库产生一个consistent snapshot。这样避免了长时间锁定数据库</li>
+<li>将snapshot拷贝到新的follower</li>
+<li>新的follower连接到leader，并请求snapshot之后，所有的数据更改日志。这需要snapshot与系统replication log的某个确定位置相关联。</li>
+<li>follwer处理data changes的日志，改过程称作caught up。 重复步骤 1～4.</li>
+</ol>
+</li>
+</ol>
+<h3 id="处理节点失效（Handing-Node-Outages）"><a href="#处理节点失效（Handing-Node-Outages）" class="headerlink" title="处理节点失效（Handing Node Outages）"></a>处理节点失效（Handing Node Outages）</h3><p>目标：尽管个别节点出现中断，保持系统总体运行，并且尽可能减少节点中断带来的影响。</p>
+<h4 id="Follwer-失效：catch-up-recovery。"><a href="#Follwer-失效：catch-up-recovery。" class="headerlink" title="Follwer 失效：catch-up recovery。"></a>Follwer 失效：catch-up recovery。</h4><p>follwer在本地磁盘保存 log of data changes， 当follower在崩溃后恢复，可以通过log快速的知道，最后一个事务（transaction）。然后连接到leader，并且请求在最后一个事务之后的所有data change。当其catch up之后，就可以继续接受，来自主节点的数据流的变化。</p>
+<h4 id="Leader-失效：-Failover"><a href="#Leader-失效：-Failover" class="headerlink" title="Leader 失效： Failover"></a>Leader 失效： Failover</h4><p>什么是Failover：</p>
+<ul>
+<li>leader失效，选择将某个从节点提升为主节点；</li>
+<li>clients需要重新配置，将请求发送给新的leader；</li>
+<li>其他follwer需要接受新的leader的data change；</li>
+</ul>
+<p>这一过程称作 failover。</p>
+<p>failover可以手动（通知管理员发生Leader failure，采取必要的步骤来创建新的leader），或者自动。自动的步骤如下：</p>
+<ol>
+<li>确定leader失效：大多数系统系统运用一种超时机制（通过互相发送hearbeat。如果发现某个node 在一段比较长的时间（timeout）内没有response，则认为该node失效）</li>
+<li>选择新的leader： 通过election process（leader 通过majority of the remaining replicas）。或者通过之前选定的 controller node</li>
+<li>重新配置系统（reconfiguring the system to use the new leader）：当old leader 恢复了，要 确保old leader变成follower</li>
+</ol>
+<p>但是上述过程存在很多变数：</p>
+<ul>
+<li>如果使用异步的方式，new leader 可能没有接收到原来leader的所有数据。解决办法之一就是丢弃未完成复制的写请求</li>
+<li>在数据库之外有其他系统依赖于数据库的内容并在一起协同使用，那么丢弃数据的方案特别危险</li>
+<li>在一些特殊情况下，两个nodes 都相信他们是leader，这种情况叫做 split brain。当两个leader都收到数据，但是没办法解决conflicts，就会导致数据丢书或者破坏</li>
+<li>什么timeout的时间才是适当的。</li>
+</ul>
+<p>node failures，unreliable network，trade-off， replica consistency， durability，availability，和 latency是分布式系统的核心基本问题</p>
+<h3 id="复制日志的实现（Implementation-of-Replication-Logs）"><a href="#复制日志的实现（Implementation-of-Replication-Logs）" class="headerlink" title="复制日志的实现（Implementation of Replication Logs）"></a>复制日志的实现（Implementation of Replication Logs）</h3><p>leader-based replication的不同实现方法：</p>
+<ol>
+<li>基于语句的复制（Statement-based replication）</li>
+<li>基于预写日志（WAL）传输（Write-ahead log（WAL）shipping）</li>
+<li>基于行的逻辑日志复制（Logical（row-based）log replication）</li>
+<li>基于触发器的复制（Trigger-based replication）</li>
+</ol>
+<h4 id="基于语句的复制（Statement-based-replication）"><a href="#基于语句的复制（Statement-based-replication）" class="headerlink" title="基于语句的复制（Statement-based replication）"></a>基于语句的复制（Statement-based replication）</h4><p>leader对于每个写的请求（statement），执行，并且将statement log 发送给followers。（对于relational database，就是增删改）。每个follower分析并执行 statement。</p>
+<p>不适用场景：</p>
+<ul>
+<li>任何调用非确定性函数（nondeterministic function）比如 NOW( )， RAND( )， 可能会在副本上产生不同的值</li>
+<li>如果采用了auto incrementing column，或者需要数据库现有的数据，那么，所有replica必须按照完全相同的顺序执行。 因此，如果有多个同时进行的事务（multiple concurrently executing transactions）， 会有很大的限制</li>
+<li>有副作用的statement（如，触发器，用户自定义函数），可能会导致在不同副本上有不同的副作用</li>
+</ul>
+<h4 id="基于预写日志（WAL）传输（Write-ahead-log（WAL）shipping）"><a href="#基于预写日志（WAL）传输（Write-ahead-log（WAL）shipping）" class="headerlink" title="基于预写日志（WAL）传输（Write-ahead log（WAL）shipping）"></a>基于预写日志（WAL）传输（Write-ahead log（WAL）shipping）</h4><p>通常每个写操作都是以追加写的方式写入日志中的。因此可以通过完全相同的日志，在另一个node上构造replica：leader 通过 网络将其发送给node</p>
+<p>存在问题：log描述的data是非常底层的（low-level），这使得replication 和 storage engineer 紧密耦合（coupled to）。如果storage format从一个版本到另一个版本，那么系统无法支持leader 和 follwer运行不同的版本</p>
+<h4 id="基于行的逻辑日志复制（Logical（row-based）log-replication）"><a href="#基于行的逻辑日志复制（Logical（row-based）log-replication）" class="headerlink" title="基于行的逻辑日志复制（Logical（row-based）log replication）"></a>基于行的逻辑日志复制（Logical（row-based）log replication）</h4><p>replication 和 storage engineer 采用不同的 log 格式， 使得replication log 和 storage enginner 剥离（decoupled）。这种方式叫做 逻辑日志（logical log）。</p>
+<p>relational database的logical log 通常是指一系列描述数据库行级别的写请求的记录。（records describing writes to database tables at the granularity of a row）：</p>
+<ul>
+<li>对于 inserted row， log 包含所有相关列的值</li>
+<li>对与 deleted row，log 包含足够信息来唯一标识已删除的行，通常是主键，如果没有主键，则记录所有column的旧值。</li>
+<li>对于 updated row，log 包含足够信息来唯一标识更新的行，以及所有列的新值。</li>
+</ul>
+<p>如果一条transaction涉及多行的修改，则会产生多个logs记录，并在后面更着一条记录，指出该transaction已经提交（committed）</p>
+<h4 id="基于触发器的复制（Trigger-based-replication）"><a href="#基于触发器的复制（Trigger-based-replication）" class="headerlink" title="基于触发器的复制（Trigger-based replication）"></a>基于触发器的复制（Trigger-based replication）</h4><p>某些情况下，需要更高的灵活性，如复制部分数据，或者从一份数据库复制到另一份数据库，那么需要将复制控制权交给应用程序层（Application layer）：</p>
+<ol>
+<li>有一些工具，例如Oracle GoldenGate， 可以读取数据的日志让应用程序获取数据变更。</li>
+<li>另一种是自带的过程： triggers and stored procedure。</li>
+</ol>
+<h2 id="复制滞后问题（Problems-with-Replication-Lag）"><a href="#复制滞后问题（Problems-with-Replication-Lag）" class="headerlink" title="复制滞后问题（Problems with Replication Lag）"></a>复制滞后问题（Problems with Replication Lag）</h2><h2 id="多主节点复制（Multi-Leader-Replication）"><a href="#多主节点复制（Multi-Leader-Replication）" class="headerlink" title="多主节点复制（Multi-Leader Replication）"></a>多主节点复制（Multi-Leader Replication）</h2><h2 id="无主节点复制（Leaderless-Replication）"><a href="#无主节点复制（Leaderless-Replication）" class="headerlink" title="无主节点复制（Leaderless Replication）"></a>无主节点复制（Leaderless Replication）</h2><h2 id="小结（Summary）"><a href="#小结（Summary）" class="headerlink" title="小结（Summary）"></a>小结（Summary）</h2>]]></content>
       <categories>
         <category>Distributed Systems</category>
       </categories>
