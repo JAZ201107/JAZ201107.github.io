@@ -793,4 +793,21 @@
         <tag>Book</tag>
       </tags>
   </entry>
+  <entry>
+    <title>MIT 6.824 Lab 1 MapReduce</title>
+    <url>/Distributed-Systems/Distributed_Sytem/MIT-6-824-Lab01/</url>
+    <content><![CDATA[<p>第一个Lab是MapReduce的分布式实现</p>
+<span id="more"></span>
+
+]]></content>
+      <categories>
+        <category>Distributed Systems</category>
+      </categories>
+      <tags>
+        <tag>Distributed Systems</tag>
+        <tag>MIT 6.824</tag>
+        <tag>MapReduce</tag>
+        <tag>Lab</tag>
+      </tags>
+  </entry>
 </search>

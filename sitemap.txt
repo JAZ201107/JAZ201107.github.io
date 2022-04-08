@@ -1,3 +1,4 @@
+https://yu-yang.pro/Distributed-Systems/Distributed_Sytem/MIT-6-824-Lab01/
 https://yu-yang.pro/Distributed-Systems/Distributed_Sytem/Designing-data-intensive-applications/part2/
 https://yu-yang.pro/Distributed-Systems/Distributed_Sytem/Designing-data-intensive-applications/part3/
 https://yu-yang.pro/Distributed-Systems/Distributed_Sytem/Designing-data-intensive-applications/part1/
@@ -32,6 +33,7 @@ https://yu-yang.pro/tags/Google-File-Systems/
 https://yu-yang.pro/tags/Fault-Tolerant-Virtual-Machine/
 https://yu-yang.pro/tags/Hadoop/
 https://yu-yang.pro/tags/Book/
+https://yu-yang.pro/tags/Lab/
 https://yu-yang.pro/categories/Distributed-Systems/
 https://yu-yang.pro/categories/Algorithm/
 https://yu-yang.pro/categories/Linux/
