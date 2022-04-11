@@ -22,12 +22,12 @@
     var CONFIG = {"hostname":"yu-yang.pro","root":"/","scheme":"Muse","version":"7.8.0","exturl":false,"sidebar":{"position":"left","display":"always","padding":18,"offset":12,"onmobile":false},"copycode":{"enable":true,"show_result":true,"style":"mac"},"back2top":{"enable":true,"sidebar":false,"scrollpercent":true},"bookmark":{"enable":false,"color":"#222","save":"auto"},"fancybox":true,"mediumzoom":false,"lazyload":false,"pangu":false,"comments":{"style":"tabs","active":null,"storage":true,"lazyload":false,"nav":null},"algolia":{"hits":{"per_page":10},"labels":{"input_placeholder":"Search for Posts","hits_empty":"We didn't find any results for the search: ${query}","hits_stats":"${hits} results found in ${time} ms"}},"localsearch":{"enable":true,"trigger":"auto","top_n_per_article":1,"unescape":false,"preload":false},"motion":{"enable":true,"async":false,"transition":{"post_block":"fadeIn","post_header":"slideDownIn","post_body":"slideDownIn","coll_header":"slideLeftIn","sidebar":"slideUpIn"}},"path":"search.xml"};
   </script>
 
-  <meta name="description" content="stay hungry stay foolish">
+  <meta name="description" content="Lec02 是关于 Threads 和 RPC的">
 <meta property="og:type" content="article">
 <meta property="og:title" content="MIT_6-824_Lec02">
 <meta property="og:url" content="https://yu-yang.pro/Distributed-Systems/Distributed_Sytem/MIT-6-824-Lec02/index.html">
 <meta property="og:site_name" content="Yuyang&#39;s 博客">
-<meta property="og:description" content="stay hungry stay foolish">
+<meta property="og:description" content="Lec02 是关于 Threads 和 RPC的">
 <meta property="og:locale" content="en_US">
 <meta property="article:published_time" content="2022-03-29T15:02:58.000Z">
 <meta property="article:modified_time" content="2022-03-29T15:02:58.000Z">
@@ -242,7 +242,7 @@
                 <i class="far fa-file-word"></i>
               </span>
                 <span class="post-meta-item-text">Symbols count in article: </span>
-              <span>0</span>
+              <span>1k</span>
             </span>
             <span class="post-meta-item" title="Reading time">
               <span class="post-meta-item-icon">
@@ -261,7 +261,51 @@
     <div class="post-body" itemprop="articleBody">
 
       
-        
+        <p>Lec02 是关于 Threads 和 RPC的</p>
+<span id="more"></span>
+
+<h2 id="为什么使用Go？"><a href="#为什么使用Go？" class="headerlink" title="为什么使用Go？"></a>为什么使用Go？</h2><ol>
+<li>good support for threads &#x2F; rpc</li>
+<li>garbage collection</li>
+<li>type safe</li>
+<li>simple</li>
+<li>compiled</li>
+</ol>
+<h2 id="Thread-of-execution"><a href="#Thread-of-execution" class="headerlink" title="Thread of execution"></a>Thread of execution</h2><p>threads allow one program to do many things at once</p>
+<p>each thread executes serially, just like an ordinary non-threaded program</p>
+<p>threads shared memory</p>
+<p>each thread includes some pre-thread state:</p>
+<p>​    program counter, registers, stack, what it’s waiting for</p>
+<h2 id="Why-threads"><a href="#Why-threads" class="headerlink" title="Why threads"></a>Why threads</h2><p>express concurrency</p>
+<ul>
+<li>I&#x2F;O concurrency:<ul>
+<li>Client sends requests to many servers in parallel and waits for replies</li>
+<li>Server processes muliple client requests; each requests may block.</li>
+<li>while waiting for the disk to read data for client X, process a request from client Y</li>
+</ul>
+</li>
+<li>multi-core parallelism:<ul>
+<li>Execute code in parallel on several cores</li>
+</ul>
+</li>
+<li>convenience:<ul>
+<li>In background, once per second, check whether each worker is still alive</li>
+</ul>
+</li>
+</ul>
+<h2 id="Thread-Challenges"><a href="#Thread-Challenges" class="headerlink" title="Thread Challenges"></a>Thread Challenges</h2><ul>
+<li>race condition： two threads do n &#x3D; n+1 at the same time? or one thread reads while another increments.<ul>
+<li>avoid sharing： using channel</li>
+<li>use locks</li>
+</ul>
+</li>
+<li>coordination： one thread is producing data, another thread is consuming it. how can the consumer wait( and release CPU)? how can the producer wake up the consumer?<ul>
+<li>use channels or sync.Cond or sync.WaitGroup dealock</li>
+<li>condition variables</li>
+</ul>
+</li>
+</ul>
+
     </div>
 
     
@@ -364,6 +408,7 @@
 
       <!--noindex-->
       <div class="post-toc-wrap sidebar-panel">
+          <div class="post-toc motion-element"><ol class="nav"><li class="nav-item nav-level-2"><a class="nav-link" href="#%E4%B8%BA%E4%BB%80%E4%B9%88%E4%BD%BF%E7%94%A8Go%EF%BC%9F"><span class="nav-number">1.</span> <span class="nav-text">为什么使用Go？</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#Thread-of-execution"><span class="nav-number">2.</span> <span class="nav-text">Thread of execution</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#Why-threads"><span class="nav-number">3.</span> <span class="nav-text">Why threads</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#Thread-Challenges"><span class="nav-number">4.</span> <span class="nav-text">Thread Challenges</span></a></li></ol></div>
       </div>
       <!--/noindex-->
 
@@ -379,7 +424,7 @@
       <div class="site-state-item site-state-posts">
           <a href="/archives/">
         
-          <span class="site-state-item-count">16</span>
+          <span class="site-state-item-count">17</span>
           <span class="site-state-item-name">posts</span>
         </a>
       </div>
@@ -392,7 +437,7 @@
       <div class="site-state-item site-state-tags">
             <a href="/tags/">
           
-        <span class="site-state-item-count">17</span>
+        <span class="site-state-item-count">19</span>
         <span class="site-state-item-name">tags</span></a>
       </div>
   </nav>
@@ -449,12 +494,12 @@
     <span class="post-meta-item-icon">
       <i class="fa fa-chart-area"></i>
     </span>
-    <span title="Symbols count total">45k</span>
+    <span title="Symbols count total">62k</span>
     <span class="post-meta-divider">|</span>
     <span class="post-meta-item-icon">
       <i class="fa fa-coffee"></i>
     </span>
-    <span title="Reading time total">41 mins.</span>
+    <span title="Reading time total">57 mins.</span>
 </div>
 
         

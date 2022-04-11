@@ -385,7 +385,51 @@
   <entry>
     <title>MIT_6-824_Lec02</title>
     <url>/Distributed-Systems/Distributed_Sytem/MIT-6-824-Lec02/</url>
-    <content><![CDATA[]]></content>
+    <content><![CDATA[<p>Lec02 是关于 Threads 和 RPC的</p>
+<span id="more"></span>
+
+<h2 id="为什么使用Go？"><a href="#为什么使用Go？" class="headerlink" title="为什么使用Go？"></a>为什么使用Go？</h2><ol>
+<li>good support for threads &#x2F; rpc</li>
+<li>garbage collection</li>
+<li>type safe</li>
+<li>simple</li>
+<li>compiled</li>
+</ol>
+<h2 id="Thread-of-execution"><a href="#Thread-of-execution" class="headerlink" title="Thread of execution"></a>Thread of execution</h2><p>threads allow one program to do many things at once</p>
+<p>each thread executes serially, just like an ordinary non-threaded program</p>
+<p>threads shared memory</p>
+<p>each thread includes some pre-thread state:</p>
+<p>​    program counter, registers, stack, what it’s waiting for</p>
+<h2 id="Why-threads"><a href="#Why-threads" class="headerlink" title="Why threads"></a>Why threads</h2><p>express concurrency</p>
+<ul>
+<li>I&#x2F;O concurrency:<ul>
+<li>Client sends requests to many servers in parallel and waits for replies</li>
+<li>Server processes muliple client requests; each requests may block.</li>
+<li>while waiting for the disk to read data for client X, process a request from client Y</li>
+</ul>
+</li>
+<li>multi-core parallelism:<ul>
+<li>Execute code in parallel on several cores</li>
+</ul>
+</li>
+<li>convenience:<ul>
+<li>In background, once per second, check whether each worker is still alive</li>
+</ul>
+</li>
+</ul>
+<h2 id="Thread-Challenges"><a href="#Thread-Challenges" class="headerlink" title="Thread Challenges"></a>Thread Challenges</h2><ul>
+<li>race condition： two threads do n &#x3D; n+1 at the same time? or one thread reads while another increments.<ul>
+<li>avoid sharing： using channel</li>
+<li>use locks</li>
+</ul>
+</li>
+<li>coordination： one thread is producing data, another thread is consuming it. how can the consumer wait( and release CPU)? how can the producer wake up the consumer?<ul>
+<li>use channels or sync.Cond or sync.WaitGroup dealock</li>
+<li>condition variables</li>
+</ul>
+</li>
+</ul>
+]]></content>
       <categories>
         <category>Distributed Systems</category>
       </categories>
@@ -614,8 +658,224 @@
       </tags>
   </entry>
   <entry>
-    <title>Designing Data Intensive Application Part2</title>
-    <url>/Distributed-Systems/Distributed_Sytem/Designing-data-intensive-applications/part2/</url>
+    <title>Designing Data Intensive Application Part3</title>
+    <url>/Distributed-Systems/Distributed_Sytem/Designing-data-intensive-applications/part3/</url>
+    <content><![CDATA[]]></content>
+      <categories>
+        <category>Distributed Systems</category>
+      </categories>
+      <tags>
+        <tag>Distributed Systems</tag>
+        <tag>Book</tag>
+      </tags>
+  </entry>
+  <entry>
+    <title>MIT 6.824 Lab 1 MapReduce</title>
+    <url>/Distributed-Systems/Distributed_Sytem/MIT-6-824-Lab01/</url>
+    <content><![CDATA[<p>第一个Lab是MapReduce的分布式实现</p>
+<span id="more"></span>
+
+<p><a href="https://pdos.csail.mit.edu/6.824/labs/lab-mr.html">Lab1 Notes</a></p>
+<h2 id="开始"><a href="#开始" class="headerlink" title="开始"></a>开始</h2><p>环境搭建</p>
+<figure class="highlight bash"><table><tr><td class="code"><pre><span class="line">$ git <span class="built_in">clone</span> git://g.csail.mit.edu/6.824-golabs-2022 6.824</span><br><span class="line">$ <span class="built_in">cd</span> 6.824</span><br><span class="line">$ <span class="built_in">ls</span></span><br><span class="line">Makefile src</span><br></pre></td></tr></table></figure>
+
+<figure class="highlight bash"><table><tr><td class="code"><pre><span class="line">$ <span class="built_in">cd</span> ~/6.824</span><br><span class="line">$ <span class="built_in">cd</span> src/main <span class="comment"># 进入工作目录</span></span><br><span class="line">$ go build -race -buildmode=plugin ../mrapps/wc.go</span><br><span class="line">$ <span class="built_in">rm</span> mr-out*</span><br><span class="line">$ go run -race mrsequential.go wc.so pg*.txt</span><br><span class="line">$ more mr-out-0</span><br><span class="line">A 509</span><br><span class="line">ABOUT 2</span><br><span class="line">ACT 8</span><br></pre></td></tr></table></figure>
+
+<blockquote>
+<p>-race 使Go 有race detector： 探测代码中对同一个变量的并发访问问题，也就是<code>data race</code>的情况</p>
+<p>-buidmode&#x3D;plugin <a href="https://www.twle.cn/t/19249#:~:text=Go%20%E8%AF%AD%E8%A8%80%E7%9A%84%E7%BC%96%E8%AF%91%E6%A8%A1%E5%BC%8F,%E7%94%9F%E6%88%90%E4%BB%80%E4%B9%88%E5%85%BB%E7%9A%84%E6%96%87%E4%BB%B6%E3%80%82">插件模式</a> </p>
+</blockquote>
+<h2 id="任务"><a href="#任务" class="headerlink" title="任务"></a>任务</h2><ul>
+<li>实现一个分布式MapReduce， 由coordinator 和 worker 组成</li>
+<li>只有一个 coordinator 进程，有一个或者多个 worker进程，两个parallel。</li>
+<li>worker 通过 RPC 与coordinator交流。</li>
+<li>worker 向 coordinator 要task，从一个或多个文件中读取数据，执行任务，并将结果写入一个或多个文件中。</li>
+<li>如果worker没有在一定时间内（10秒）完成工作，coordinator 会知道，并且将相同的工作给不同的worker。</li>
+</ul>
+<p>Lab1 提供了 一些代码，来帮助我们开始：</p>
+<figure class="highlight go"><table><tr><td class="code"><pre><span class="line"><span class="comment">// main.mrcoordinator.go</span></span><br><span class="line"><span class="keyword">package</span> main</span><br><span class="line"></span><br><span class="line"><span class="keyword">import</span> <span class="string">&quot;6.824/mr&quot;</span></span><br><span class="line"><span class="keyword">import</span> <span class="string">&quot;time&quot;</span></span><br><span class="line"><span class="keyword">import</span> <span class="string">&quot;os&quot;</span></span><br><span class="line"><span class="keyword">import</span> <span class="string">&quot;fmt&quot;</span></span><br><span class="line"></span><br><span class="line"><span class="function"><span class="keyword">func</span> <span class="title">main</span><span class="params">()</span></span> &#123;</span><br><span class="line">	<span class="keyword">if</span> <span class="built_in">len</span>(os.Args) &lt; <span class="number">2</span> &#123;</span><br><span class="line">		fmt.Fprintf(os.Stderr, <span class="string">&quot;Usage: mrcoordinator inputfiles...\n&quot;</span>)</span><br><span class="line">		os.Exit(<span class="number">1</span>)</span><br><span class="line">	&#125;</span><br><span class="line"></span><br><span class="line">	m := mr.MakeCoordinator(os.Args[<span class="number">1</span>:], <span class="number">10</span>)</span><br><span class="line">	<span class="keyword">for</span> m.Done() == <span class="literal">false</span> &#123;</span><br><span class="line">		time.Sleep(time.Second)</span><br><span class="line">	&#125;</span><br><span class="line"></span><br><span class="line">	time.Sleep(time.Second)</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+<figure class="highlight go"><table><tr><td class="code"><pre><span class="line"><span class="comment">// main/mrworker.go</span></span><br><span class="line"></span><br><span class="line"><span class="keyword">package</span> main</span><br><span class="line"></span><br><span class="line"><span class="keyword">import</span> <span class="string">&quot;6.824/mr&quot;</span></span><br><span class="line"><span class="keyword">import</span> <span class="string">&quot;plugin&quot;</span></span><br><span class="line"><span class="keyword">import</span> <span class="string">&quot;os&quot;</span></span><br><span class="line"><span class="keyword">import</span> <span class="string">&quot;fmt&quot;</span></span><br><span class="line"><span class="keyword">import</span> <span class="string">&quot;log&quot;</span></span><br><span class="line"></span><br><span class="line"><span class="function"><span class="keyword">func</span> <span class="title">main</span><span class="params">()</span></span> &#123;</span><br><span class="line">	<span class="keyword">if</span> <span class="built_in">len</span>(os.Args) != <span class="number">2</span> &#123;</span><br><span class="line">		fmt.Fprintf(os.Stderr, <span class="string">&quot;Usage: mrworker xxx.so\n&quot;</span>)</span><br><span class="line">		os.Exit(<span class="number">1</span>)</span><br><span class="line">	&#125;</span><br><span class="line"></span><br><span class="line">	mapf, reducef := loadPlugin(os.Args[<span class="number">1</span>])</span><br><span class="line"></span><br><span class="line">	mr.Worker(mapf, reducef)</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line"><span class="comment">//</span></span><br><span class="line"><span class="comment">// load the application Map and Reduce functions</span></span><br><span class="line"><span class="comment">// from a plugin file, e.g. ../mrapps/wc.so</span></span><br><span class="line"><span class="comment">//</span></span><br><span class="line"><span class="function"><span class="keyword">func</span> <span class="title">loadPlugin</span><span class="params">(filename <span class="type">string</span>)</span></span> (<span class="function"><span class="keyword">func</span><span class="params">(<span class="type">string</span>, <span class="type">string</span>)</span></span> []mr.KeyValue, <span class="function"><span class="keyword">func</span><span class="params">(<span class="type">string</span>, []<span class="type">string</span>)</span></span> <span class="type">string</span>) &#123;</span><br><span class="line">	p, err := plugin.Open(filename)</span><br><span class="line">	<span class="keyword">if</span> err != <span class="literal">nil</span> &#123;</span><br><span class="line">		log.Fatalf(<span class="string">&quot;cannot load plugin %v&quot;</span>, filename)</span><br><span class="line">	&#125;</span><br><span class="line">	xmapf, err := p.Lookup(<span class="string">&quot;Map&quot;</span>)</span><br><span class="line">	<span class="keyword">if</span> err != <span class="literal">nil</span> &#123;</span><br><span class="line">		log.Fatalf(<span class="string">&quot;cannot find Map in %v&quot;</span>, filename)</span><br><span class="line">	&#125;</span><br><span class="line">	mapf := xmapf.(<span class="function"><span class="keyword">func</span><span class="params">(<span class="type">string</span>, <span class="type">string</span>)</span></span> []mr.KeyValue)</span><br><span class="line">	xreducef, err := p.Lookup(<span class="string">&quot;Reduce&quot;</span>)</span><br><span class="line">	<span class="keyword">if</span> err != <span class="literal">nil</span> &#123;</span><br><span class="line">		log.Fatalf(<span class="string">&quot;cannot find Reduce in %v&quot;</span>, filename)</span><br><span class="line">	&#125;</span><br><span class="line">	reducef := xreducef.(<span class="function"><span class="keyword">func</span><span class="params">(<span class="type">string</span>, []<span class="type">string</span>)</span></span> <span class="type">string</span>)</span><br><span class="line"></span><br><span class="line">	<span class="keyword">return</span> mapf, reducef</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+<p>我们将我们的实现，放在 mr&#x2F;coordinator.go, mr&#x2F;worker.go, mr&#x2F;rpc.go上。</p>
+]]></content>
+      <categories>
+        <category>Distributed Systems</category>
+      </categories>
+      <tags>
+        <tag>Distributed Systems</tag>
+        <tag>MIT 6.824</tag>
+        <tag>MapReduce</tag>
+        <tag>Lab</tag>
+      </tags>
+  </entry>
+  <entry>
+    <title>Golang 学习</title>
+    <url>/Distributed-Systems/Distributed_Sytem/Golang/</url>
+    <content><![CDATA[<p>Golang 的学习, MIT 6.824 分布式系统</p>
+<span id="more"></span>
+
+<p><a href="https://tour.go-zh.org/welcome/1">Golang 官方在线教程</a></p>
+<p>[toc]</p>
+<h1 id="基础"><a href="#基础" class="headerlink" title="基础"></a>基础</h1><h2 id="包、变量和函数"><a href="#包、变量和函数" class="headerlink" title="包、变量和函数"></a>包、变量和函数</h2><h3 id="包"><a href="#包" class="headerlink" title="包"></a>包</h3><p>每个Go程序都是由包构成的package，从main包开始运行 (package main).</p>
+<p>包名与导入路径的最后一个元素一致。例如，<code>&quot;math/rand&quot;</code> 包中的源码均以 <code>package rand</code> 语句开始。</p>
+<figure class="highlight go"><table><tr><td class="code"><pre><span class="line"><span class="keyword">package</span> main</span><br><span class="line"></span><br><span class="line"><span class="keyword">import</span> (</span><br><span class="line">	<span class="string">&quot;fmt&quot;</span></span><br><span class="line">	<span class="string">&quot;math/rand&quot;</span></span><br><span class="line">)</span><br><span class="line"></span><br><span class="line"><span class="function"><span class="keyword">func</span> <span class="title">main</span><span class="params">()</span></span> &#123;</span><br><span class="line">	fmt.Println(<span class="string">&quot;My favorite number is&quot;</span>, rand.Intn(<span class="number">10</span>))</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+<h3 id="函数"><a href="#函数" class="headerlink" title="函数"></a>函数</h3><figure class="highlight go"><table><tr><td class="code"><pre><span class="line"><span class="function"><span class="keyword">func</span> <span class="title">add</span><span class="params">(x <span class="type">int</span>, y <span class="type">int</span>)</span></span> <span class="type">int</span> &#123;</span><br><span class="line">	<span class="keyword">return</span> x + y</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line"><span class="comment">// 当连续两个或多个函数的已命名形参类型相同时，除最后一个类型以外，其它都可以省略。</span></span><br><span class="line"><span class="function"><span class="keyword">func</span> <span class="title">add_2</span><span class="params">(x, y <span class="type">int</span>)</span></span> <span class="type">int</span> &#123;</span><br><span class="line">	<span class="keyword">return</span> x + y</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line"><span class="function"><span class="keyword">func</span> <span class="title">sub</span><span class="params">(x <span class="type">int</span>, y <span class="type">int</span>)</span></span> <span class="type">int</span>&#123;</span><br><span class="line">	<span class="keyword">return</span> x -y	</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line"><span class="function"><span class="keyword">func</span> <span class="title">main</span><span class="params">()</span></span> &#123;</span><br><span class="line">	fmt.Println(add(<span class="number">42</span>, <span class="number">13</span>)) <span class="comment">// ln 换行</span></span><br><span class="line">	fmt.Println(sub(<span class="number">42</span>,<span class="number">13</span>))</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+<blockquote>
+<p>func 函数名(变量名 变量类型, 变量名 变量类型 ) 返回值类型 {</p>
+<p>}</p>
+</blockquote>
+<h4 id="返回值"><a href="#返回值" class="headerlink" title="返回值"></a>返回值</h4><figure class="highlight go"><table><tr><td class="code"><pre><span class="line"><span class="comment">// 函数可以返回任意数量的返回值。</span></span><br><span class="line"><span class="function"><span class="keyword">func</span> <span class="title">swap</span><span class="params">(x, y <span class="type">string</span>)</span></span> (<span class="type">string</span>, <span class="type">string</span>) &#123;</span><br><span class="line">	<span class="keyword">return</span> y, x</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line"><span class="function"><span class="keyword">func</span> <span class="title">ints</span><span class="params">(x, y, z <span class="type">int</span>)</span></span> (<span class="type">int</span>, <span class="type">int</span>, <span class="type">int</span>) &#123;</span><br><span class="line">	<span class="keyword">return</span> x, y, z</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line"><span class="function"><span class="keyword">func</span> <span class="title">main</span><span class="params">()</span></span> &#123;</span><br><span class="line">	a, b := swap(<span class="string">&quot;hello&quot;</span>, <span class="string">&quot;world&quot;</span>) <span class="comment">// 接受返回值</span></span><br><span class="line">	fmt.Println(a, b)</span><br><span class="line">	x, y, z := ints(<span class="number">12</span>, <span class="number">44</span>, <span class="number">55</span>)</span><br><span class="line">	fmt.Println(x, y, z)</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+<h5 id="命名返回值"><a href="#命名返回值" class="headerlink" title="命名返回值"></a>命名返回值</h5><p>Go 的返回值可被命名，它们会被视作定义在函数顶部的变量。</p>
+<p>返回值的名称应当具有一定的意义，它可以作为文档使用。</p>
+<p>没有参数的 <code>return</code> 语句返回已命名的返回值。也就是 <code>直接</code> 返回</p>
+<figure class="highlight go"><table><tr><td class="code"><pre><span class="line"></span><br><span class="line"><span class="function"><span class="keyword">func</span> <span class="title">split</span><span class="params">(sum <span class="type">int</span>)</span></span> (x, y <span class="type">int</span>) &#123;</span><br><span class="line">	x = sum * <span class="number">4</span> / <span class="number">9</span></span><br><span class="line">	y = sum - x</span><br><span class="line">	<span class="keyword">return</span></span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line"><span class="function"><span class="keyword">func</span> <span class="title">main</span><span class="params">()</span></span> &#123;</span><br><span class="line">  a, b := split(<span class="number">17</span>)</span><br><span class="line">  fmt.Println(a ,b)</span><br><span class="line">	fmt.Println(split(<span class="number">17</span>))</span><br><span class="line">&#125;</span><br><span class="line"></span><br></pre></td></tr></table></figure>
+
+<h3 id="变量"><a href="#变量" class="headerlink" title="变量"></a>变量</h3><p><code>var</code> 语句用于声明一个变量列表，跟函数的参数列表一样，类型在最后。</p>
+<p>就像在这个例子中看到的一样，<code>var</code> 语句可以出现在包或函数级别</p>
+<figure class="highlight go"><table><tr><td class="code"><pre><span class="line"><span class="keyword">var</span> c, python, java <span class="type">bool</span></span><br><span class="line"></span><br><span class="line"><span class="function"><span class="keyword">func</span> <span class="title">main</span><span class="params">()</span></span> &#123;</span><br><span class="line">	<span class="keyword">var</span> i <span class="type">int</span></span><br><span class="line">	fmt.Println(i, c, python, java)</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+<h4 id="变量的初始化"><a href="#变量的初始化" class="headerlink" title="变量的初始化"></a>变量的初始化</h4><figure class="highlight go"><table><tr><td class="code"><pre><span class="line"><span class="comment">// 变量声明可以包含初始值，每个变量对应一个。</span></span><br><span class="line"><span class="keyword">var</span> i, j <span class="type">int</span> = <span class="number">1</span>, <span class="number">2</span></span><br><span class="line"><span class="comment">// 如果初始化值已存在，则可以省略类型；变量会从初始值中获得类型。</span></span><br><span class="line"><span class="keyword">var</span> c, python, java = <span class="literal">true</span>, <span class="literal">false</span>, <span class="string">&quot;no!&quot;</span></span><br></pre></td></tr></table></figure>
+
+<h4 id="短变量声明"><a href="#短变量声明" class="headerlink" title="短变量声明"></a>短变量声明</h4><figure class="highlight go"><table><tr><td class="code"><pre><span class="line"><span class="comment">// := 可在类型明确的地方代替 var 声明。</span></span><br><span class="line"><span class="function"><span class="keyword">func</span> <span class="title">main</span><span class="params">()</span></span>&#123;</span><br><span class="line">  k := <span class="number">3</span></span><br><span class="line">  c, python, java := <span class="literal">true</span>, <span class="literal">false</span>, <span class="string">&quot;no!&quot;</span></span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+<p>注意！！</p>
+<p>函数外的每个语句都必须以<font color="red">关键字开始（<code>var</code>, <code>func</code> 等等）</font>，因此 <code>:=</code> 结构不能在函数外使用。</p>
+<h4 id="基本类型"><a href="#基本类型" class="headerlink" title="基本类型"></a>基本类型</h4><figure class="highlight go"><table><tr><td class="code"><pre><span class="line"><span class="type">bool</span></span><br><span class="line"></span><br><span class="line"><span class="type">string</span></span><br><span class="line"></span><br><span class="line"><span class="type">int</span>  <span class="type">int8</span>  <span class="type">int16</span>  <span class="type">int32</span>  <span class="type">int64</span></span><br><span class="line"><span class="type">uint</span> <span class="type">uint8</span> <span class="type">uint16</span> <span class="type">uint32</span> <span class="type">uint64</span> <span class="type">uintptr</span></span><br><span class="line"></span><br><span class="line"><span class="type">byte</span> <span class="comment">// uint8 的别名</span></span><br><span class="line"></span><br><span class="line"><span class="type">rune</span> <span class="comment">// int32 的别名</span></span><br><span class="line">    <span class="comment">// 表示一个 Unicode 码点</span></span><br><span class="line"></span><br><span class="line"><span class="type">float32</span> <span class="type">float64</span></span><br><span class="line"></span><br><span class="line"><span class="type">complex64</span> <span class="type">complex128</span></span><br></pre></td></tr></table></figure>
+
+<h4 id="零值"><a href="#零值" class="headerlink" title="零值"></a>零值</h4><p>没有明确初始值的变量声明会被赋予它们的 <strong>零值</strong>。</p>
+<p>零值是：</p>
+<ul>
+<li>数值类型为 <code>0</code>，</li>
+<li>布尔类型为 <code>false</code>，</li>
+<li>字符串为 <code>&quot;&quot;</code>（空字符串）。</li>
+</ul>
+<figure class="highlight go"><table><tr><td class="code"><pre><span class="line"><span class="keyword">package</span> main</span><br><span class="line"></span><br><span class="line"><span class="keyword">import</span> <span class="string">&quot;fmt&quot;</span></span><br><span class="line"></span><br><span class="line"><span class="function"><span class="keyword">func</span> <span class="title">main</span><span class="params">()</span></span> &#123;</span><br><span class="line">	<span class="keyword">var</span> i <span class="type">int</span></span><br><span class="line">	<span class="keyword">var</span> f <span class="type">float64</span></span><br><span class="line">	<span class="keyword">var</span> b <span class="type">bool</span></span><br><span class="line">	<span class="keyword">var</span> s <span class="type">string</span></span><br><span class="line">	fmt.Printf(<span class="string">&quot;%v %v %v %q\n&quot;</span>, i, f, b, s)</span><br><span class="line">&#125; <span class="comment">// 0 0 false &quot;&quot;</span></span><br></pre></td></tr></table></figure>
+
+<h4 id="类型转换"><a href="#类型转换" class="headerlink" title="类型转换"></a>类型转换</h4><p>表达式 <code>T(v)</code> 将值 <code>v</code> 转换为类型 <code>T</code>。</p>
+<figure class="highlight go"><table><tr><td class="code"><pre><span class="line"></span><br><span class="line"><span class="function"><span class="keyword">func</span> <span class="title">main</span><span class="params">()</span></span>&#123;</span><br><span class="line">  i := <span class="number">42</span></span><br><span class="line">	f := <span class="type">float64</span>(i)</span><br><span class="line">  <span class="keyword">var</span> g <span class="type">float64</span> = <span class="type">float64</span>(i)</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+<h4 id="常量"><a href="#常量" class="headerlink" title="常量"></a>常量</h4><p>使用 <code>const</code> 关键字。</p>
+<figure class="highlight go"><table><tr><td class="code"><pre><span class="line"><span class="keyword">import</span> <span class="string">&quot;fmt&quot;</span></span><br><span class="line"></span><br><span class="line"><span class="keyword">const</span> Pi = <span class="number">3.14</span></span><br><span class="line"></span><br><span class="line"><span class="function"><span class="keyword">func</span> <span class="title">main</span><span class="params">()</span></span> &#123;</span><br><span class="line">	<span class="keyword">const</span> World = <span class="string">&quot;世界&quot;</span></span><br><span class="line">	fmt.Println(<span class="string">&quot;Hello&quot;</span>, World)</span><br><span class="line">	fmt.Println(<span class="string">&quot;Happy&quot;</span>, Pi, <span class="string">&quot;Day&quot;</span>)</span><br><span class="line"></span><br><span class="line">	<span class="keyword">const</span> Truth = <span class="literal">true</span></span><br><span class="line">	fmt.Println(<span class="string">&quot;Go rules?&quot;</span>, Truth)</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+
+
+<h2 id="流程控制语句：for、if、else、switch和defer"><a href="#流程控制语句：for、if、else、switch和defer" class="headerlink" title="流程控制语句：for、if、else、switch和defer"></a>流程控制语句：for、if、else、switch和defer</h2><h3 id="for"><a href="#for" class="headerlink" title="for"></a>for</h3><ul>
+<li>初始化语句：在第一次迭代 前 执行</li>
+<li>条件表达式：在每次迭代 前 求值</li>
+<li>后置语句：在每次迭代的 结尾 执行</li>
+</ul>
+<figure class="highlight go"><table><tr><td class="code"><pre><span class="line"><span class="function"><span class="keyword">func</span> <span class="title">main</span><span class="params">()</span></span> &#123;</span><br><span class="line">	sum := <span class="number">0</span></span><br><span class="line">	<span class="keyword">for</span> i := <span class="number">0</span>; i &lt; <span class="number">10</span>; i++ &#123;</span><br><span class="line">		sum += i</span><br><span class="line">	&#125;</span><br><span class="line">	fmt.Println(sum)</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+<p>去掉 ; ; 就是while</p>
+<figure class="highlight go"><table><tr><td class="code"><pre><span class="line"><span class="function"><span class="keyword">func</span> <span class="title">main</span><span class="params">()</span></span> &#123;</span><br><span class="line">	sum := <span class="number">0</span></span><br><span class="line">	<span class="keyword">for</span> i &lt; <span class="number">10</span> &#123;</span><br><span class="line">		sum += i</span><br><span class="line">	&#125;</span><br><span class="line">	fmt.Println(sum)</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+<h3 id="if"><a href="#if" class="headerlink" title="if"></a>if</h3><p><code>if</code> 语句可以在条件表达式前执行一个简单的语句，该语句声明的变量作用域仅在 <code>if</code> 之内。</p>
+<figure class="highlight go"><table><tr><td class="code"><pre><span class="line"><span class="function"><span class="keyword">func</span> <span class="title">pow</span><span class="params">(x, n, lim <span class="type">float64</span>)</span></span> <span class="type">float64</span> &#123;</span><br><span class="line">	<span class="keyword">if</span> v := math.Pow(x, n); v &lt; lim &#123;</span><br><span class="line">		<span class="keyword">return</span> v</span><br><span class="line">	&#125; <span class="keyword">else</span> &#123;</span><br><span class="line">		fmt.Printf(<span class="string">&quot;%g &gt;= %g\n&quot;</span>, v, lim)</span><br><span class="line">	&#125;</span><br><span class="line">	<span class="comment">// 这里开始就不能使用 v 了</span></span><br><span class="line">	<span class="keyword">return</span> lim</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line"><span class="function"><span class="keyword">func</span> <span class="title">main</span><span class="params">()</span></span> &#123;</span><br><span class="line">	fmt.Println(</span><br><span class="line">		pow(<span class="number">3</span>, <span class="number">2</span>, <span class="number">10</span>),</span><br><span class="line">		pow(<span class="number">3</span>, <span class="number">3</span>, <span class="number">20</span>),</span><br><span class="line">	)</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+<h3 id="switch"><a href="#switch" class="headerlink" title="switch"></a>switch</h3><figure class="highlight go"><table><tr><td class="code"><pre><span class="line"><span class="keyword">import</span> (</span><br><span class="line">	<span class="string">&quot;fmt&quot;</span></span><br><span class="line">	<span class="string">&quot;runtime&quot;</span></span><br><span class="line">)</span><br><span class="line"></span><br><span class="line"><span class="function"><span class="keyword">func</span> <span class="title">main</span><span class="params">()</span></span> &#123;</span><br><span class="line">	fmt.Print(<span class="string">&quot;Go runs on &quot;</span>)</span><br><span class="line">	<span class="keyword">switch</span> os := runtime.GOOS; os &#123;</span><br><span class="line">	<span class="keyword">case</span> <span class="string">&quot;darwin&quot;</span>:</span><br><span class="line">		fmt.Println(<span class="string">&quot;OS X.&quot;</span>)</span><br><span class="line">	<span class="keyword">case</span> <span class="string">&quot;linux&quot;</span>:</span><br><span class="line">		fmt.Println(<span class="string">&quot;Linux.&quot;</span>)</span><br><span class="line">	<span class="keyword">default</span>:</span><br><span class="line">		<span class="comment">// freebsd, openbsd,</span></span><br><span class="line">		<span class="comment">// plan9, windows...</span></span><br><span class="line">		fmt.Printf(<span class="string">&quot;%s.\n&quot;</span>, os)</span><br><span class="line">	&#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+
+
+<h3 id="defer"><a href="#defer" class="headerlink" title="defer"></a>defer</h3><p>defer 语句会将函数推迟到外层函数返回之后执行。</p>
+<p>推迟调用的函数其参数会立即求值，但直到外层函数返回前该函数都不会被调用。</p>
+<figure class="highlight go"><table><tr><td class="code"><pre><span class="line"><span class="keyword">import</span> <span class="string">&quot;fmt&quot;</span></span><br><span class="line"></span><br><span class="line"></span><br><span class="line"><span class="function"><span class="keyword">func</span> <span class="title">main</span><span class="params">()</span></span> &#123;</span><br><span class="line">	<span class="keyword">defer</span> fmt.Println(<span class="string">&quot;world&quot;</span>)</span><br><span class="line"></span><br><span class="line">	fmt.Println(<span class="string">&quot;hello&quot;</span>)</span><br><span class="line">	</span><br><span class="line">&#125;</span><br><span class="line"><span class="comment">// hello </span></span><br><span class="line"><span class="comment">// world </span></span><br></pre></td></tr></table></figure>
+
+<p>推迟的函数调用会被压入一个栈中。当外层函数返回时，被推迟的函数会按照后进先出的顺序调用。</p>
+<figure class="highlight go"><table><tr><td class="code"><pre><span class="line"><span class="function"><span class="keyword">func</span> <span class="title">main</span><span class="params">()</span></span> &#123;</span><br><span class="line">	fmt.Println(<span class="string">&quot;counting&quot;</span>)</span><br><span class="line"></span><br><span class="line">	<span class="keyword">for</span> i := <span class="number">0</span>; i &lt; <span class="number">10</span>; i++ &#123;</span><br><span class="line">		<span class="keyword">defer</span> fmt.Print(i)</span><br><span class="line">	&#125;</span><br><span class="line"></span><br><span class="line">	fmt.Println(<span class="string">&quot;done&quot;</span>) <span class="comment">// 9876543210</span></span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+<h2 id="更多类型：struct、slice和映射"><a href="#更多类型：struct、slice和映射" class="headerlink" title="更多类型：struct、slice和映射"></a>更多类型：struct、slice和映射</h2><h3 id="指针"><a href="#指针" class="headerlink" title="指针"></a>指针</h3><figure class="highlight go"><table><tr><td class="code"><pre><span class="line"><span class="function"><span class="keyword">func</span> <span class="title">main</span><span class="params">()</span></span> &#123;</span><br><span class="line">	i, j := <span class="number">42</span>, <span class="number">2701</span></span><br><span class="line"></span><br><span class="line">	p := &amp;i         <span class="comment">// 指向 i</span></span><br><span class="line">	fmt.Println(*p) <span class="comment">// 通过指针读取 i 的值</span></span><br><span class="line">	*p = <span class="number">21</span>         <span class="comment">// 通过指针设置 i 的值</span></span><br><span class="line">	fmt.Println(i)  <span class="comment">// 查看 i 的值</span></span><br><span class="line"></span><br><span class="line">	p = &amp;j         <span class="comment">// 指向 j</span></span><br><span class="line">	*p = *p / <span class="number">37</span>   <span class="comment">// 通过指针对 j 进行除法运算</span></span><br><span class="line">	fmt.Println(j) <span class="comment">// 查看 j 的值</span></span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+<h3 id="结构体"><a href="#结构体" class="headerlink" title="结构体"></a>结构体</h3><p>一个结构体（<code>struct</code>）就是一组字段（field）</p>
+<figure class="highlight go"><table><tr><td class="code"><pre><span class="line"><span class="keyword">type</span> Vertex <span class="keyword">struct</span> &#123;</span><br><span class="line">	X <span class="type">int</span></span><br><span class="line">	Y <span class="type">int</span></span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line"><span class="function"><span class="keyword">func</span> <span class="title">main</span><span class="params">()</span></span> &#123;</span><br><span class="line">  v := Vertex&#123;<span class="number">1</span>, <span class="number">2</span>&#125;</span><br><span class="line">	fmt.Println(v) <span class="comment">// &#123;4 2&#125;</span></span><br><span class="line">  <span class="comment">// 结构体字段使用点号来访问。</span></span><br><span class="line">  fmt.Println(v.X) <span class="comment">// 1</span></span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+<h4 id="结构体指针"><a href="#结构体指针" class="headerlink" title="结构体指针"></a>结构体指针</h4><p>如果我们有一个指向结构体的指针 <code>p</code>，那么可以通过 <code>(*p).X</code> 来访问其字段 <code>X</code>。不过这么写太啰嗦了，所以语言也允许我们使用隐式间接引用，直接写 <code>p.X</code> 就可以。</p>
+<figure class="highlight go"><table><tr><td class="code"><pre><span class="line"><span class="keyword">type</span> Vertex <span class="keyword">struct</span> &#123;</span><br><span class="line">	X <span class="type">int</span></span><br><span class="line">	Y <span class="type">int</span></span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line"><span class="function"><span class="keyword">func</span> <span class="title">main</span><span class="params">()</span></span> &#123;</span><br><span class="line">	v := Vertex&#123;<span class="number">1</span>, <span class="number">2</span>&#125;</span><br><span class="line">	p := v</span><br><span class="line">	p.X = <span class="number">3123</span></span><br><span class="line">	fmt.Println(p) <span class="comment">//&#123;3123 2&#125;</span></span><br><span class="line">&#125; </span><br></pre></td></tr></table></figure>
+
+
+
+<h4 id="结构体文法"><a href="#结构体文法" class="headerlink" title="结构体文法"></a>结构体文法</h4><figure class="highlight go"><table><tr><td class="code"><pre><span class="line"><span class="keyword">type</span> Vertex <span class="keyword">struct</span> &#123;</span><br><span class="line">	X, Y <span class="type">int</span></span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line"><span class="keyword">var</span> (</span><br><span class="line">	v1 = Vertex&#123;<span class="number">1</span>, <span class="number">2</span>&#125;  <span class="comment">// 创建一个 Vertex 类型的结构体</span></span><br><span class="line">	v2 = Vertex&#123;X: <span class="number">1</span>&#125;  <span class="comment">// Y:0 被隐式地赋予</span></span><br><span class="line">	v3 = Vertex&#123;&#125;      <span class="comment">// X:0 Y:0</span></span><br><span class="line">	p  = &amp;Vertex&#123;<span class="number">1</span>, <span class="number">2</span>&#125; <span class="comment">// 创建一个 *Vertex 类型的结构体（指针）</span></span><br><span class="line">)</span><br><span class="line"></span><br><span class="line"><span class="function"><span class="keyword">func</span> <span class="title">main</span><span class="params">()</span></span> &#123;</span><br><span class="line">	fmt.Println(v1, *p, v2, v3) <span class="comment">// &#123;1 2&#125; &#123;1 2&#125; &#123;1 0&#125; &#123;0 0&#125;</span></span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+<h3 id="数组"><a href="#数组" class="headerlink" title="数组"></a>数组</h3><figure class="highlight go"><table><tr><td class="code"><pre><span class="line"><span class="function"><span class="keyword">func</span> <span class="title">main</span><span class="params">()</span></span> &#123;</span><br><span class="line">	<span class="keyword">var</span> a [<span class="number">2</span>]<span class="type">string</span></span><br><span class="line">	a[<span class="number">0</span>] = <span class="string">&quot;Hello&quot;</span></span><br><span class="line">	a[<span class="number">1</span>] = <span class="string">&quot;World&quot;</span></span><br><span class="line">	fmt.Println(a[<span class="number">0</span>], a[<span class="number">1</span>]) <span class="comment">// Hello World</span></span><br><span class="line">	fmt.Println(a) <span class="comment">// [Hello World]</span></span><br><span class="line"></span><br><span class="line">	primes := []<span class="type">int</span>&#123;<span class="number">2</span>, <span class="number">3</span>, <span class="number">5</span>, <span class="number">7</span>, <span class="number">11</span>, <span class="number">13</span>&#125;</span><br><span class="line">	fmt.Println(primes) <span class="comment">// [2 3 5 7 11 13]</span></span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+
+
+<h4 id="切片"><a href="#切片" class="headerlink" title="切片"></a>切片</h4><h4 id="Range"><a href="#Range" class="headerlink" title="Range"></a>Range</h4><p><code>for</code> 循环的 <code>range</code> 形式可遍历切片或映射。</p>
+<p>当使用 <code>for</code> 循环遍历切片时，每次迭代都会返回两个值。第一个值为当前元素的下标，第二个值为该下标所对应元素的一份副本。</p>
+<figure class="highlight go"><table><tr><td class="code"><pre><span class="line"><span class="keyword">var</span> pow = []<span class="type">int</span>&#123;<span class="number">1</span>, <span class="number">2</span>, <span class="number">4</span>, <span class="number">8</span>, <span class="number">16</span>, <span class="number">32</span>, <span class="number">64</span>, <span class="number">128</span>&#125;</span><br><span class="line"></span><br><span class="line"><span class="function"><span class="keyword">func</span> <span class="title">main</span><span class="params">()</span></span> &#123;</span><br><span class="line">	<span class="keyword">for</span> i, v := <span class="keyword">range</span> pow &#123;</span><br><span class="line">		fmt.Printf(<span class="string">&quot;2**%d = %d\n&quot;</span>, i, v) </span><br><span class="line">    <span class="comment">// i v</span></span><br><span class="line">    <span class="comment">// 0 1</span></span><br><span class="line">    <span class="comment">// 1 2</span></span><br><span class="line">    <span class="comment">// 2 4</span></span><br><span class="line">    <span class="comment">// 3 8</span></span><br><span class="line">	&#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+<p>可以将下标或值赋予 <code>_</code> 来忽略它。</p>
+<figure class="highlight go"><table><tr><td class="code"><pre><span class="line"><span class="keyword">for</span> i, _ := <span class="keyword">range</span> pow</span><br><span class="line"><span class="keyword">for</span> _, value := <span class="keyword">range</span> pow</span><br><span class="line"><span class="comment">// 若你只需要索引，忽略第二个变量即可。</span></span><br><span class="line"><span class="keyword">for</span> i := <span class="keyword">range</span> pow</span><br></pre></td></tr></table></figure>
+
+
+
+<h3 id="映射"><a href="#映射" class="headerlink" title="映射"></a>映射</h3><p>map</p>
+<figure class="highlight go"><table><tr><td class="code"><pre><span class="line"><span class="keyword">type</span> Vertex <span class="keyword">struct</span> &#123;</span><br><span class="line">	Lat, Long <span class="type">float64</span></span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line"><span class="comment">//var m map[string]Vertex</span></span><br><span class="line"></span><br><span class="line"><span class="function"><span class="keyword">func</span> <span class="title">main</span><span class="params">()</span></span> &#123;</span><br><span class="line">	m := <span class="built_in">make</span>(<span class="keyword">map</span>[<span class="type">string</span>]Vertex) <span class="comment">// string 映射到 Vertex</span></span><br><span class="line">	m[<span class="string">&quot;Bell Labs&quot;</span>] = Vertex&#123;</span><br><span class="line">		<span class="number">40.68433</span>, <span class="number">-74.39967</span>,</span><br><span class="line">	&#125;</span><br><span class="line">	fmt.Println(m[<span class="string">&quot;Bell Labs&quot;</span>])</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+<h4 id="修改映射"><a href="#修改映射" class="headerlink" title="修改映射"></a>修改映射</h4><figure class="highlight go"><table><tr><td class="code"><pre><span class="line"><span class="function"><span class="keyword">func</span> <span class="title">main</span><span class="params">()</span></span> &#123;</span><br><span class="line">	m := <span class="built_in">make</span>(<span class="keyword">map</span>[<span class="type">string</span>]<span class="type">int</span>)</span><br><span class="line"></span><br><span class="line">	m[<span class="string">&quot;Answer&quot;</span>] = <span class="number">42</span></span><br><span class="line">	fmt.Println(<span class="string">&quot;The value:&quot;</span>, m[<span class="string">&quot;Answer&quot;</span>])</span><br><span class="line"></span><br><span class="line">  <span class="comment">// 修改</span></span><br><span class="line">	m[<span class="string">&quot;Answer&quot;</span>] = <span class="number">48</span></span><br><span class="line">	fmt.Println(<span class="string">&quot;The value:&quot;</span>, m[<span class="string">&quot;Answer&quot;</span>])</span><br><span class="line"></span><br><span class="line">  <span class="comment">// 删除</span></span><br><span class="line">	<span class="built_in">delete</span>(m, <span class="string">&quot;Answer&quot;</span>)</span><br><span class="line">	fmt.Println(<span class="string">&quot;The value:&quot;</span>, m[<span class="string">&quot;Answer&quot;</span>])</span><br><span class="line"></span><br><span class="line">  <span class="comment">// 查看是否存在</span></span><br><span class="line">	v, ok := m[<span class="string">&quot;Answer&quot;</span>]</span><br><span class="line">	fmt.Println(<span class="string">&quot;The value:&quot;</span>, v, <span class="string">&quot;Present?&quot;</span>, ok)</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line">The value: <span class="number">42</span></span><br><span class="line">The value: <span class="number">48</span></span><br><span class="line">The value: <span class="number">0</span></span><br><span class="line">The value: <span class="number">0</span> Present? <span class="literal">false</span></span><br></pre></td></tr></table></figure>
+
+
+
+<h3 id="函数值"><a href="#函数值" class="headerlink" title="函数值"></a>函数值</h3><p>函数也是值。它们可以像其它值一样传递。函数值可以用作函数的参数或返回值。</p>
+<figure class="highlight go"><table><tr><td class="code"><pre><span class="line"><span class="comment">// fn    func(float64, float64) float64</span></span><br><span class="line"><span class="comment">// 参数名 	参数类型						   返回值</span></span><br><span class="line"><span class="function"><span class="keyword">func</span> <span class="title">compute</span><span class="params">(fn <span class="keyword">func</span>(<span class="type">float64</span>, <span class="type">float64</span>)</span></span> <span class="type">float64</span>) <span class="type">float64</span> &#123;</span><br><span class="line">	<span class="keyword">return</span> fn(<span class="number">3</span>, <span class="number">4</span>)</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line"><span class="function"><span class="keyword">func</span> <span class="title">main</span><span class="params">()</span></span> &#123;</span><br><span class="line">	hypot := <span class="function"><span class="keyword">func</span><span class="params">(x, y <span class="type">float64</span>)</span></span> <span class="type">float64</span> &#123;</span><br><span class="line">		<span class="keyword">return</span> math.Sqrt(x*x + y*y)</span><br><span class="line">	&#125;</span><br><span class="line">	fmt.Println(hypot(<span class="number">5</span>, <span class="number">12</span>))</span><br><span class="line"></span><br><span class="line">	fmt.Println(compute(hypot))</span><br><span class="line">	fmt.Println(compute(math.Pow))</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+
+
+<h4 id="函数的闭包"><a href="#函数的闭包" class="headerlink" title="函数的闭包"></a>函数的闭包</h4><p>Go 函数可以是一个闭包。闭包是一个函数值，它引用了其函数体之外的变量。该函数可以访问并赋予其引用的变量的值，换句话说，该函数被这些变量“绑定”在一起。</p>
+<p>例如，函数 <code>adder</code> 返回一个闭包。每个闭包都被绑定在其各自的 <code>sum</code> 变量上。</p>
+<p>每个返回的函数都有自己独立的内存空间</p>
+<figure class="highlight go"><table><tr><td class="code"><pre><span class="line"><span class="function"><span class="keyword">func</span> <span class="title">adder</span><span class="params">()</span></span> <span class="function"><span class="keyword">func</span><span class="params">(<span class="type">int</span>)</span></span> <span class="type">int</span> &#123;</span><br><span class="line">	sum := <span class="number">0</span></span><br><span class="line">	<span class="keyword">return</span> <span class="function"><span class="keyword">func</span><span class="params">(x <span class="type">int</span>)</span></span> <span class="type">int</span> &#123;</span><br><span class="line">		sum += x</span><br><span class="line">		<span class="keyword">return</span> sum</span><br><span class="line">	&#125;</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line"><span class="function"><span class="keyword">func</span> <span class="title">main</span><span class="params">()</span></span> &#123;</span><br><span class="line">	pos, neg := adder(), adder()</span><br><span class="line">	<span class="keyword">for</span> i := <span class="number">0</span>; i &lt; <span class="number">10</span>; i++ &#123;</span><br><span class="line">		fmt.Println(</span><br><span class="line">			pos(i), <span class="comment">// 0,1,..., 9 加起来的值</span></span><br><span class="line">			neg(<span class="number">-2</span>*i), <span class="comment">// </span></span><br><span class="line">		)</span><br><span class="line">	&#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+
+
+<h1 id="方法和接口"><a href="#方法和接口" class="headerlink" title="方法和接口"></a>方法和接口</h1><h2 id="方法和接口-1"><a href="#方法和接口-1" class="headerlink" title="方法和接口"></a>方法和接口</h2><h3 id="方法"><a href="#方法" class="headerlink" title="方法"></a>方法</h3><p>Go 没有类。不过你可以为结构体类型定义方法。</p>
+<p>方法就是一类带特殊的 <font color="red">接收者</font> 参数的函数。</p>
+<figure class="highlight go"><table><tr><td class="code"><pre><span class="line"><span class="keyword">type</span> Vertex <span class="keyword">struct</span> &#123;</span><br><span class="line">	X, Y <span class="type">float64</span></span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line"><span class="comment">// 在此例中，Abs 方法拥有一个名为 v，类型为 Vertex 的接收者。</span></span><br><span class="line"><span class="function"><span class="keyword">func</span> <span class="params">(v Vertex)</span></span> Abs() <span class="type">float64</span> &#123;</span><br><span class="line">	<span class="keyword">return</span> math.Sqrt(v.X*v.X + v.Y*v.Y)</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line"><span class="comment">// 方法只是个带接收者参数的函数。</span></span><br><span class="line"><span class="function"><span class="keyword">func</span> <span class="title">Abs_2</span><span class="params">(v Vertex)</span></span> <span class="type">float64</span> &#123;</span><br><span class="line">	<span class="keyword">return</span> math.Sqrt(v.X*v.X + v.Y*v.Y)</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line"><span class="function"><span class="keyword">func</span> <span class="title">main</span><span class="params">()</span></span> &#123;</span><br><span class="line">	v := Vertex&#123;<span class="number">3</span>, <span class="number">4</span>&#125;</span><br><span class="line">	fmt.Println(v.Abs()) <span class="comment">// 5</span></span><br><span class="line">  fmt.Println(Abs_2(v)) <span class="comment">// 5</span></span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+<p>你也可以为非结构体类型声明方法。</p>
+<figure class="highlight go"><table><tr><td class="code"><pre><span class="line"><span class="keyword">type</span> MyFloat <span class="type">float64</span></span><br><span class="line"></span><br><span class="line"><span class="function"><span class="keyword">func</span> <span class="params">(f MyFloat)</span></span> Abs() <span class="type">float64</span> &#123;</span><br><span class="line">	<span class="keyword">if</span> f &lt; <span class="number">0</span> &#123;</span><br><span class="line">		<span class="keyword">return</span> <span class="type">float64</span>(-f)</span><br><span class="line">	&#125;</span><br><span class="line">	<span class="keyword">return</span> <span class="type">float64</span>(f)</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line"><span class="function"><span class="keyword">func</span> <span class="title">main</span><span class="params">()</span></span> &#123;</span><br><span class="line">	f := MyFloat(-math.Sqrt2)</span><br><span class="line">	fmt.Println(f.Abs())</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+<h4 id="指针接收者"><a href="#指针接收者" class="headerlink" title="指针接收者"></a>指针接收者</h4><figure class="highlight go"><table><tr><td class="code"><pre><span class="line"><span class="keyword">type</span> Vertex <span class="keyword">struct</span> &#123;</span><br><span class="line">	X, Y <span class="type">float64</span></span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line"></span><br><span class="line"><span class="function"><span class="keyword">func</span> <span class="params">(v Vertex)</span></span> Abs() <span class="type">float64</span> &#123;</span><br><span class="line">	<span class="keyword">return</span> math.Sqrt(v.X*v.X + v.Y*v.Y)</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line"><span class="comment">// 操作原本的值</span></span><br><span class="line"><span class="function"><span class="keyword">func</span> <span class="params">(v *Vertex)</span></span> Scale(f <span class="type">float64</span>) &#123;</span><br><span class="line">	v.X = v.X * f</span><br><span class="line">	v.Y = v.Y * f</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line"><span class="comment">// 对原始值的副本操作</span></span><br><span class="line"><span class="function"><span class="keyword">func</span> <span class="params">(v *Vertex)</span></span> Scale_2(f <span class="type">float64</span>) &#123;</span><br><span class="line">	v.X = v.X * f</span><br><span class="line">	v.Y = v.Y * f</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line"><span class="function"><span class="keyword">func</span> <span class="title">main</span><span class="params">()</span></span> &#123;</span><br><span class="line">	v := Vertex&#123;<span class="number">3</span>, <span class="number">4</span>&#125;</span><br><span class="line">	v.Scale(<span class="number">10</span>)</span><br><span class="line">	fmt.Println(v.Abs())</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+
+
+<h3 id="接口"><a href="#接口" class="headerlink" title="接口"></a>接口</h3><p><strong>接口类型</strong> 是由一组方法签名定义的集合。</p>
+<p>接口类型的变量可以保存任何实现了这些方法的值。</p>
+<figure class="highlight go"><table><tr><td class="code"><pre><span class="line"><span class="keyword">type</span> Abser <span class="keyword">interface</span> &#123;</span><br><span class="line">	Abs() <span class="type">float64</span></span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line"><span class="function"><span class="keyword">func</span> <span class="title">main</span><span class="params">()</span></span> &#123;</span><br><span class="line">	<span class="keyword">var</span> a Abser</span><br><span class="line">	f := MyFloat(-math.Sqrt2)</span><br><span class="line">	v := Vertex&#123;<span class="number">3</span>, <span class="number">4</span>&#125;</span><br><span class="line"></span><br><span class="line">	a = f  <span class="comment">// a MyFloat 实现了 Abser</span></span><br><span class="line">	a = &amp;v <span class="comment">// a *Vertex 实现了 Abser</span></span><br><span class="line"></span><br><span class="line">	<span class="comment">// 下面一行，v 是一个 Vertex（而不是 *Vertex）</span></span><br><span class="line">	<span class="comment">// 所以没有实现 Abser。</span></span><br><span class="line">	a = v</span><br><span class="line"></span><br><span class="line">	fmt.Println(a.Abs())</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line"><span class="keyword">type</span> MyFloat <span class="type">float64</span></span><br><span class="line"></span><br><span class="line"><span class="function"><span class="keyword">func</span> <span class="params">(f MyFloat)</span></span> Abs() <span class="type">float64</span> &#123;</span><br><span class="line">	<span class="keyword">if</span> f &lt; <span class="number">0</span> &#123;</span><br><span class="line">		<span class="keyword">return</span> <span class="type">float64</span>(-f)</span><br><span class="line">	&#125;</span><br><span class="line">	<span class="keyword">return</span> <span class="type">float64</span>(f)</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line"><span class="keyword">type</span> Vertex <span class="keyword">struct</span> &#123;</span><br><span class="line">	X, Y <span class="type">float64</span></span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line"><span class="function"><span class="keyword">func</span> <span class="params">(v *Vertex)</span></span> Abs() <span class="type">float64</span> &#123;</span><br><span class="line">	<span class="keyword">return</span> math.Sqrt(v.X*v.X + v.Y*v.Y)</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+<h4 id="接口值"><a href="#接口值" class="headerlink" title="接口值"></a>接口值</h4><h1 id="并发"><a href="#并发" class="headerlink" title="并发"></a>并发</h1><h2 id="并发-1"><a href="#并发-1" class="headerlink" title="并发"></a>并发</h2><p>Go 程（goroutine）是由 Go 运行时管理的轻量级线程。</p>
+<p>Go 程在相同的地址空间中运行，因此在访问共享的内存时必须进行同步。<a href="https://go-zh.org/pkg/sync/"><code>sync</code></a> 包提供了这种能力，不过在 Go 中并不经常用到，因为还有其它的办法</p>
+<figure class="highlight go"><table><tr><td class="code"><pre><span class="line"><span class="keyword">import</span> (</span><br><span class="line">	<span class="string">&quot;fmt&quot;</span></span><br><span class="line">	<span class="string">&quot;time&quot;</span></span><br><span class="line">)</span><br><span class="line"></span><br><span class="line"><span class="function"><span class="keyword">func</span> <span class="title">say</span><span class="params">(s <span class="type">string</span>)</span></span> &#123;</span><br><span class="line">	<span class="keyword">for</span> i := <span class="number">0</span>; i &lt; <span class="number">5</span>; i++ &#123;</span><br><span class="line">		time.Sleep(<span class="number">100</span> * time.Millisecond)</span><br><span class="line">		fmt.Println(s)</span><br><span class="line">	&#125;</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line"><span class="function"><span class="keyword">func</span> <span class="title">main</span><span class="params">()</span></span> &#123;</span><br><span class="line">	<span class="keyword">go</span> say(<span class="string">&quot;world&quot;</span>)</span><br><span class="line">	say(<span class="string">&quot;hello&quot;</span>)</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+<h3 id="信道"><a href="#信道" class="headerlink" title="信道"></a>信道</h3><p>信道是带有类型的管道，你可以通过它用信道操作符 <code>&lt;-</code> 来发送或者接收值。</p>
+<p>默认情况下，发送和接收操作在另一端准备好之前都会阻塞。这使得 Go 程可以在没有显式的锁或竞态变量的情况下进行同步。</p>
+<figure class="highlight go"><table><tr><td class="code"><pre><span class="line"><span class="function"><span class="keyword">func</span> <span class="title">sum</span><span class="params">(s []<span class="type">int</span>, c <span class="keyword">chan</span> <span class="type">int</span>)</span></span> &#123;</span><br><span class="line">	sum := <span class="number">0</span></span><br><span class="line">	<span class="keyword">for</span> _, v := <span class="keyword">range</span> s &#123;</span><br><span class="line">		sum += v</span><br><span class="line">	&#125;</span><br><span class="line">	c &lt;- sum <span class="comment">// 将和送入 c</span></span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line"><span class="function"><span class="keyword">func</span> <span class="title">main</span><span class="params">()</span></span> &#123;</span><br><span class="line">	s := []<span class="type">int</span>&#123;<span class="number">7</span>, <span class="number">2</span>, <span class="number">8</span>, <span class="number">-9</span>, <span class="number">4</span>, <span class="number">0</span>&#125;</span><br><span class="line"></span><br><span class="line">	c := <span class="built_in">make</span>(<span class="keyword">chan</span> <span class="type">int</span>) <span class="comment">// 信道创建</span></span><br><span class="line">	<span class="keyword">go</span> sum(s[:<span class="built_in">len</span>(s)/<span class="number">2</span>], c)</span><br><span class="line">	<span class="keyword">go</span> sum(s[<span class="built_in">len</span>(s)/<span class="number">2</span>:], c)</span><br><span class="line">	x, y := &lt;-c, &lt;-c <span class="comment">// 从 c 中接收</span></span><br><span class="line"></span><br><span class="line">	fmt.Println(x, y, x+y)</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+<p><strong>信道可以是 <em>带缓冲的</em></strong>。将缓冲长度作为第二个参数提供给 <code>make</code> 来初始化一个带缓冲的信道：</p>
+<figure class="highlight go"><table><tr><td class="code"><pre><span class="line"><span class="function"><span class="keyword">func</span> <span class="title">main</span><span class="params">()</span></span> &#123;</span><br><span class="line">	ch := <span class="built_in">make</span>(<span class="keyword">chan</span> <span class="type">int</span>, <span class="number">7</span>)</span><br><span class="line">	ch &lt;- <span class="number">1</span></span><br><span class="line">	ch &lt;- <span class="number">2</span></span><br><span class="line">	fmt.Println(&lt;-ch)</span><br><span class="line">	fmt.Println(&lt;-ch)</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+<p>仅当信道的缓冲区填满后，向其发送数据时才会阻塞。当缓冲区为空时，接受方会阻塞。</p>
+<h4 id="select-语句"><a href="#select-语句" class="headerlink" title="select 语句"></a>select 语句</h4><p><code>select</code> 语句使一个 Go 程可以等待多个通信操作</p>
+<p><code>select</code> 会阻塞到某个分支可以继续执行为止，这时就会执行该分支。当多个分支都准备好时会随机选择一个执行。</p>
+<figure class="highlight go"><table><tr><td class="code"><pre><span class="line"><span class="function"><span class="keyword">func</span> <span class="title">fibonacci</span><span class="params">(c, quit <span class="keyword">chan</span> <span class="type">int</span>)</span></span> &#123;</span><br><span class="line">	x, y := <span class="number">0</span>, <span class="number">1</span></span><br><span class="line">	<span class="keyword">for</span> &#123;</span><br><span class="line">		<span class="keyword">select</span> &#123;</span><br><span class="line">		<span class="keyword">case</span> c &lt;- x:</span><br><span class="line">			x, y = y, x+y</span><br><span class="line">		<span class="keyword">case</span> &lt;-quit:</span><br><span class="line">			fmt.Println(<span class="string">&quot;quit&quot;</span>)</span><br><span class="line">			<span class="keyword">return</span></span><br><span class="line">		&#125;</span><br><span class="line">	&#125;</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line"><span class="function"><span class="keyword">func</span> <span class="title">main</span><span class="params">()</span></span> &#123;</span><br><span class="line">	c := <span class="built_in">make</span>(<span class="keyword">chan</span> <span class="type">int</span>)</span><br><span class="line">	quit := <span class="built_in">make</span>(<span class="keyword">chan</span> <span class="type">int</span>)</span><br><span class="line">	<span class="keyword">go</span> <span class="function"><span class="keyword">func</span><span class="params">()</span></span> &#123;</span><br><span class="line">		<span class="keyword">for</span> i := <span class="number">0</span>; i &lt; <span class="number">10</span>; i++ &#123;</span><br><span class="line">			fmt.Println(&lt;-c)</span><br><span class="line">		&#125;</span><br><span class="line">		quit &lt;- <span class="number">0</span></span><br><span class="line">	&#125;()</span><br><span class="line">	fibonacci(c, quit)</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+<h3 id="sync-Mutex"><a href="#sync-Mutex" class="headerlink" title="sync.Mutex"></a>sync.Mutex</h3><p>保证每次只有一个 Go 程能够访问一个共享的变量，从而避免冲突</p>
+]]></content>
+      <categories>
+        <category>Distributed Systems</category>
+      </categories>
+      <tags>
+        <tag>MIT 6.824</tag>
+        <tag>Programming Language</tag>
+        <tag>Golang</tag>
+      </tags>
+  </entry>
+  <entry>
+    <title>Designing Data Intensive Application Chapter5 Replication</title>
+    <url>/Distributed-Systems/Distributed_Sytem/Designing-data-intensive-applications/Chapter5/</url>
     <content><![CDATA[<p>第一部分讨论了单台机器存储系统的主要技术。第二部分讨论的是多台机器提供数据存储（storage）和检索服务（retrieval of data）</p>
 <span id="more"></span>
 
@@ -772,42 +1032,79 @@
 <li>有一些工具，例如Oracle GoldenGate， 可以读取数据的日志让应用程序获取数据变更。</li>
 <li>另一种是自带的过程： triggers and stored procedure。</li>
 </ol>
-<h2 id="复制滞后问题（Problems-with-Replication-Lag）"><a href="#复制滞后问题（Problems-with-Replication-Lag）" class="headerlink" title="复制滞后问题（Problems with Replication Lag）"></a>复制滞后问题（Problems with Replication Lag）</h2><h2 id="多主节点复制（Multi-Leader-Replication）"><a href="#多主节点复制（Multi-Leader-Replication）" class="headerlink" title="多主节点复制（Multi-Leader Replication）"></a>多主节点复制（Multi-Leader Replication）</h2><h2 id="无主节点复制（Leaderless-Replication）"><a href="#无主节点复制（Leaderless-Replication）" class="headerlink" title="无主节点复制（Leaderless Replication）"></a>无主节点复制（Leaderless Replication）</h2><h2 id="小结（Summary）"><a href="#小结（Summary）" class="headerlink" title="小结（Summary）"></a>小结（Summary）</h2>]]></content>
+<h2 id="复制滞后问题（Problems-with-Replication-Lag）"><a href="#复制滞后问题（Problems-with-Replication-Lag）" class="headerlink" title="复制滞后问题（Problems with Replication Lag）"></a>复制滞后问题（Problems with Replication Lag）</h2><p>Leader-based 的复制， 要求所有的写都经过Leader， 而读可以在任何一个节点，这种 read-scaling 的结构，只能用于异步复制，因为基于同步的复制在所有的follwer，如果一个follower奔溃或者网络中断，都会造成故障。</p>
+<p>异步复制的问题：</p>
+<ul>
+<li>follower落后于leader，导致读到过期的信息。</li>
+</ul>
+<p>这种不一致性是暂时的状态，如果停止写入数据，并等待一段时间，follower 最终会 catch up leader，这种效应叫做 eventual consistency。</p>
+<h3 id="读自己的写（Reading-Your-Own-Writes）"><a href="#读自己的写（Reading-Your-Own-Writes）" class="headerlink" title="读自己的写（Reading Your Own Writes）"></a>读自己的写（Reading Your Own Writes）</h3><p>用户从 leader写入数据，但是可能从就近的follower读取数据。</p>
+<p>![Screenshot 2022-04-11 at 14.45.47](&#x2F;Users&#x2F;zhangyuyang&#x2F;Desktop&#x2F;blog&#x2F;source&#x2F;_posts&#x2F;Distributed_Sytem&#x2F;Designing-data-intensive-applications&#x2F;Chapter5&#x2F;Screenshot 2022-04-11 at 14.45.47.png)</p>
+<p>然而对于异步复制，存在问题：</p>
+<p>用户写入不久查看数据，但新数据尚未到达follower，用户无法查看到数据。</p>
+<p>这种情况下，需要 read-after-write consistency 也叫做 read-your-writes consistency。这保证了，如果用户重新加载页面，总能看到自己提交的update 或者 insert。 但是对于其他用户，不一定可以立即看到，可能需要等待一段时间。</p>
+<p>如何实现，以下几个可能的方案：</p>
+<ul>
+<li>如果访问，用户可能会修改的数据时，从leader读取，否则就从follower读取。但是这种方法要求一些方法在执行之前，就知道内容是否需要修改</li>
+<li>如果大部分数据都是要修改的，那么上面的方案不可行（缺失 read-scaling的优点）。此时需要其他方案判断是否从主节点读取，比如：跟踪最近更新的时间，如果是1分钟之内，则在leader读取，否则从follower读取；监控 follower的滞后程度，如果是超过1分钟，避免从这些节点读取</li>
+<li>客户端可以记录最近更新的时间戳，并附带在request中，根据此消息，系统可以确保对该用户提供，至少包含了该时间戳的更新。若这个follower中不包含，则交给另一个follower，或者等待最近更新。</li>
+<li>如果副本分布在多数据中心，在必须先把请求路由到主节点所在的数据中心</li>
+</ul>
+<p>当用户从多个设备访问数据：如一个桌面Web，和手机App。要提供 cross-device read-after-write consistency。在这种情况下，有其他问题需要讨论：</p>
+<ul>
+<li>记住时间戳（timestamp）的办法，实现起来会比较困难，因为一台设备无法知道另一台设备上的数据，此时，metadata应该要全局共享（centralized）</li>
+<li>如果副本分布在多数据中心，无法保证来自不同设备的连接经过路由滞后到达同一个数据中心。</li>
+</ul>
+<h3 id="单调读（Monotonic-Reads）"><a href="#单调读（Monotonic-Reads）" class="headerlink" title="单调读（Monotonic Reads）"></a>单调读（Monotonic Reads）</h3><p>![Screenshot 2022-04-11 at 15.05.09](&#x2F;Users&#x2F;zhangyuyang&#x2F;Desktop&#x2F;blog&#x2F;source&#x2F;_posts&#x2F;Distributed_Sytem&#x2F;Designing-data-intensive-applications&#x2F;Chapter5&#x2F;Screenshot 2022-04-11 at 15.05.09.png)</p>
+<p>出现了数据回滚的异常。</p>
+<p>Monotonic reads保证这种异常不会发生。</p>
+<p>Monotonic read 一种实现方法是：</p>
+<p>确保用户总是从固定的同一副本读取。例如基于用户ID的hash值，而不是随机。</p>
+<h3 id="前缀一致读（Consistent-Prefix-Reads）"><a href="#前缀一致读（Consistent-Prefix-Reads）" class="headerlink" title="前缀一致读（Consistent Prefix Reads）"></a>前缀一致读（Consistent Prefix Reads）</h3><p>![Screenshot 2022-04-11 at 15.08.00](&#x2F;Users&#x2F;zhangyuyang&#x2F;Desktop&#x2F;blog&#x2F;source&#x2F;_posts&#x2F;Distributed_Sytem&#x2F;Designing-data-intensive-applications&#x2F;Chapter5&#x2F;Screenshot 2022-04-11 at 15.08.00.png)</p>
+<p>在别人Observer看来，在问题提出前（How far。。）已经有答案了（About ten。。）造成了困惑</p>
+<p>为了解决这种异常的现象，需要 consistent prefix read： 对于按照某个顺序的写请求，任何人读的时候，也会按照写入的顺序</p>
+<p>这种问题是 partitioned databse 特殊的问题。</p>
+<h3 id="复制滞后的解决方案（Solutions-for-Replication-Lag）"><a href="#复制滞后的解决方案（Solutions-for-Replication-Lag）" class="headerlink" title="复制滞后的解决方案（Solutions for Replication Lag）"></a>复制滞后的解决方案（Solutions for Replication Lag）</h3><p>在使用 eventually consistent system的时候，优先思考：replication lag会造成什么样的问题。答案是没问题，那OK。如果是会造成糟糕的用户体验，那么需要更强的保证，比如 read-after-write</p>
+<h2 id="多主节点复制（Multi-Leader-Replication）"><a href="#多主节点复制（Multi-Leader-Replication）" class="headerlink" title="多主节点复制（Multi-Leader Replication）"></a>多主节点复制（Multi-Leader Replication）</h2><p>Leader-based replication的缺点：系统只有一个 leader，所有的写入都要经过leader。如果因为某些问题（网络，leader奔溃等），就如法写入数据。</p>
+<p>Leader based replication的扩展就是，配置多个 leader： 每个leader 都可以接受写入，复制还是类似的，处理写的每个 leader 都必须将数据转发到其他所有nodes。叫做 multi-leader 或者 master-master， active&#x2F;active replication。 此时每个leader 也是其他leader的follower。</p>
+<h3 id="适用场景（Use-Cases-for-Multi-Leader-Replication"><a href="#适用场景（Use-Cases-for-Multi-Leader-Replication" class="headerlink" title="适用场景（Use Cases for Multi-Leader Replication)"></a>适用场景（Use Cases for Multi-Leader Replication)</h3><h4 id="多数据中心（Multi-datacenter-operation）"><a href="#多数据中心（Multi-datacenter-operation）" class="headerlink" title="多数据中心（Multi-datacenter operation）"></a>多数据中心（Multi-datacenter operation）</h4><p>![Screenshot 2022-04-11 at 15.26.57](&#x2F;Users&#x2F;zhangyuyang&#x2F;Desktop&#x2F;blog&#x2F;source&#x2F;_posts&#x2F;Distributed_Sytem&#x2F;Designing-data-intensive-applications&#x2F;Chapter5&#x2F;Screenshot 2022-04-11 at 15.26.57.png)</p>
+<p>可以在每个datacenter 配置一个leader，在每个datacenter内用常规的leader-based replication。而在datacenter之间，由leader负责同其他datacenter的leader进行数据的交互，更新。</p>
+<p>存在的缺点：</p>
+<p>不同的datacenter 可能会修改相同的数据，因此要解决write conflict。</p>
+<h4 id="离线客户端操作（Clients-with-offline-operation）"><a href="#离线客户端操作（Clients-with-offline-operation）" class="headerlink" title="离线客户端操作（Clients with offline operation）"></a>离线客户端操作（Clients with offline operation）</h4><p>在离线状态进行的任何更改，会在下次设备上线时，与服务器以及其他设备同步（如日历应用程序）。</p>
+<p>这种情况下，每个设备充当一个 leader的本地数据库，在所有设备之间采用异步方式同步这些 leader上的副本。</p>
+<h4 id="协作编辑（Collaborative-editing）"><a href="#协作编辑（Collaborative-editing）" class="headerlink" title="协作编辑（Collaborative editing）"></a>协作编辑（Collaborative editing）</h4><p>当用户编辑文件时，所做的更改会立即应用到本地副本，然后异步复制到服务器以及编辑同一文档的其他用户中。</p>
+<h3 id="处理写冲突（Handling-Write-Conflicts）"><a href="#处理写冲突（Handling-Write-Conflicts）" class="headerlink" title="处理写冲突（Handling Write Conflicts）"></a>处理写冲突（Handling Write Conflicts）</h3><p>![Screenshot 2022-04-11 at 15.42.46](&#x2F;Users&#x2F;zhangyuyang&#x2F;Desktop&#x2F;blog&#x2F;source&#x2F;_posts&#x2F;Distributed_Sytem&#x2F;Designing-data-intensive-applications&#x2F;Chapter5&#x2F;Screenshot 2022-04-11 at 15.42.46.png)</p>
+<h4 id="同步与异步冲突检测（Synchronous-versus-asynchronous-conflict-detection）"><a href="#同步与异步冲突检测（Synchronous-versus-asynchronous-conflict-detection）" class="headerlink" title="同步与异步冲突检测（Synchronous versus asynchronous conflict detection）"></a>同步与异步冲突检测（Synchronous versus asynchronous conflict detection）</h4><p>在多节点的模型下，两个写都是成功的，并且只能在稍后的时间点上才能异步检测到冲突，无法在用户层面解决问题。</p>
+<p>如果想要同步的冲突检测，则应该采用 single-leader replication</p>
+<h4 id="避免冲突（Conflict-avoidance）"><a href="#避免冲突（Conflict-avoidance）" class="headerlink" title="避免冲突（Conflict avoidance）"></a>避免冲突（Conflict avoidance）</h4><p>每个用户对应一个特定的datacenter（例如根据用户的地理位置）， 并在该数据中心上进行读写。</p>
+<p>但是有些情况（datacenter 失效，或者 用户换位置）此时，上述的方式不再有效</p>
+<h4 id="收敛于一致性状态（Converging-toward-a-consistent-state）"><a href="#收敛于一致性状态（Converging-toward-a-consistent-state）" class="headerlink" title="收敛于一致性状态（Converging toward a consistent state）"></a>收敛于一致性状态（Converging toward a consistent state）</h4><p>所有replication scheme 必须确保最终状态都是一致的。以一种convergent的方法，解决这种conflict。意味着，所有更改被复制，同步之后，所有的副本的值都是相同的。</p>
+<p>可能实现的方式：</p>
+<ul>
+<li>每个写入配一个 唯一的ID，例如时间，ID最高的存入，其他丢弃</li>
+<li>每个replica 分配一个唯一的ID，并制定规则，ID高的写入顺序是中高于ID低的</li>
+<li>以某些方式，将值合并在一起，然后拼接，如5-7中可能结果为（B&#x2F;C）</li>
+<li>记录和保留冲突中的消息，然后依靠应用层的逻辑，事后解决冲突（可能会提醒user）</li>
+</ul>
+<h4 id="自定义冲突解决逻辑（Custom-conflict-resolution-logic）"><a href="#自定义冲突解决逻辑（Custom-conflict-resolution-logic）" class="headerlink" title="自定义冲突解决逻辑（Custom conflict resolution logic）"></a>自定义冲突解决逻辑（Custom conflict resolution logic）</h4><p>user在应用层编写代码来解决冲突。可以在写入或者读取时执行这些代码逻辑：</p>
+<ul>
+<li>写入时执行：检测到冲突时，调用应用层的冲突处理程序</li>
+<li>读取时执行：检测到冲突时，将冲突写入的值保存下来，下次读取数据的时候，将数据的多版本返回给应用层。</li>
+</ul>
+<h3 id="拓扑结构（Multi-Leader-Replication-Topologies）"><a href="#拓扑结构（Multi-Leader-Replication-Topologies）" class="headerlink" title="拓扑结构（Multi-Leader Replication Topologies）"></a>拓扑结构（Multi-Leader Replication Topologies）</h3><p>多leader时，通讯传播路径</p>
+<p>![Screenshot 2022-04-11 at 16.06.30](&#x2F;Users&#x2F;zhangyuyang&#x2F;Desktop&#x2F;blog&#x2F;source&#x2F;_posts&#x2F;Distributed_Sytem&#x2F;Designing-data-intensive-applications&#x2F;Chapter5&#x2F;Screenshot 2022-04-11 at 16.06.30.png)</p>
+<p>Circular 和 star topology 中，每个node有特殊的ID，在replication log中，记录已通过node的ID，如果收到了包含自己ID的log，表明请求以及处理过了，会忽略变更请求</p>
+<p>Circular 和 star topology缺点：单点故障会影响全部</p>
+<p>All-to-All 缺点：存在某些network link比其他的快，导致replication message之间的覆盖。</p>
+<p>![Screenshot 2022-04-11 at 16.12.08](&#x2F;Users&#x2F;zhangyuyang&#x2F;Desktop&#x2F;blog&#x2F;source&#x2F;_posts&#x2F;Distributed_Sytem&#x2F;Designing-data-intensive-applications&#x2F;Chapter5&#x2F;Screenshot 2022-04-11 at 16.12.08.png)</p>
+<h2 id="无主节点复制（Leaderless-Replication）"><a href="#无主节点复制（Leaderless-Replication）" class="headerlink" title="无主节点复制（Leaderless Replication）"></a>无主节点复制（Leaderless Replication）</h2><h2 id="小结（Summary）"><a href="#小结（Summary）" class="headerlink" title="小结（Summary）"></a>小结（Summary）</h2>]]></content>
       <categories>
         <category>Distributed Systems</category>
       </categories>
       <tags>
         <tag>Distributed Systems</tag>
         <tag>Book</tag>
-      </tags>
-  </entry>
-  <entry>
-    <title>Designing Data Intensive Application Part3</title>
-    <url>/Distributed-Systems/Distributed_Sytem/Designing-data-intensive-applications/part3/</url>
-    <content><![CDATA[]]></content>
-      <categories>
-        <category>Distributed Systems</category>
-      </categories>
-      <tags>
-        <tag>Distributed Systems</tag>
-        <tag>Book</tag>
-      </tags>
-  </entry>
-  <entry>
-    <title>MIT 6.824 Lab 1 MapReduce</title>
-    <url>/Distributed-Systems/Distributed_Sytem/MIT-6-824-Lab01/</url>
-    <content><![CDATA[<p>第一个Lab是MapReduce的分布式实现</p>
-<span id="more"></span>
-
-]]></content>
-      <categories>
-        <category>Distributed Systems</category>
-      </categories>
-      <tags>
-        <tag>Distributed Systems</tag>
-        <tag>MIT 6.824</tag>
-        <tag>MapReduce</tag>
-        <tag>Lab</tag>
       </tags>
   </entry>
 </search>

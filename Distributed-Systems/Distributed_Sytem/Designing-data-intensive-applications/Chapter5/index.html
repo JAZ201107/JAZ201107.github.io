@@ -24,19 +24,19 @@
 
   <meta name="description" content="第一部分讨论了单台机器存储系统的主要技术。第二部分讨论的是多台机器提供数据存储（storage）和检索服务（retrieval of data）">
 <meta property="og:type" content="article">
-<meta property="og:title" content="Designing Data Intensive Application Part2">
-<meta property="og:url" content="https://yu-yang.pro/Distributed-Systems/Distributed_Sytem/Designing-data-intensive-applications/part2/index.html">
+<meta property="og:title" content="Designing Data Intensive Application Chapter5 Replication">
+<meta property="og:url" content="https://yu-yang.pro/Distributed-Systems/Distributed_Sytem/Designing-data-intensive-applications/Chapter5/index.html">
 <meta property="og:site_name" content="Yuyang&#39;s 博客">
 <meta property="og:description" content="第一部分讨论了单台机器存储系统的主要技术。第二部分讨论的是多台机器提供数据存储（storage）和检索服务（retrieval of data）">
 <meta property="og:locale" content="en_US">
 <meta property="article:published_time" content="2022-04-07T15:53:39.000Z">
-<meta property="article:modified_time" content="2022-04-08T04:15:13.274Z">
+<meta property="article:modified_time" content="2022-04-11T09:01:47.081Z">
 <meta property="article:author" content="Yuyang Zhang">
 <meta property="article:tag" content="Distributed Systems">
 <meta property="article:tag" content="Book">
 <meta name="twitter:card" content="summary">
 
-<link rel="canonical" href="https://yu-yang.pro/Distributed-Systems/Distributed_Sytem/Designing-data-intensive-applications/part2/">
+<link rel="canonical" href="https://yu-yang.pro/Distributed-Systems/Distributed_Sytem/Designing-data-intensive-applications/Chapter5/">
 
 
 <script id="page-configurations">
@@ -49,7 +49,7 @@
   };
 </script>
 
-  <title>Designing Data Intensive Application Part2 | Yuyang's 博客</title>
+  <title>Designing Data Intensive Application Chapter5 Replication | Yuyang's 博客</title>
   
 
 
@@ -193,7 +193,7 @@
   
   
   <article itemscope itemtype="http://schema.org/Article" class="post-block" lang="en">
-    <link itemprop="mainEntityOfPage" href="https://yu-yang.pro/Distributed-Systems/Distributed_Sytem/Designing-data-intensive-applications/part2/">
+    <link itemprop="mainEntityOfPage" href="https://yu-yang.pro/Distributed-Systems/Distributed_Sytem/Designing-data-intensive-applications/Chapter5/">
 
     <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
       <meta itemprop="image" content="/images/profile_img.jpg">
@@ -206,7 +206,7 @@
     </span>
       <header class="post-header">
         <h1 class="post-title" itemprop="name headline">
-          Designing Data Intensive Application Part2
+          Designing Data Intensive Application Chapter5 Replication
         </h1>
 
         <div class="post-meta">
@@ -223,7 +223,7 @@
                   <i class="far fa-calendar-check"></i>
                 </span>
                 <span class="post-meta-item-text">Edited on</span>
-                <time title="Modified: 2022-04-08 12:15:13" itemprop="dateModified" datetime="2022-04-08T12:15:13+08:00">2022-04-08</time>
+                <time title="Modified: 2022-04-11 17:01:47" itemprop="dateModified" datetime="2022-04-11T17:01:47+08:00">2022-04-11</time>
               </span>
             <span class="post-meta-item">
               <span class="post-meta-item-icon">
@@ -248,14 +248,14 @@
                 <i class="far fa-file-word"></i>
               </span>
                 <span class="post-meta-item-text">Symbols count in article: </span>
-              <span>5.9k</span>
+              <span>11k</span>
             </span>
             <span class="post-meta-item" title="Reading time">
               <span class="post-meta-item-icon">
                 <i class="far fa-clock"></i>
               </span>
                 <span class="post-meta-item-text">Reading time &asymp;</span>
-              <span>5 mins.</span>
+              <span>10 mins.</span>
             </span>
 
         </div>
@@ -423,7 +423,73 @@
 <li>有一些工具，例如Oracle GoldenGate， 可以读取数据的日志让应用程序获取数据变更。</li>
 <li>另一种是自带的过程： triggers and stored procedure。</li>
 </ol>
-<h2 id="复制滞后问题（Problems-with-Replication-Lag）"><a href="#复制滞后问题（Problems-with-Replication-Lag）" class="headerlink" title="复制滞后问题（Problems with Replication Lag）"></a>复制滞后问题（Problems with Replication Lag）</h2><h2 id="多主节点复制（Multi-Leader-Replication）"><a href="#多主节点复制（Multi-Leader-Replication）" class="headerlink" title="多主节点复制（Multi-Leader Replication）"></a>多主节点复制（Multi-Leader Replication）</h2><h2 id="无主节点复制（Leaderless-Replication）"><a href="#无主节点复制（Leaderless-Replication）" class="headerlink" title="无主节点复制（Leaderless Replication）"></a>无主节点复制（Leaderless Replication）</h2><h2 id="小结（Summary）"><a href="#小结（Summary）" class="headerlink" title="小结（Summary）"></a>小结（Summary）</h2>
+<h2 id="复制滞后问题（Problems-with-Replication-Lag）"><a href="#复制滞后问题（Problems-with-Replication-Lag）" class="headerlink" title="复制滞后问题（Problems with Replication Lag）"></a>复制滞后问题（Problems with Replication Lag）</h2><p>Leader-based 的复制， 要求所有的写都经过Leader， 而读可以在任何一个节点，这种 read-scaling 的结构，只能用于异步复制，因为基于同步的复制在所有的follwer，如果一个follower奔溃或者网络中断，都会造成故障。</p>
+<p>异步复制的问题：</p>
+<ul>
+<li>follower落后于leader，导致读到过期的信息。</li>
+</ul>
+<p>这种不一致性是暂时的状态，如果停止写入数据，并等待一段时间，follower 最终会 catch up leader，这种效应叫做 eventual consistency。</p>
+<h3 id="读自己的写（Reading-Your-Own-Writes）"><a href="#读自己的写（Reading-Your-Own-Writes）" class="headerlink" title="读自己的写（Reading Your Own Writes）"></a>读自己的写（Reading Your Own Writes）</h3><p>用户从 leader写入数据，但是可能从就近的follower读取数据。</p>
+<p>![Screenshot 2022-04-11 at 14.45.47](&#x2F;Users&#x2F;zhangyuyang&#x2F;Desktop&#x2F;blog&#x2F;source&#x2F;_posts&#x2F;Distributed_Sytem&#x2F;Designing-data-intensive-applications&#x2F;Chapter5&#x2F;Screenshot 2022-04-11 at 14.45.47.png)</p>
+<p>然而对于异步复制，存在问题：</p>
+<p>用户写入不久查看数据，但新数据尚未到达follower，用户无法查看到数据。</p>
+<p>这种情况下，需要 read-after-write consistency 也叫做 read-your-writes consistency。这保证了，如果用户重新加载页面，总能看到自己提交的update 或者 insert。 但是对于其他用户，不一定可以立即看到，可能需要等待一段时间。</p>
+<p>如何实现，以下几个可能的方案：</p>
+<ul>
+<li>如果访问，用户可能会修改的数据时，从leader读取，否则就从follower读取。但是这种方法要求一些方法在执行之前，就知道内容是否需要修改</li>
+<li>如果大部分数据都是要修改的，那么上面的方案不可行（缺失 read-scaling的优点）。此时需要其他方案判断是否从主节点读取，比如：跟踪最近更新的时间，如果是1分钟之内，则在leader读取，否则从follower读取；监控 follower的滞后程度，如果是超过1分钟，避免从这些节点读取</li>
+<li>客户端可以记录最近更新的时间戳，并附带在request中，根据此消息，系统可以确保对该用户提供，至少包含了该时间戳的更新。若这个follower中不包含，则交给另一个follower，或者等待最近更新。</li>
+<li>如果副本分布在多数据中心，在必须先把请求路由到主节点所在的数据中心</li>
+</ul>
+<p>当用户从多个设备访问数据：如一个桌面Web，和手机App。要提供 cross-device read-after-write consistency。在这种情况下，有其他问题需要讨论：</p>
+<ul>
+<li>记住时间戳（timestamp）的办法，实现起来会比较困难，因为一台设备无法知道另一台设备上的数据，此时，metadata应该要全局共享（centralized）</li>
+<li>如果副本分布在多数据中心，无法保证来自不同设备的连接经过路由滞后到达同一个数据中心。</li>
+</ul>
+<h3 id="单调读（Monotonic-Reads）"><a href="#单调读（Monotonic-Reads）" class="headerlink" title="单调读（Monotonic Reads）"></a>单调读（Monotonic Reads）</h3><p>![Screenshot 2022-04-11 at 15.05.09](&#x2F;Users&#x2F;zhangyuyang&#x2F;Desktop&#x2F;blog&#x2F;source&#x2F;_posts&#x2F;Distributed_Sytem&#x2F;Designing-data-intensive-applications&#x2F;Chapter5&#x2F;Screenshot 2022-04-11 at 15.05.09.png)</p>
+<p>出现了数据回滚的异常。</p>
+<p>Monotonic reads保证这种异常不会发生。</p>
+<p>Monotonic read 一种实现方法是：</p>
+<p>确保用户总是从固定的同一副本读取。例如基于用户ID的hash值，而不是随机。</p>
+<h3 id="前缀一致读（Consistent-Prefix-Reads）"><a href="#前缀一致读（Consistent-Prefix-Reads）" class="headerlink" title="前缀一致读（Consistent Prefix Reads）"></a>前缀一致读（Consistent Prefix Reads）</h3><p>![Screenshot 2022-04-11 at 15.08.00](&#x2F;Users&#x2F;zhangyuyang&#x2F;Desktop&#x2F;blog&#x2F;source&#x2F;_posts&#x2F;Distributed_Sytem&#x2F;Designing-data-intensive-applications&#x2F;Chapter5&#x2F;Screenshot 2022-04-11 at 15.08.00.png)</p>
+<p>在别人Observer看来，在问题提出前（How far。。）已经有答案了（About ten。。）造成了困惑</p>
+<p>为了解决这种异常的现象，需要 consistent prefix read： 对于按照某个顺序的写请求，任何人读的时候，也会按照写入的顺序</p>
+<p>这种问题是 partitioned databse 特殊的问题。</p>
+<h3 id="复制滞后的解决方案（Solutions-for-Replication-Lag）"><a href="#复制滞后的解决方案（Solutions-for-Replication-Lag）" class="headerlink" title="复制滞后的解决方案（Solutions for Replication Lag）"></a>复制滞后的解决方案（Solutions for Replication Lag）</h3><p>在使用 eventually consistent system的时候，优先思考：replication lag会造成什么样的问题。答案是没问题，那OK。如果是会造成糟糕的用户体验，那么需要更强的保证，比如 read-after-write</p>
+<h2 id="多主节点复制（Multi-Leader-Replication）"><a href="#多主节点复制（Multi-Leader-Replication）" class="headerlink" title="多主节点复制（Multi-Leader Replication）"></a>多主节点复制（Multi-Leader Replication）</h2><p>Leader-based replication的缺点：系统只有一个 leader，所有的写入都要经过leader。如果因为某些问题（网络，leader奔溃等），就如法写入数据。</p>
+<p>Leader based replication的扩展就是，配置多个 leader： 每个leader 都可以接受写入，复制还是类似的，处理写的每个 leader 都必须将数据转发到其他所有nodes。叫做 multi-leader 或者 master-master， active&#x2F;active replication。 此时每个leader 也是其他leader的follower。</p>
+<h3 id="适用场景（Use-Cases-for-Multi-Leader-Replication"><a href="#适用场景（Use-Cases-for-Multi-Leader-Replication" class="headerlink" title="适用场景（Use Cases for Multi-Leader Replication)"></a>适用场景（Use Cases for Multi-Leader Replication)</h3><h4 id="多数据中心（Multi-datacenter-operation）"><a href="#多数据中心（Multi-datacenter-operation）" class="headerlink" title="多数据中心（Multi-datacenter operation）"></a>多数据中心（Multi-datacenter operation）</h4><p>![Screenshot 2022-04-11 at 15.26.57](&#x2F;Users&#x2F;zhangyuyang&#x2F;Desktop&#x2F;blog&#x2F;source&#x2F;_posts&#x2F;Distributed_Sytem&#x2F;Designing-data-intensive-applications&#x2F;Chapter5&#x2F;Screenshot 2022-04-11 at 15.26.57.png)</p>
+<p>可以在每个datacenter 配置一个leader，在每个datacenter内用常规的leader-based replication。而在datacenter之间，由leader负责同其他datacenter的leader进行数据的交互，更新。</p>
+<p>存在的缺点：</p>
+<p>不同的datacenter 可能会修改相同的数据，因此要解决write conflict。</p>
+<h4 id="离线客户端操作（Clients-with-offline-operation）"><a href="#离线客户端操作（Clients-with-offline-operation）" class="headerlink" title="离线客户端操作（Clients with offline operation）"></a>离线客户端操作（Clients with offline operation）</h4><p>在离线状态进行的任何更改，会在下次设备上线时，与服务器以及其他设备同步（如日历应用程序）。</p>
+<p>这种情况下，每个设备充当一个 leader的本地数据库，在所有设备之间采用异步方式同步这些 leader上的副本。</p>
+<h4 id="协作编辑（Collaborative-editing）"><a href="#协作编辑（Collaborative-editing）" class="headerlink" title="协作编辑（Collaborative editing）"></a>协作编辑（Collaborative editing）</h4><p>当用户编辑文件时，所做的更改会立即应用到本地副本，然后异步复制到服务器以及编辑同一文档的其他用户中。</p>
+<h3 id="处理写冲突（Handling-Write-Conflicts）"><a href="#处理写冲突（Handling-Write-Conflicts）" class="headerlink" title="处理写冲突（Handling Write Conflicts）"></a>处理写冲突（Handling Write Conflicts）</h3><p>![Screenshot 2022-04-11 at 15.42.46](&#x2F;Users&#x2F;zhangyuyang&#x2F;Desktop&#x2F;blog&#x2F;source&#x2F;_posts&#x2F;Distributed_Sytem&#x2F;Designing-data-intensive-applications&#x2F;Chapter5&#x2F;Screenshot 2022-04-11 at 15.42.46.png)</p>
+<h4 id="同步与异步冲突检测（Synchronous-versus-asynchronous-conflict-detection）"><a href="#同步与异步冲突检测（Synchronous-versus-asynchronous-conflict-detection）" class="headerlink" title="同步与异步冲突检测（Synchronous versus asynchronous conflict detection）"></a>同步与异步冲突检测（Synchronous versus asynchronous conflict detection）</h4><p>在多节点的模型下，两个写都是成功的，并且只能在稍后的时间点上才能异步检测到冲突，无法在用户层面解决问题。</p>
+<p>如果想要同步的冲突检测，则应该采用 single-leader replication</p>
+<h4 id="避免冲突（Conflict-avoidance）"><a href="#避免冲突（Conflict-avoidance）" class="headerlink" title="避免冲突（Conflict avoidance）"></a>避免冲突（Conflict avoidance）</h4><p>每个用户对应一个特定的datacenter（例如根据用户的地理位置）， 并在该数据中心上进行读写。</p>
+<p>但是有些情况（datacenter 失效，或者 用户换位置）此时，上述的方式不再有效</p>
+<h4 id="收敛于一致性状态（Converging-toward-a-consistent-state）"><a href="#收敛于一致性状态（Converging-toward-a-consistent-state）" class="headerlink" title="收敛于一致性状态（Converging toward a consistent state）"></a>收敛于一致性状态（Converging toward a consistent state）</h4><p>所有replication scheme 必须确保最终状态都是一致的。以一种convergent的方法，解决这种conflict。意味着，所有更改被复制，同步之后，所有的副本的值都是相同的。</p>
+<p>可能实现的方式：</p>
+<ul>
+<li>每个写入配一个 唯一的ID，例如时间，ID最高的存入，其他丢弃</li>
+<li>每个replica 分配一个唯一的ID，并制定规则，ID高的写入顺序是中高于ID低的</li>
+<li>以某些方式，将值合并在一起，然后拼接，如5-7中可能结果为（B&#x2F;C）</li>
+<li>记录和保留冲突中的消息，然后依靠应用层的逻辑，事后解决冲突（可能会提醒user）</li>
+</ul>
+<h4 id="自定义冲突解决逻辑（Custom-conflict-resolution-logic）"><a href="#自定义冲突解决逻辑（Custom-conflict-resolution-logic）" class="headerlink" title="自定义冲突解决逻辑（Custom conflict resolution logic）"></a>自定义冲突解决逻辑（Custom conflict resolution logic）</h4><p>user在应用层编写代码来解决冲突。可以在写入或者读取时执行这些代码逻辑：</p>
+<ul>
+<li>写入时执行：检测到冲突时，调用应用层的冲突处理程序</li>
+<li>读取时执行：检测到冲突时，将冲突写入的值保存下来，下次读取数据的时候，将数据的多版本返回给应用层。</li>
+</ul>
+<h3 id="拓扑结构（Multi-Leader-Replication-Topologies）"><a href="#拓扑结构（Multi-Leader-Replication-Topologies）" class="headerlink" title="拓扑结构（Multi-Leader Replication Topologies）"></a>拓扑结构（Multi-Leader Replication Topologies）</h3><p>多leader时，通讯传播路径</p>
+<p>![Screenshot 2022-04-11 at 16.06.30](&#x2F;Users&#x2F;zhangyuyang&#x2F;Desktop&#x2F;blog&#x2F;source&#x2F;_posts&#x2F;Distributed_Sytem&#x2F;Designing-data-intensive-applications&#x2F;Chapter5&#x2F;Screenshot 2022-04-11 at 16.06.30.png)</p>
+<p>Circular 和 star topology 中，每个node有特殊的ID，在replication log中，记录已通过node的ID，如果收到了包含自己ID的log，表明请求以及处理过了，会忽略变更请求</p>
+<p>Circular 和 star topology缺点：单点故障会影响全部</p>
+<p>All-to-All 缺点：存在某些network link比其他的快，导致replication message之间的覆盖。</p>
+<p>![Screenshot 2022-04-11 at 16.12.08](&#x2F;Users&#x2F;zhangyuyang&#x2F;Desktop&#x2F;blog&#x2F;source&#x2F;_posts&#x2F;Distributed_Sytem&#x2F;Designing-data-intensive-applications&#x2F;Chapter5&#x2F;Screenshot 2022-04-11 at 16.12.08.png)</p>
+<h2 id="无主节点复制（Leaderless-Replication）"><a href="#无主节点复制（Leaderless-Replication）" class="headerlink" title="无主节点复制（Leaderless Replication）"></a>无主节点复制（Leaderless Replication）</h2><h2 id="小结（Summary）"><a href="#小结（Summary）" class="headerlink" title="小结（Summary）"></a>小结（Summary）</h2>
     </div>
 
     
@@ -439,7 +505,7 @@
   </li>
   <li class="post-copyright-link">
     <strong>Post link: </strong>
-    <a href="https://yu-yang.pro/Distributed-Systems/Distributed_Sytem/Designing-data-intensive-applications/part2/" title="Designing Data Intensive Application Part2">https://yu-yang.pro/Distributed-Systems/Distributed_Sytem/Designing-data-intensive-applications/part2/</a>
+    <a href="https://yu-yang.pro/Distributed-Systems/Distributed_Sytem/Designing-data-intensive-applications/Chapter5/" title="Designing Data Intensive Application Chapter5 Replication">https://yu-yang.pro/Distributed-Systems/Distributed_Sytem/Designing-data-intensive-applications/Chapter5/</a>
   </li>
   <li class="post-copyright-license">
     <strong>Copyright Notice:  </strong>All articles in this blog are licensed under <a href="https://creativecommons.org/licenses/by-nc-sa/4.0/" rel="noopener" target="_blank"><i class="fab fa-fw fa-creative-commons"></i>BY-NC-SA</a> unless stating additionally.
@@ -460,12 +526,12 @@
         
     <div class="post-nav">
       <div class="post-nav-item">
-    <a href="/Distributed-Systems/Distributed_Sytem/Designing-data-intensive-applications/part3/" rel="prev" title="Designing Data Intensive Application Part3">
-      <i class="fa fa-chevron-left"></i> Designing Data Intensive Application Part3
+    <a href="/uncategorized/Distributed_Sytem/MIT-6-824-Lec05/" rel="prev" title="MIT-6-824-Lec05">
+      <i class="fa fa-chevron-left"></i> MIT-6-824-Lec05
     </a></div>
       <div class="post-nav-item">
-    <a href="/Distributed-Systems/Distributed_Sytem/Designing-data-intensive-applications/part1/" rel="next" title="Designing Data Intensive Application Part1">
-      Designing Data Intensive Application Part1 <i class="fa fa-chevron-right"></i>
+    <a href="/Distributed-Systems/Distributed_Sytem/Designing-data-intensive-applications/part3/" rel="next" title="Designing Data Intensive Application Part3">
+      Designing Data Intensive Application Part3 <i class="fa fa-chevron-right"></i>
     </a></div>
     </div>
       </footer>
@@ -525,7 +591,7 @@
 
       <!--noindex-->
       <div class="post-toc-wrap sidebar-panel">
-          <div class="post-toc motion-element"><ol class="nav"><li class="nav-item nav-level-1"><a class="nav-link" href="#%E5%89%8D%E8%A8%80"><span class="nav-number">1.</span> <span class="nav-text">前言</span></a></li><li class="nav-item nav-level-1"><a class="nav-link" href="#%E5%A4%8D%E5%88%B6%EF%BC%88Replication%EF%BC%89"><span class="nav-number">2.</span> <span class="nav-text">复制（Replication）</span></a><ol class="nav-child"><li class="nav-item nav-level-2"><a class="nav-link" href="#%E4%B8%BB%E8%8A%82%E7%82%B9%E4%B8%8E%E4%BB%8E%E8%8A%82%E7%82%B9%EF%BC%88Leader-and-Follwer%EF%BC%89"><span class="nav-number">2.1.</span> <span class="nav-text">主节点与从节点（Leader and Follwer）</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#%E5%90%8C%E6%AD%A5%EF%BC%88Synchronous%EF%BC%89%E4%B8%8E%E5%BC%82%E6%AD%A5%EF%BC%88Asynchronous%EF%BC%89%E5%A4%8D%E5%88%B6"><span class="nav-number">2.1.1.</span> <span class="nav-text">同步（Synchronous）与异步（Asynchronous）复制</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#%E6%96%B0%E5%A2%9Efollwer%EF%BC%88Setting-up-new-follwers%EF%BC%89"><span class="nav-number">2.1.2.</span> <span class="nav-text">新增follwer（Setting up new follwers）</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#%E5%A4%84%E7%90%86%E8%8A%82%E7%82%B9%E5%A4%B1%E6%95%88%EF%BC%88Handing-Node-Outages%EF%BC%89"><span class="nav-number">2.1.3.</span> <span class="nav-text">处理节点失效（Handing Node Outages）</span></a><ol class="nav-child"><li class="nav-item nav-level-4"><a class="nav-link" href="#Follwer-%E5%A4%B1%E6%95%88%EF%BC%9Acatch-up-recovery%E3%80%82"><span class="nav-number">2.1.3.1.</span> <span class="nav-text">Follwer 失效：catch-up recovery。</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#Leader-%E5%A4%B1%E6%95%88%EF%BC%9A-Failover"><span class="nav-number">2.1.3.2.</span> <span class="nav-text">Leader 失效： Failover</span></a></li></ol></li><li class="nav-item nav-level-3"><a class="nav-link" href="#%E5%A4%8D%E5%88%B6%E6%97%A5%E5%BF%97%E7%9A%84%E5%AE%9E%E7%8E%B0%EF%BC%88Implementation-of-Replication-Logs%EF%BC%89"><span class="nav-number">2.1.4.</span> <span class="nav-text">复制日志的实现（Implementation of Replication Logs）</span></a><ol class="nav-child"><li class="nav-item nav-level-4"><a class="nav-link" href="#%E5%9F%BA%E4%BA%8E%E8%AF%AD%E5%8F%A5%E7%9A%84%E5%A4%8D%E5%88%B6%EF%BC%88Statement-based-replication%EF%BC%89"><span class="nav-number">2.1.4.1.</span> <span class="nav-text">基于语句的复制（Statement-based replication）</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#%E5%9F%BA%E4%BA%8E%E9%A2%84%E5%86%99%E6%97%A5%E5%BF%97%EF%BC%88WAL%EF%BC%89%E4%BC%A0%E8%BE%93%EF%BC%88Write-ahead-log%EF%BC%88WAL%EF%BC%89shipping%EF%BC%89"><span class="nav-number">2.1.4.2.</span> <span class="nav-text">基于预写日志（WAL）传输（Write-ahead log（WAL）shipping）</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#%E5%9F%BA%E4%BA%8E%E8%A1%8C%E7%9A%84%E9%80%BB%E8%BE%91%E6%97%A5%E5%BF%97%E5%A4%8D%E5%88%B6%EF%BC%88Logical%EF%BC%88row-based%EF%BC%89log-replication%EF%BC%89"><span class="nav-number">2.1.4.3.</span> <span class="nav-text">基于行的逻辑日志复制（Logical（row-based）log replication）</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#%E5%9F%BA%E4%BA%8E%E8%A7%A6%E5%8F%91%E5%99%A8%E7%9A%84%E5%A4%8D%E5%88%B6%EF%BC%88Trigger-based-replication%EF%BC%89"><span class="nav-number">2.1.4.4.</span> <span class="nav-text">基于触发器的复制（Trigger-based replication）</span></a></li></ol></li></ol></li><li class="nav-item nav-level-2"><a class="nav-link" href="#%E5%A4%8D%E5%88%B6%E6%BB%9E%E5%90%8E%E9%97%AE%E9%A2%98%EF%BC%88Problems-with-Replication-Lag%EF%BC%89"><span class="nav-number">2.2.</span> <span class="nav-text">复制滞后问题（Problems with Replication Lag）</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#%E5%A4%9A%E4%B8%BB%E8%8A%82%E7%82%B9%E5%A4%8D%E5%88%B6%EF%BC%88Multi-Leader-Replication%EF%BC%89"><span class="nav-number">2.3.</span> <span class="nav-text">多主节点复制（Multi-Leader Replication）</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#%E6%97%A0%E4%B8%BB%E8%8A%82%E7%82%B9%E5%A4%8D%E5%88%B6%EF%BC%88Leaderless-Replication%EF%BC%89"><span class="nav-number">2.4.</span> <span class="nav-text">无主节点复制（Leaderless Replication）</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#%E5%B0%8F%E7%BB%93%EF%BC%88Summary%EF%BC%89"><span class="nav-number">2.5.</span> <span class="nav-text">小结（Summary）</span></a></li></ol></li></ol></div>
+          <div class="post-toc motion-element"><ol class="nav"><li class="nav-item nav-level-1"><a class="nav-link" href="#%E5%89%8D%E8%A8%80"><span class="nav-number">1.</span> <span class="nav-text">前言</span></a></li><li class="nav-item nav-level-1"><a class="nav-link" href="#%E5%A4%8D%E5%88%B6%EF%BC%88Replication%EF%BC%89"><span class="nav-number">2.</span> <span class="nav-text">复制（Replication）</span></a><ol class="nav-child"><li class="nav-item nav-level-2"><a class="nav-link" href="#%E4%B8%BB%E8%8A%82%E7%82%B9%E4%B8%8E%E4%BB%8E%E8%8A%82%E7%82%B9%EF%BC%88Leader-and-Follwer%EF%BC%89"><span class="nav-number">2.1.</span> <span class="nav-text">主节点与从节点（Leader and Follwer）</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#%E5%90%8C%E6%AD%A5%EF%BC%88Synchronous%EF%BC%89%E4%B8%8E%E5%BC%82%E6%AD%A5%EF%BC%88Asynchronous%EF%BC%89%E5%A4%8D%E5%88%B6"><span class="nav-number">2.1.1.</span> <span class="nav-text">同步（Synchronous）与异步（Asynchronous）复制</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#%E6%96%B0%E5%A2%9Efollwer%EF%BC%88Setting-up-new-follwers%EF%BC%89"><span class="nav-number">2.1.2.</span> <span class="nav-text">新增follwer（Setting up new follwers）</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#%E5%A4%84%E7%90%86%E8%8A%82%E7%82%B9%E5%A4%B1%E6%95%88%EF%BC%88Handing-Node-Outages%EF%BC%89"><span class="nav-number">2.1.3.</span> <span class="nav-text">处理节点失效（Handing Node Outages）</span></a><ol class="nav-child"><li class="nav-item nav-level-4"><a class="nav-link" href="#Follwer-%E5%A4%B1%E6%95%88%EF%BC%9Acatch-up-recovery%E3%80%82"><span class="nav-number">2.1.3.1.</span> <span class="nav-text">Follwer 失效：catch-up recovery。</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#Leader-%E5%A4%B1%E6%95%88%EF%BC%9A-Failover"><span class="nav-number">2.1.3.2.</span> <span class="nav-text">Leader 失效： Failover</span></a></li></ol></li><li class="nav-item nav-level-3"><a class="nav-link" href="#%E5%A4%8D%E5%88%B6%E6%97%A5%E5%BF%97%E7%9A%84%E5%AE%9E%E7%8E%B0%EF%BC%88Implementation-of-Replication-Logs%EF%BC%89"><span class="nav-number">2.1.4.</span> <span class="nav-text">复制日志的实现（Implementation of Replication Logs）</span></a><ol class="nav-child"><li class="nav-item nav-level-4"><a class="nav-link" href="#%E5%9F%BA%E4%BA%8E%E8%AF%AD%E5%8F%A5%E7%9A%84%E5%A4%8D%E5%88%B6%EF%BC%88Statement-based-replication%EF%BC%89"><span class="nav-number">2.1.4.1.</span> <span class="nav-text">基于语句的复制（Statement-based replication）</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#%E5%9F%BA%E4%BA%8E%E9%A2%84%E5%86%99%E6%97%A5%E5%BF%97%EF%BC%88WAL%EF%BC%89%E4%BC%A0%E8%BE%93%EF%BC%88Write-ahead-log%EF%BC%88WAL%EF%BC%89shipping%EF%BC%89"><span class="nav-number">2.1.4.2.</span> <span class="nav-text">基于预写日志（WAL）传输（Write-ahead log（WAL）shipping）</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#%E5%9F%BA%E4%BA%8E%E8%A1%8C%E7%9A%84%E9%80%BB%E8%BE%91%E6%97%A5%E5%BF%97%E5%A4%8D%E5%88%B6%EF%BC%88Logical%EF%BC%88row-based%EF%BC%89log-replication%EF%BC%89"><span class="nav-number">2.1.4.3.</span> <span class="nav-text">基于行的逻辑日志复制（Logical（row-based）log replication）</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#%E5%9F%BA%E4%BA%8E%E8%A7%A6%E5%8F%91%E5%99%A8%E7%9A%84%E5%A4%8D%E5%88%B6%EF%BC%88Trigger-based-replication%EF%BC%89"><span class="nav-number">2.1.4.4.</span> <span class="nav-text">基于触发器的复制（Trigger-based replication）</span></a></li></ol></li></ol></li><li class="nav-item nav-level-2"><a class="nav-link" href="#%E5%A4%8D%E5%88%B6%E6%BB%9E%E5%90%8E%E9%97%AE%E9%A2%98%EF%BC%88Problems-with-Replication-Lag%EF%BC%89"><span class="nav-number">2.2.</span> <span class="nav-text">复制滞后问题（Problems with Replication Lag）</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#%E8%AF%BB%E8%87%AA%E5%B7%B1%E7%9A%84%E5%86%99%EF%BC%88Reading-Your-Own-Writes%EF%BC%89"><span class="nav-number">2.2.1.</span> <span class="nav-text">读自己的写（Reading Your Own Writes）</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#%E5%8D%95%E8%B0%83%E8%AF%BB%EF%BC%88Monotonic-Reads%EF%BC%89"><span class="nav-number">2.2.2.</span> <span class="nav-text">单调读（Monotonic Reads）</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#%E5%89%8D%E7%BC%80%E4%B8%80%E8%87%B4%E8%AF%BB%EF%BC%88Consistent-Prefix-Reads%EF%BC%89"><span class="nav-number">2.2.3.</span> <span class="nav-text">前缀一致读（Consistent Prefix Reads）</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#%E5%A4%8D%E5%88%B6%E6%BB%9E%E5%90%8E%E7%9A%84%E8%A7%A3%E5%86%B3%E6%96%B9%E6%A1%88%EF%BC%88Solutions-for-Replication-Lag%EF%BC%89"><span class="nav-number">2.2.4.</span> <span class="nav-text">复制滞后的解决方案（Solutions for Replication Lag）</span></a></li></ol></li><li class="nav-item nav-level-2"><a class="nav-link" href="#%E5%A4%9A%E4%B8%BB%E8%8A%82%E7%82%B9%E5%A4%8D%E5%88%B6%EF%BC%88Multi-Leader-Replication%EF%BC%89"><span class="nav-number">2.3.</span> <span class="nav-text">多主节点复制（Multi-Leader Replication）</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#%E9%80%82%E7%94%A8%E5%9C%BA%E6%99%AF%EF%BC%88Use-Cases-for-Multi-Leader-Replication"><span class="nav-number">2.3.1.</span> <span class="nav-text">适用场景（Use Cases for Multi-Leader Replication)</span></a><ol class="nav-child"><li class="nav-item nav-level-4"><a class="nav-link" href="#%E5%A4%9A%E6%95%B0%E6%8D%AE%E4%B8%AD%E5%BF%83%EF%BC%88Multi-datacenter-operation%EF%BC%89"><span class="nav-number">2.3.1.1.</span> <span class="nav-text">多数据中心（Multi-datacenter operation）</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#%E7%A6%BB%E7%BA%BF%E5%AE%A2%E6%88%B7%E7%AB%AF%E6%93%8D%E4%BD%9C%EF%BC%88Clients-with-offline-operation%EF%BC%89"><span class="nav-number">2.3.1.2.</span> <span class="nav-text">离线客户端操作（Clients with offline operation）</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#%E5%8D%8F%E4%BD%9C%E7%BC%96%E8%BE%91%EF%BC%88Collaborative-editing%EF%BC%89"><span class="nav-number">2.3.1.3.</span> <span class="nav-text">协作编辑（Collaborative editing）</span></a></li></ol></li><li class="nav-item nav-level-3"><a class="nav-link" href="#%E5%A4%84%E7%90%86%E5%86%99%E5%86%B2%E7%AA%81%EF%BC%88Handling-Write-Conflicts%EF%BC%89"><span class="nav-number">2.3.2.</span> <span class="nav-text">处理写冲突（Handling Write Conflicts）</span></a><ol class="nav-child"><li class="nav-item nav-level-4"><a class="nav-link" href="#%E5%90%8C%E6%AD%A5%E4%B8%8E%E5%BC%82%E6%AD%A5%E5%86%B2%E7%AA%81%E6%A3%80%E6%B5%8B%EF%BC%88Synchronous-versus-asynchronous-conflict-detection%EF%BC%89"><span class="nav-number">2.3.2.1.</span> <span class="nav-text">同步与异步冲突检测（Synchronous versus asynchronous conflict detection）</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#%E9%81%BF%E5%85%8D%E5%86%B2%E7%AA%81%EF%BC%88Conflict-avoidance%EF%BC%89"><span class="nav-number">2.3.2.2.</span> <span class="nav-text">避免冲突（Conflict avoidance）</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#%E6%94%B6%E6%95%9B%E4%BA%8E%E4%B8%80%E8%87%B4%E6%80%A7%E7%8A%B6%E6%80%81%EF%BC%88Converging-toward-a-consistent-state%EF%BC%89"><span class="nav-number">2.3.2.3.</span> <span class="nav-text">收敛于一致性状态（Converging toward a consistent state）</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#%E8%87%AA%E5%AE%9A%E4%B9%89%E5%86%B2%E7%AA%81%E8%A7%A3%E5%86%B3%E9%80%BB%E8%BE%91%EF%BC%88Custom-conflict-resolution-logic%EF%BC%89"><span class="nav-number">2.3.2.4.</span> <span class="nav-text">自定义冲突解决逻辑（Custom conflict resolution logic）</span></a></li></ol></li><li class="nav-item nav-level-3"><a class="nav-link" href="#%E6%8B%93%E6%89%91%E7%BB%93%E6%9E%84%EF%BC%88Multi-Leader-Replication-Topologies%EF%BC%89"><span class="nav-number">2.3.3.</span> <span class="nav-text">拓扑结构（Multi-Leader Replication Topologies）</span></a></li></ol></li><li class="nav-item nav-level-2"><a class="nav-link" href="#%E6%97%A0%E4%B8%BB%E8%8A%82%E7%82%B9%E5%A4%8D%E5%88%B6%EF%BC%88Leaderless-Replication%EF%BC%89"><span class="nav-number">2.4.</span> <span class="nav-text">无主节点复制（Leaderless Replication）</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#%E5%B0%8F%E7%BB%93%EF%BC%88Summary%EF%BC%89"><span class="nav-number">2.5.</span> <span class="nav-text">小结（Summary）</span></a></li></ol></li></ol></div>
       </div>
       <!--/noindex-->
 
@@ -541,7 +607,7 @@
       <div class="site-state-item site-state-posts">
           <a href="/archives/">
         
-          <span class="site-state-item-count">16</span>
+          <span class="site-state-item-count">17</span>
           <span class="site-state-item-name">posts</span>
         </a>
       </div>
@@ -554,7 +620,7 @@
       <div class="site-state-item site-state-tags">
             <a href="/tags/">
           
-        <span class="site-state-item-count">17</span>
+        <span class="site-state-item-count">19</span>
         <span class="site-state-item-name">tags</span></a>
       </div>
   </nav>
@@ -611,12 +677,12 @@
     <span class="post-meta-item-icon">
       <i class="fa fa-chart-area"></i>
     </span>
-    <span title="Symbols count total">45k</span>
+    <span title="Symbols count total">62k</span>
     <span class="post-meta-divider">|</span>
     <span class="post-meta-item-icon">
       <i class="fa fa-coffee"></i>
     </span>
-    <span title="Reading time total">41 mins.</span>
+    <span title="Reading time total">57 mins.</span>
 </div>
 
         
