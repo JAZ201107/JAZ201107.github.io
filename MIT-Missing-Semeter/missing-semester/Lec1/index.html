@@ -1,0 +1,604 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=2">
+<meta name="theme-color" content="#222">
+<meta name="generator" content="Hexo 6.1.0">
+  <link rel="apple-touch-icon" sizes="180x180" href="/images/apple-touch-icon-next.png">
+  <link rel="icon" type="image/png" sizes="32x32" href="/images/favicon-32x32-next.png">
+  <link rel="icon" type="image/png" sizes="16x16" href="/images/favicon-16x16-next.png">
+  <link rel="mask-icon" href="/images/logo.svg" color="#222">
+  <meta name="google-site-verification" content="8PaqjDEjjclkaTafEbNosHDhMjcCoFWL0eEGwg76laY">
+
+<link rel="stylesheet" href="/css/main.css">
+
+
+<link rel="stylesheet" href="/lib/font-awesome/css/all.min.css">
+  <link rel="stylesheet" href="//cdn.jsdelivr.net/gh/fancyapps/fancybox@3/dist/jquery.fancybox.min.css">
+
+<script id="hexo-configurations">
+    var NexT = window.NexT || {};
+    var CONFIG = {"hostname":"yu-yang.pro","root":"/","scheme":"Muse","version":"7.8.0","exturl":false,"sidebar":{"position":"left","display":"always","padding":18,"offset":12,"onmobile":false},"copycode":{"enable":true,"show_result":true,"style":"mac"},"back2top":{"enable":true,"sidebar":false,"scrollpercent":true},"bookmark":{"enable":false,"color":"#222","save":"auto"},"fancybox":true,"mediumzoom":false,"lazyload":false,"pangu":false,"comments":{"style":"tabs","active":null,"storage":true,"lazyload":false,"nav":null},"algolia":{"hits":{"per_page":10},"labels":{"input_placeholder":"Search for Posts","hits_empty":"We didn't find any results for the search: ${query}","hits_stats":"${hits} results found in ${time} ms"}},"localsearch":{"enable":true,"trigger":"auto","top_n_per_article":1,"unescape":false,"preload":false},"motion":{"enable":true,"async":false,"transition":{"post_block":"fadeIn","post_header":"slideDownIn","post_body":"slideDownIn","coll_header":"slideLeftIn","sidebar":"slideUpIn"}},"path":"search.xml"};
+  </script>
+
+  <meta name="description" content="Lec 1 是关于shell的操作">
+<meta property="og:type" content="article">
+<meta property="og:title" content="The shell">
+<meta property="og:url" content="https://yu-yang.pro/MIT-Missing-Semeter/missing-semester/Lec1/index.html">
+<meta property="og:site_name" content="Yuyang&#39;s 博客">
+<meta property="og:description" content="Lec 1 是关于shell的操作">
+<meta property="og:locale" content="en_US">
+<meta property="article:published_time" content="2022-04-13T13:21:19.000Z">
+<meta property="article:modified_time" content="2022-04-15T04:34:22.225Z">
+<meta property="article:author" content="Yuyang Zhang">
+<meta property="article:tag" content="shell">
+<meta name="twitter:card" content="summary">
+
+<link rel="canonical" href="https://yu-yang.pro/MIT-Missing-Semeter/missing-semester/Lec1/">
+
+
+<script id="page-configurations">
+  // https://hexo.io/docs/variables.html
+  CONFIG.page = {
+    sidebar: "",
+    isHome : false,
+    isPost : true,
+    lang   : 'en'
+  };
+</script>
+
+  <title>The shell | Yuyang's 博客</title>
+  
+
+
+
+
+
+
+  <noscript>
+  <style>
+  .use-motion .brand,
+  .use-motion .menu-item,
+  .sidebar-inner,
+  .use-motion .post-block,
+  .use-motion .pagination,
+  .use-motion .comments,
+  .use-motion .post-header,
+  .use-motion .post-body,
+  .use-motion .collection-header { opacity: initial; }
+
+  .use-motion .site-title,
+  .use-motion .site-subtitle {
+    opacity: initial;
+    top: initial;
+  }
+
+  .use-motion .logo-line-before i { left: initial; }
+  .use-motion .logo-line-after i { right: initial; }
+  </style>
+</noscript>
+
+</head>
+
+<body itemscope itemtype="http://schema.org/WebPage">
+  <div class="container use-motion">
+    <div class="headband"></div>
+
+    <header class="header" itemscope itemtype="http://schema.org/WPHeader">
+      <div class="header-inner"><div class="site-brand-container">
+  <div class="site-nav-toggle">
+    <div class="toggle" aria-label="Toggle navigation bar">
+      <span class="toggle-line toggle-line-first"></span>
+      <span class="toggle-line toggle-line-middle"></span>
+      <span class="toggle-line toggle-line-last"></span>
+    </div>
+  </div>
+
+  <div class="site-meta">
+
+    <a href="/" class="brand" rel="start">
+      <span class="logo-line-before"><i></i></span>
+      <h1 class="site-title">Yuyang's 博客</h1>
+      <span class="logo-line-after"><i></i></span>
+    </a>
+  </div>
+
+  <div class="site-nav-right">
+    <div class="toggle popup-trigger">
+        <i class="fa fa-search fa-fw fa-lg"></i>
+    </div>
+  </div>
+</div>
+
+
+
+
+<nav class="site-nav">
+  <ul id="menu" class="main-menu menu">
+        <li class="menu-item menu-item-home">
+
+    <a href="/" rel="section"><i class="fa fa-home fa-fw"></i>Home</a>
+
+  </li>
+        <li class="menu-item menu-item-tags">
+
+    <a href="/tags/" rel="section"><i class="fa fa-tags fa-fw"></i>Tags</a>
+
+  </li>
+        <li class="menu-item menu-item-categories">
+
+    <a href="/categories/" rel="section"><i class="fa fa-th fa-fw"></i>Categories</a>
+
+  </li>
+        <li class="menu-item menu-item-archives">
+
+    <a href="/archives/" rel="section"><i class="fa fa-archive fa-fw"></i>Archives</a>
+
+  </li>
+      <li class="menu-item menu-item-search">
+        <a role="button" class="popup-trigger"><i class="fa fa-search fa-fw"></i>Search
+        </a>
+      </li>
+  </ul>
+</nav>
+
+
+
+  <div class="search-pop-overlay">
+    <div class="popup search-popup">
+        <div class="search-header">
+  <span class="search-icon">
+    <i class="fa fa-search"></i>
+  </span>
+  <div class="search-input-container">
+    <input autocomplete="off" autocapitalize="off"
+           placeholder="Searching..." spellcheck="false"
+           type="search" class="search-input">
+  </div>
+  <span class="popup-btn-close">
+    <i class="fa fa-times-circle"></i>
+  </span>
+</div>
+<div id="search-result">
+  <div id="no-result">
+    <i class="fa fa-spinner fa-pulse fa-5x fa-fw"></i>
+  </div>
+</div>
+
+    </div>
+  </div>
+
+</div>
+    </header>
+
+    
+  <div class="back-to-top">
+    <i class="fa fa-arrow-up"></i>
+    <span>0%</span>
+  </div>
+  <div class="reading-progress-bar"></div>
+
+
+    <main class="main">
+      <div class="main-inner">
+        <div class="content-wrap">
+          
+
+          <div class="content post posts-expand">
+            
+
+    
+  
+  
+  <article itemscope itemtype="http://schema.org/Article" class="post-block" lang="en">
+    <link itemprop="mainEntityOfPage" href="https://yu-yang.pro/MIT-Missing-Semeter/missing-semester/Lec1/">
+
+    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
+      <meta itemprop="image" content="/images/profile_img.jpg">
+      <meta itemprop="name" content="Yuyang Zhang">
+      <meta itemprop="description" content="stay hungry stay foolish">
+    </span>
+
+    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
+      <meta itemprop="name" content="Yuyang's 博客">
+    </span>
+      <header class="post-header">
+        <h1 class="post-title" itemprop="name headline">
+          The shell
+        </h1>
+
+        <div class="post-meta">
+            <span class="post-meta-item">
+              <span class="post-meta-item-icon">
+                <i class="far fa-calendar"></i>
+              </span>
+              <span class="post-meta-item-text">Posted on</span>
+
+              <time title="Created: 2022-04-13 21:21:19" itemprop="dateCreated datePublished" datetime="2022-04-13T21:21:19+08:00">2022-04-13</time>
+            </span>
+              <span class="post-meta-item">
+                <span class="post-meta-item-icon">
+                  <i class="far fa-calendar-check"></i>
+                </span>
+                <span class="post-meta-item-text">Edited on</span>
+                <time title="Modified: 2022-04-15 12:34:22" itemprop="dateModified" datetime="2022-04-15T12:34:22+08:00">2022-04-15</time>
+              </span>
+            <span class="post-meta-item">
+              <span class="post-meta-item-icon">
+                <i class="far fa-folder"></i>
+              </span>
+              <span class="post-meta-item-text">In</span>
+                <span itemprop="about" itemscope itemtype="http://schema.org/Thing">
+                  <a href="/categories/MIT-Missing-Semeter/" itemprop="url" rel="index"><span itemprop="name">MIT Missing Semeter</span></a>
+                </span>
+            </span>
+
+          
+            <span class="post-meta-item" title="Views" id="busuanzi_container_page_pv" style="display: none;">
+              <span class="post-meta-item-icon">
+                <i class="fa fa-eye"></i>
+              </span>
+              <span class="post-meta-item-text">Views: </span>
+              <span id="busuanzi_value_page_pv"></span>
+            </span><br>
+            <span class="post-meta-item" title="Symbols count in article">
+              <span class="post-meta-item-icon">
+                <i class="far fa-file-word"></i>
+              </span>
+                <span class="post-meta-item-text">Symbols count in article: </span>
+              <span>3.3k</span>
+            </span>
+            <span class="post-meta-item" title="Reading time">
+              <span class="post-meta-item-icon">
+                <i class="far fa-clock"></i>
+              </span>
+                <span class="post-meta-item-text">Reading time &asymp;</span>
+              <span>3 mins.</span>
+            </span>
+
+        </div>
+      </header>
+
+    
+    
+    
+    <div class="post-body" itemprop="articleBody">
+
+      
+        <p>Lec 1 是关于shell的操作</p>
+<span id="more"></span>
+
+<p><a target="_blank" rel="noopener" href="https://missing-semester-cn.github.io/2020/course-shell/">Lecture 1</a></p>
+<h2 id="开启shell"><a href="#开启shell" class="headerlink" title="开启shell"></a>开启shell</h2><figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">missing:~$ </span><br></pre></td></tr></table></figure>
+
+<p>$ 表示不是root用户</p>
+<h2 id="shell-执行规则"><a href="#shell-执行规则" class="headerlink" title="shell 执行规则"></a>shell 执行规则</h2><p>shell 基于空格分割命令并进行解析，然后执行第一个单词代表的程序，并将后续的单词作为程序可以访问的参数。如果您希望传递的参数中包含空格（例如一个名为 My Photos 的文件夹），您要么用使用单引号，双引号将其包裹起来，要么使用转义符号 <code>\</code> 进行处理（<code>My\ Photos</code>）。</p>
+<figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><span class="line">missing:~$ <span class="built_in">touch</span> <span class="string">&#x27;My touch&#x27;</span>  <span class="comment">#单引号将其包裹起来</span></span><br><span class="line">missing:~$ <span class="built_in">touch</span> <span class="string">&quot;My touch&quot;</span>	 <span class="comment">#双引号将其包裹起来</span></span><br><span class="line">missing:~$ <span class="built_in">touch</span> My\ <span class="built_in">touch</span>	 <span class="comment">#使用转义符号 `\`</span></span><br></pre></td></tr></table></figure>
+
+<h2 id="常见命令行"><a href="#常见命令行" class="headerlink" title="常见命令行"></a>常见命令行</h2><figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">$ <span class="built_in">which</span> <span class="built_in">echo</span> <span class="comment"># 查看 echo 命令是在哪个文件下</span></span><br></pre></td></tr></table></figure>
+
+<p>![Screenshot 2022-04-15 at 11.35.18](&#x2F;Users&#x2F;zhangyuyang&#x2F;Desktop&#x2F;blog&#x2F;source&#x2F;_posts&#x2F;missing-semester&#x2F;Lec1&#x2F;Screenshot 2022-04-15 at 11.35.18.png)</p>
+<figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">$ <span class="built_in">cd</span> - <span class="comment"># 返回上一个working directory</span></span><br></pre></td></tr></table></figure>
+
+<figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br></pre></td><td class="code"><pre><span class="line">$ <span class="built_in">mv</span> <span class="comment"># 移动文件 / 修改文件名</span></span><br><span class="line">$ <span class="built_in">cp</span> <span class="comment"># 拷贝文件</span></span><br><span class="line">$ <span class="built_in">rm</span> <span class="comment"># 移除文件</span></span><br><span class="line">$ <span class="built_in">rmdir</span> <span class="comment"># 移除空文件夹</span></span><br><span class="line">$ <span class="built_in">mkdir</span> <span class="comment"># 创造文件夹</span></span><br></pre></td></tr></table></figure>
+
+<h2 id="输入输出流"><a href="#输入输出流" class="headerlink" title="输入输出流"></a>输入输出流</h2><figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">$ <span class="built_in">echo</span> hello &gt; hello.txt <span class="comment"># 输出到 hello.txt</span></span><br></pre></td></tr></table></figure>
+
+<p>内容会被覆盖</p>
+<p>![Screenshot 2022-04-15 at 11.44.57](&#x2F;Users&#x2F;zhangyuyang&#x2F;Desktop&#x2F;blog&#x2F;source&#x2F;_posts&#x2F;missing-semester&#x2F;Lec1&#x2F;Screenshot 2022-04-15 at 11.44.57.png)</p>
+<p>![Screenshot 2022-04-15 at 11.47.34](&#x2F;Users&#x2F;zhangyuyang&#x2F;Desktop&#x2F;blog&#x2F;source&#x2F;_posts&#x2F;missing-semester&#x2F;Lec1&#x2F;Screenshot 2022-04-15 at 11.47.34.png)</p>
+<figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">$ <span class="built_in">echo</span> hello &gt;&gt; hello.txt <span class="comment"># append 到 hello.txt</span></span><br></pre></td></tr></table></figure>
+
+<figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">$ <span class="built_in">cat</span> &lt; hello.txt <span class="comment"># 输入流</span></span><br></pre></td></tr></table></figure>
+
+
+
+<h3 id="pipeline"><a href="#pipeline" class="headerlink" title="pipeline"></a>pipeline</h3><p>把左边的output 变成右边的 input</p>
+<figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">$ <span class="built_in">ls</span> -l | <span class="built_in">tail</span> -n1 <span class="comment"># 查看最后一个文件</span></span><br></pre></td></tr></table></figure>
+
+<h3 id="tail：-查看最后几行"><a href="#tail：-查看最后几行" class="headerlink" title="tail： 查看最后几行"></a>tail： 查看最后几行</h3><figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">$ <span class="built_in">tail</span> -n1 hello.txt <span class="comment"># 看最后一行</span></span><br></pre></td></tr></table></figure>
+
+
+
+<h2 id="sudo"><a href="#sudo" class="headerlink" title="sudo"></a>sudo</h2><p>有些文件只能root用户执行，比如 向 <code>sysfs</code> 文件写入内容。系统被挂载在 <code>/sys</code> 下，<code>sysfs</code> 文件则暴露了一些内核（kernel）参数。</p>
+<figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">$ sudo <span class="built_in">echo</span> 3 &gt; brightness</span><br></pre></td></tr></table></figure>
+
+<p>该命令会操作失败，原因：</p>
+<p>|  &gt; &lt; 是通过 shell 执行的，而不是被各个程序单独执行。因此，shell 在设置 sudo echo前尝试打开 brightness文件并写入，但是系统拒绝了shell的操作，因为此时不是root 用户</p>
+<p>因此</p>
+<figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line">$ <span class="built_in">echo</span> 3 | sudo <span class="built_in">tee</span> brightness </span><br><span class="line"><span class="comment"># tee 程序是用于显示程序的输出并将其复制到一个文件中</span></span><br></pre></td></tr></table></figure>
+
+<h1 id="习题"><a href="#习题" class="headerlink" title="习题"></a>习题</h1><p>查看shell的版本</p>
+<figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line">[root@VM-8-9-centos devices]<span class="comment"># echo $SHELL</span></span><br><span class="line">/bin/bash</span><br></pre></td></tr></table></figure>
+
+
+
+<h2 id="1-在-x2F-tmp-下新建一个名为-missing-的文件夹"><a href="#1-在-x2F-tmp-下新建一个名为-missing-的文件夹" class="headerlink" title="1.在 &#x2F;tmp 下新建一个名为 missing 的文件夹"></a>1.在 &#x2F;tmp 下新建一个名为 missing 的文件夹</h2><p>![Screenshot 2022-04-15 at 12.18.46](&#x2F;Users&#x2F;zhangyuyang&#x2F;Desktop&#x2F;blog&#x2F;source&#x2F;_posts&#x2F;missing-semester&#x2F;Lec1&#x2F;Screenshot 2022-04-15 at 12.18.46.png)</p>
+<h2 id="2-用-man-查看程序-touch-的使用手册。"><a href="#2-用-man-查看程序-touch-的使用手册。" class="headerlink" title="2.用 man 查看程序 touch 的使用手册。"></a>2.用 man 查看程序 touch 的使用手册。</h2><p>![Screenshot 2022-04-15 at 12.20.39](&#x2F;Users&#x2F;zhangyuyang&#x2F;Desktop&#x2F;blog&#x2F;source&#x2F;_posts&#x2F;missing-semester&#x2F;Lec1&#x2F;Screenshot 2022-04-15 at 12.20.39.png)</p>
+<h2 id="3-用-touch-在-missing-文件夹中新建一个叫-semester-的文件。"><a href="#3-用-touch-在-missing-文件夹中新建一个叫-semester-的文件。" class="headerlink" title="3.用 touch 在 missing 文件夹中新建一个叫 semester 的文件。"></a>3.用 touch 在 missing 文件夹中新建一个叫 semester 的文件。</h2><p>![Screenshot 2022-04-15 at 12.21.41](&#x2F;Users&#x2F;zhangyuyang&#x2F;Desktop&#x2F;blog&#x2F;source&#x2F;_posts&#x2F;missing-semester&#x2F;Lec1&#x2F;Screenshot 2022-04-15 at 12.21.41.png)</p>
+<h2 id="4-将以下内容一行一行地写入-semester-文件："><a href="#4-将以下内容一行一行地写入-semester-文件：" class="headerlink" title="4.将以下内容一行一行地写入 semester 文件："></a>4.将以下内容一行一行地写入 semester 文件：</h2><blockquote>
+<p>#!&#x2F;bin&#x2F;sh<br>curl –head –silent <a target="_blank" rel="noopener" href="https://missing.csail.mit.edu/">https://missing.csail.mit.edu</a></p>
+</blockquote>
+<p>第一行可能有点棘手， <code>#</code> 在Bash中表示注释，而 <code>!</code> 即使被双引号（<code>&quot;</code>）包裹也具有特殊的含义。 单引号（<code>&#39;</code>）则不一样，此处利用这一点解决输入问题。</p>
+<p>![Screenshot 2022-04-15 at 12.24.38](&#x2F;Users&#x2F;zhangyuyang&#x2F;Desktop&#x2F;blog&#x2F;source&#x2F;_posts&#x2F;missing-semester&#x2F;Lec1&#x2F;Screenshot 2022-04-15 at 12.24.38.png)</p>
+<h2 id="5-尝试执行这个文件。例如，将该脚本的路径（-semester）输入到您的shell中并回车。如果程序无法执行，请使用-ls-命令来获取信息并理解其不能执行的原因。"><a href="#5-尝试执行这个文件。例如，将该脚本的路径（-semester）输入到您的shell中并回车。如果程序无法执行，请使用-ls-命令来获取信息并理解其不能执行的原因。" class="headerlink" title="5.尝试执行这个文件。例如，将该脚本的路径（./semester）输入到您的shell中并回车。如果程序无法执行，请使用 ls 命令来获取信息并理解其不能执行的原因。"></a>5.尝试执行这个文件。例如，将该脚本的路径（<code>./semester</code>）输入到您的shell中并回车。如果程序无法执行，请使用 ls 命令来获取信息并理解其不能执行的原因。</h2><p>![Screenshot 2022-04-15 at 12.26.07](&#x2F;Users&#x2F;zhangyuyang&#x2F;Desktop&#x2F;blog&#x2F;source&#x2F;_posts&#x2F;missing-semester&#x2F;Lec1&#x2F;Screenshot 2022-04-15 at 12.26.07.png)</p>
+<p>不是可执行文件</p>
+<h2 id="6-查看-chmod-的手册-例如，使用-man-chmod-命令"><a href="#6-查看-chmod-的手册-例如，使用-man-chmod-命令" class="headerlink" title="6.查看 chmod 的手册(例如，使用 man chmod 命令)"></a>6.查看 chmod 的手册(例如，使用 <code>man chmod</code> 命令)</h2><h2 id="7-使用-chmod-命令改变权限，使-semester-能够成功执行"><a href="#7-使用-chmod-命令改变权限，使-semester-能够成功执行" class="headerlink" title="7.使用 chmod 命令改变权限，使 ./semester 能够成功执行"></a>7.使用 chmod 命令改变权限，使 <code>./semester</code> 能够成功执行</h2><p>![Screenshot 2022-04-15 at 12.27.57](&#x2F;Users&#x2F;zhangyuyang&#x2F;Desktop&#x2F;blog&#x2F;source&#x2F;_posts&#x2F;missing-semester&#x2F;Lec1&#x2F;Screenshot 2022-04-15 at 12.27.57.png)</p>
+<h2 id="8-使用-和-gt-，将-semester-文件输出的最后更改日期信息，写入主目录下的-last-modified-txt-的文件中"><a href="#8-使用-和-gt-，将-semester-文件输出的最后更改日期信息，写入主目录下的-last-modified-txt-的文件中" class="headerlink" title="8.使用 | 和 &gt; ，将 semester 文件输出的最后更改日期信息，写入主目录下的 last-modified.txt 的文件中"></a>8.使用 <code>|</code> 和 <code>&gt;</code> ，将 semester 文件输出的最后更改日期信息，写入主目录下的 <code>last-modified.txt</code> 的文件中</h2><p>![Screenshot 2022-04-15 at 12.30.36](&#x2F;Users&#x2F;zhangyuyang&#x2F;Desktop&#x2F;blog&#x2F;source&#x2F;_posts&#x2F;missing-semester&#x2F;Lec1&#x2F;Screenshot 2022-04-15 at 12.30.36.png)</p>
+
+    </div>
+
+    
+    
+    
+    
+        
+
+<div>
+<ul class="post-copyright">
+  <li class="post-copyright-author">
+    <strong>Post author:  </strong>Yuyang Zhang
+  </li>
+  <li class="post-copyright-link">
+    <strong>Post link: </strong>
+    <a href="https://yu-yang.pro/MIT-Missing-Semeter/missing-semester/Lec1/" title="The shell">https://yu-yang.pro/MIT-Missing-Semeter/missing-semester/Lec1/</a>
+  </li>
+  <li class="post-copyright-license">
+    <strong>Copyright Notice:  </strong>All articles in this blog are licensed under <a href="https://creativecommons.org/licenses/by-nc-sa/4.0/" rel="noopener" target="_blank"><i class="fab fa-fw fa-creative-commons"></i>BY-NC-SA</a> unless stating additionally.
+  </li>
+</ul>
+</div>
+
+
+      <footer class="post-footer">
+          <div class="post-tags">
+              <a href="/tags/shell/" rel="tag"><i class="fa fa-tag"></i> shell</a>
+          </div>
+
+        
+
+
+        
+    <div class="post-nav">
+      <div class="post-nav-item">
+    <a href="/Distributed-Systems/Distributed_Sytem/Golang/" rel="prev" title="Golang 学习">
+      <i class="fa fa-chevron-left"></i> Golang 学习
+    </a></div>
+      <div class="post-nav-item">
+    <a href="/MIT-Missing-Semeter/missing-semester/Lec2/" rel="next" title="post">
+      post <i class="fa fa-chevron-right"></i>
+    </a></div>
+    </div>
+      </footer>
+    
+  </article>
+  
+  
+  
+
+
+
+          </div>
+          
+
+<script>
+  window.addEventListener('tabs:register', () => {
+    let { activeClass } = CONFIG.comments;
+    if (CONFIG.comments.storage) {
+      activeClass = localStorage.getItem('comments_active') || activeClass;
+    }
+    if (activeClass) {
+      let activeTab = document.querySelector(`a[href="#comment-${activeClass}"]`);
+      if (activeTab) {
+        activeTab.click();
+      }
+    }
+  });
+  if (CONFIG.comments.storage) {
+    window.addEventListener('tabs:click', event => {
+      if (!event.target.matches('.tabs-comment .tab-content .tab-pane')) return;
+      let commentClass = event.target.classList[1];
+      localStorage.setItem('comments_active', commentClass);
+    });
+  }
+</script>
+
+        </div>
+          
+  
+  <div class="toggle sidebar-toggle">
+    <span class="toggle-line toggle-line-first"></span>
+    <span class="toggle-line toggle-line-middle"></span>
+    <span class="toggle-line toggle-line-last"></span>
+  </div>
+
+  <aside class="sidebar">
+    <div class="sidebar-inner">
+
+      <ul class="sidebar-nav motion-element">
+        <li class="sidebar-nav-toc">
+          Table of Contents
+        </li>
+        <li class="sidebar-nav-overview">
+          Overview
+        </li>
+      </ul>
+
+      <!--noindex-->
+      <div class="post-toc-wrap sidebar-panel">
+          <div class="post-toc motion-element"><ol class="nav"><li class="nav-item nav-level-2"><a class="nav-link" href="#%E5%BC%80%E5%90%AFshell"><span class="nav-number">1.</span> <span class="nav-text">开启shell</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#shell-%E6%89%A7%E8%A1%8C%E8%A7%84%E5%88%99"><span class="nav-number">2.</span> <span class="nav-text">shell 执行规则</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#%E5%B8%B8%E8%A7%81%E5%91%BD%E4%BB%A4%E8%A1%8C"><span class="nav-number">3.</span> <span class="nav-text">常见命令行</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#%E8%BE%93%E5%85%A5%E8%BE%93%E5%87%BA%E6%B5%81"><span class="nav-number">4.</span> <span class="nav-text">输入输出流</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#pipeline"><span class="nav-number">4.1.</span> <span class="nav-text">pipeline</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#tail%EF%BC%9A-%E6%9F%A5%E7%9C%8B%E6%9C%80%E5%90%8E%E5%87%A0%E8%A1%8C"><span class="nav-number">4.2.</span> <span class="nav-text">tail： 查看最后几行</span></a></li></ol></li><li class="nav-item nav-level-2"><a class="nav-link" href="#sudo"><span class="nav-number">5.</span> <span class="nav-text">sudo</span></a></li></ol></li><li class="nav-item nav-level-1"><a class="nav-link" href="#%E4%B9%A0%E9%A2%98"><span class="nav-number"></span> <span class="nav-text">习题</span></a><ol class="nav-child"><li class="nav-item nav-level-2"><a class="nav-link" href="#1-%E5%9C%A8-x2F-tmp-%E4%B8%8B%E6%96%B0%E5%BB%BA%E4%B8%80%E4%B8%AA%E5%90%8D%E4%B8%BA-missing-%E7%9A%84%E6%96%87%E4%BB%B6%E5%A4%B9"><span class="nav-number">1.</span> <span class="nav-text">1.在 &#x2F;tmp 下新建一个名为 missing 的文件夹</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#2-%E7%94%A8-man-%E6%9F%A5%E7%9C%8B%E7%A8%8B%E5%BA%8F-touch-%E7%9A%84%E4%BD%BF%E7%94%A8%E6%89%8B%E5%86%8C%E3%80%82"><span class="nav-number">2.</span> <span class="nav-text">2.用 man 查看程序 touch 的使用手册。</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#3-%E7%94%A8-touch-%E5%9C%A8-missing-%E6%96%87%E4%BB%B6%E5%A4%B9%E4%B8%AD%E6%96%B0%E5%BB%BA%E4%B8%80%E4%B8%AA%E5%8F%AB-semester-%E7%9A%84%E6%96%87%E4%BB%B6%E3%80%82"><span class="nav-number">3.</span> <span class="nav-text">3.用 touch 在 missing 文件夹中新建一个叫 semester 的文件。</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#4-%E5%B0%86%E4%BB%A5%E4%B8%8B%E5%86%85%E5%AE%B9%E4%B8%80%E8%A1%8C%E4%B8%80%E8%A1%8C%E5%9C%B0%E5%86%99%E5%85%A5-semester-%E6%96%87%E4%BB%B6%EF%BC%9A"><span class="nav-number">4.</span> <span class="nav-text">4.将以下内容一行一行地写入 semester 文件：</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#5-%E5%B0%9D%E8%AF%95%E6%89%A7%E8%A1%8C%E8%BF%99%E4%B8%AA%E6%96%87%E4%BB%B6%E3%80%82%E4%BE%8B%E5%A6%82%EF%BC%8C%E5%B0%86%E8%AF%A5%E8%84%9A%E6%9C%AC%E7%9A%84%E8%B7%AF%E5%BE%84%EF%BC%88-semester%EF%BC%89%E8%BE%93%E5%85%A5%E5%88%B0%E6%82%A8%E7%9A%84shell%E4%B8%AD%E5%B9%B6%E5%9B%9E%E8%BD%A6%E3%80%82%E5%A6%82%E6%9E%9C%E7%A8%8B%E5%BA%8F%E6%97%A0%E6%B3%95%E6%89%A7%E8%A1%8C%EF%BC%8C%E8%AF%B7%E4%BD%BF%E7%94%A8-ls-%E5%91%BD%E4%BB%A4%E6%9D%A5%E8%8E%B7%E5%8F%96%E4%BF%A1%E6%81%AF%E5%B9%B6%E7%90%86%E8%A7%A3%E5%85%B6%E4%B8%8D%E8%83%BD%E6%89%A7%E8%A1%8C%E7%9A%84%E5%8E%9F%E5%9B%A0%E3%80%82"><span class="nav-number">5.</span> <span class="nav-text">5.尝试执行这个文件。例如，将该脚本的路径（.&#x2F;semester）输入到您的shell中并回车。如果程序无法执行，请使用 ls 命令来获取信息并理解其不能执行的原因。</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#6-%E6%9F%A5%E7%9C%8B-chmod-%E7%9A%84%E6%89%8B%E5%86%8C-%E4%BE%8B%E5%A6%82%EF%BC%8C%E4%BD%BF%E7%94%A8-man-chmod-%E5%91%BD%E4%BB%A4"><span class="nav-number">6.</span> <span class="nav-text">6.查看 chmod 的手册(例如，使用 man chmod 命令)</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#7-%E4%BD%BF%E7%94%A8-chmod-%E5%91%BD%E4%BB%A4%E6%94%B9%E5%8F%98%E6%9D%83%E9%99%90%EF%BC%8C%E4%BD%BF-semester-%E8%83%BD%E5%A4%9F%E6%88%90%E5%8A%9F%E6%89%A7%E8%A1%8C"><span class="nav-number">7.</span> <span class="nav-text">7.使用 chmod 命令改变权限，使 .&#x2F;semester 能够成功执行</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#8-%E4%BD%BF%E7%94%A8-%E5%92%8C-gt-%EF%BC%8C%E5%B0%86-semester-%E6%96%87%E4%BB%B6%E8%BE%93%E5%87%BA%E7%9A%84%E6%9C%80%E5%90%8E%E6%9B%B4%E6%94%B9%E6%97%A5%E6%9C%9F%E4%BF%A1%E6%81%AF%EF%BC%8C%E5%86%99%E5%85%A5%E4%B8%BB%E7%9B%AE%E5%BD%95%E4%B8%8B%E7%9A%84-last-modified-txt-%E7%9A%84%E6%96%87%E4%BB%B6%E4%B8%AD"><span class="nav-number">8.</span> <span class="nav-text">8.使用 | 和 &gt; ，将 semester 文件输出的最后更改日期信息，写入主目录下的 last-modified.txt 的文件中</span></a></li></ol></div>
+      </div>
+      <!--/noindex-->
+
+      <div class="site-overview-wrap sidebar-panel">
+        <div class="site-author motion-element" itemprop="author" itemscope itemtype="http://schema.org/Person">
+    <img class="site-author-image" itemprop="image" alt="Yuyang Zhang"
+      src="/images/profile_img.jpg">
+  <p class="site-author-name" itemprop="name">Yuyang Zhang</p>
+  <div class="site-description" itemprop="description">stay hungry stay foolish</div>
+</div>
+<div class="site-state-wrap motion-element">
+  <nav class="site-state">
+      <div class="site-state-item site-state-posts">
+          <a href="/archives/">
+        
+          <span class="site-state-item-count">28</span>
+          <span class="site-state-item-name">posts</span>
+        </a>
+      </div>
+      <div class="site-state-item site-state-categories">
+            <a href="/categories/">
+          
+        <span class="site-state-item-count">7</span>
+        <span class="site-state-item-name">categories</span></a>
+      </div>
+      <div class="site-state-item site-state-tags">
+            <a href="/tags/">
+          
+        <span class="site-state-item-count">20</span>
+        <span class="site-state-item-name">tags</span></a>
+      </div>
+  </nav>
+</div>
+  <div class="links-of-author motion-element">
+      <span class="links-of-author-item">
+        <a href="mailto:zhangyuyang1211@gmail.com" title="E-Mail → mailto:zhangyuyang1211@gmail.com" rel="noopener" target="_blank"><i class="fa fa-envelope fa-fw"></i>E-Mail</a>
+      </span>
+  </div>
+
+
+  <div class="links-of-blogroll motion-element">
+    <div class="links-of-blogroll-title"><i class="fa fa-link fa-fw"></i>
+      Links
+    </div>
+    <ul class="links-of-blogroll-list">
+        <li class="links-of-blogroll-item">
+          <a href="http://nil.csail.mit.edu/6.824/2021/schedule.html" title="http:&#x2F;&#x2F;nil.csail.mit.edu&#x2F;6.824&#x2F;2021&#x2F;schedule.html" rel="noopener" target="_blank">MIT 6.824 Distributed Systems</a>
+        </li>
+        <li class="links-of-blogroll-item">
+          <a href="https://yuyang-dissys.super.site/" title="https:&#x2F;&#x2F;yuyang-dissys.super.site&#x2F;" rel="noopener" target="_blank">Distributed System</a>
+        </li>
+    </ul>
+  </div>
+
+      </div>
+
+      
+      
+
+    </div>
+  </aside>
+  <div id="sidebar-dimmer"></div>
+
+
+      </div>
+    </main>
+
+    <footer class="footer">
+      <div class="footer-inner">
+        
+
+        
+
+<div class="copyright">
+  
+  &copy; 
+  <span itemprop="copyrightYear">2022</span>
+  <span class="with-love">
+    <i class="fa fa-heart"></i>
+  </span>
+  <span class="author" itemprop="copyrightHolder">Yuyang Zhang</span>
+    <span class="post-meta-divider">|</span>
+    <span class="post-meta-item-icon">
+      <i class="fa fa-chart-area"></i>
+    </span>
+    <span title="Symbols count total">67k</span>
+    <span class="post-meta-divider">|</span>
+    <span class="post-meta-item-icon">
+      <i class="fa fa-coffee"></i>
+    </span>
+    <span title="Reading time total">1:01</span>
+</div>
+
+        
+<div class="busuanzi-count">
+  <script async src="https://busuanzi.ibruce.info/busuanzi/2.3/busuanzi.pure.mini.js"></script>
+    <span class="post-meta-item" id="busuanzi_container_site_uv" style="display: none;">
+      <span class="post-meta-item-icon">
+        <i class="fa fa-user"></i>
+      </span>
+      <span class="site-uv" title="Total Visitors">
+        <span id="busuanzi_value_site_uv"></span>
+      </span>
+    </span>
+    <span class="post-meta-divider">|</span>
+    <span class="post-meta-item" id="busuanzi_container_site_pv" style="display: none;">
+      <span class="post-meta-item-icon">
+        <i class="fa fa-eye"></i>
+      </span>
+      <span class="site-pv" title="Total Views">
+        <span id="busuanzi_value_site_pv"></span>
+      </span>
+    </span>
+</div>
+
+
+
+
+
+
+
+
+      </div>
+    </footer>
+  </div>
+
+  
+  <script src="/lib/anime.min.js"></script>
+  <script src="//cdn.jsdelivr.net/npm/jquery@3/dist/jquery.min.js"></script>
+  <script src="//cdn.jsdelivr.net/gh/fancyapps/fancybox@3/dist/jquery.fancybox.min.js"></script>
+  <script src="/lib/velocity/velocity.min.js"></script>
+  <script src="/lib/velocity/velocity.ui.min.js"></script>
+
+<script src="/js/utils.js"></script>
+
+<script src="/js/motion.js"></script>
+
+
+<script src="/js/schemes/muse.js"></script>
+
+
+<script src="/js/next-boot.js"></script>
+
+
+
+
+  
+
+
+
+
+  
+<script src="/js/local-search.js"></script>
+
+
+
+
+
+
+
+
+
+
+
+
+
+  
+
+  
+
+  
+
+<script src="/live2dw/lib/L2Dwidget.min.js?094cbace49a39548bed64abff5988b05"></script><script>L2Dwidget.init({"pluginRootPath":"live2dw/","pluginJsPath":"lib/","pluginModelPath":"assets/","tagMode":false,"log":false,"model":{"jsonPath":"/live2dw/assets/wanko.model.json"},"display":{"position":"right","width":150,"height":300},"mobile":{"show":true}});</script></body>
+</html>

@@ -1107,4 +1107,153 @@
         <tag>Book</tag>
       </tags>
   </entry>
+  <entry>
+    <title>The shell</title>
+    <url>/MIT-Missing-Semeter/missing-semester/Lec1/</url>
+    <content><![CDATA[<p>Lec 1 是关于shell的操作</p>
+<span id="more"></span>
+
+<p><a href="https://missing-semester-cn.github.io/2020/course-shell/">Lecture 1</a></p>
+<h2 id="开启shell"><a href="#开启shell" class="headerlink" title="开启shell"></a>开启shell</h2><figure class="highlight bash"><table><tr><td class="code"><pre><span class="line">missing:~$ </span><br></pre></td></tr></table></figure>
+
+<p>$ 表示不是root用户</p>
+<h2 id="shell-执行规则"><a href="#shell-执行规则" class="headerlink" title="shell 执行规则"></a>shell 执行规则</h2><p>shell 基于空格分割命令并进行解析，然后执行第一个单词代表的程序，并将后续的单词作为程序可以访问的参数。如果您希望传递的参数中包含空格（例如一个名为 My Photos 的文件夹），您要么用使用单引号，双引号将其包裹起来，要么使用转义符号 <code>\</code> 进行处理（<code>My\ Photos</code>）。</p>
+<figure class="highlight bash"><table><tr><td class="code"><pre><span class="line">missing:~$ <span class="built_in">touch</span> <span class="string">&#x27;My touch&#x27;</span>  <span class="comment">#单引号将其包裹起来</span></span><br><span class="line">missing:~$ <span class="built_in">touch</span> <span class="string">&quot;My touch&quot;</span>	 <span class="comment">#双引号将其包裹起来</span></span><br><span class="line">missing:~$ <span class="built_in">touch</span> My\ <span class="built_in">touch</span>	 <span class="comment">#使用转义符号 `\`</span></span><br></pre></td></tr></table></figure>
+
+<h2 id="常见命令行"><a href="#常见命令行" class="headerlink" title="常见命令行"></a>常见命令行</h2><figure class="highlight bash"><table><tr><td class="code"><pre><span class="line">$ <span class="built_in">which</span> <span class="built_in">echo</span> <span class="comment"># 查看 echo 命令是在哪个文件下</span></span><br></pre></td></tr></table></figure>
+
+<p>![Screenshot 2022-04-15 at 11.35.18](&#x2F;Users&#x2F;zhangyuyang&#x2F;Desktop&#x2F;blog&#x2F;source&#x2F;_posts&#x2F;missing-semester&#x2F;Lec1&#x2F;Screenshot 2022-04-15 at 11.35.18.png)</p>
+<figure class="highlight bash"><table><tr><td class="code"><pre><span class="line">$ <span class="built_in">cd</span> - <span class="comment"># 返回上一个working directory</span></span><br></pre></td></tr></table></figure>
+
+<figure class="highlight bash"><table><tr><td class="code"><pre><span class="line">$ <span class="built_in">mv</span> <span class="comment"># 移动文件 / 修改文件名</span></span><br><span class="line">$ <span class="built_in">cp</span> <span class="comment"># 拷贝文件</span></span><br><span class="line">$ <span class="built_in">rm</span> <span class="comment"># 移除文件</span></span><br><span class="line">$ <span class="built_in">rmdir</span> <span class="comment"># 移除空文件夹</span></span><br><span class="line">$ <span class="built_in">mkdir</span> <span class="comment"># 创造文件夹</span></span><br></pre></td></tr></table></figure>
+
+<h2 id="输入输出流"><a href="#输入输出流" class="headerlink" title="输入输出流"></a>输入输出流</h2><figure class="highlight bash"><table><tr><td class="code"><pre><span class="line">$ <span class="built_in">echo</span> hello &gt; hello.txt <span class="comment"># 输出到 hello.txt</span></span><br></pre></td></tr></table></figure>
+
+<p>内容会被覆盖</p>
+<p>![Screenshot 2022-04-15 at 11.44.57](&#x2F;Users&#x2F;zhangyuyang&#x2F;Desktop&#x2F;blog&#x2F;source&#x2F;_posts&#x2F;missing-semester&#x2F;Lec1&#x2F;Screenshot 2022-04-15 at 11.44.57.png)</p>
+<p>![Screenshot 2022-04-15 at 11.47.34](&#x2F;Users&#x2F;zhangyuyang&#x2F;Desktop&#x2F;blog&#x2F;source&#x2F;_posts&#x2F;missing-semester&#x2F;Lec1&#x2F;Screenshot 2022-04-15 at 11.47.34.png)</p>
+<figure class="highlight bash"><table><tr><td class="code"><pre><span class="line">$ <span class="built_in">echo</span> hello &gt;&gt; hello.txt <span class="comment"># append 到 hello.txt</span></span><br></pre></td></tr></table></figure>
+
+<figure class="highlight bash"><table><tr><td class="code"><pre><span class="line">$ <span class="built_in">cat</span> &lt; hello.txt <span class="comment"># 输入流</span></span><br></pre></td></tr></table></figure>
+
+
+
+<h3 id="pipeline"><a href="#pipeline" class="headerlink" title="pipeline"></a>pipeline</h3><p>把左边的output 变成右边的 input</p>
+<figure class="highlight bash"><table><tr><td class="code"><pre><span class="line">$ <span class="built_in">ls</span> -l | <span class="built_in">tail</span> -n1 <span class="comment"># 查看最后一个文件</span></span><br></pre></td></tr></table></figure>
+
+<h3 id="tail：-查看最后几行"><a href="#tail：-查看最后几行" class="headerlink" title="tail： 查看最后几行"></a>tail： 查看最后几行</h3><figure class="highlight bash"><table><tr><td class="code"><pre><span class="line">$ <span class="built_in">tail</span> -n1 hello.txt <span class="comment"># 看最后一行</span></span><br></pre></td></tr></table></figure>
+
+
+
+<h2 id="sudo"><a href="#sudo" class="headerlink" title="sudo"></a>sudo</h2><p>有些文件只能root用户执行，比如 向 <code>sysfs</code> 文件写入内容。系统被挂载在 <code>/sys</code> 下，<code>sysfs</code> 文件则暴露了一些内核（kernel）参数。</p>
+<figure class="highlight bash"><table><tr><td class="code"><pre><span class="line">$ sudo <span class="built_in">echo</span> 3 &gt; brightness</span><br></pre></td></tr></table></figure>
+
+<p>该命令会操作失败，原因：</p>
+<p>|  &gt; &lt; 是通过 shell 执行的，而不是被各个程序单独执行。因此，shell 在设置 sudo echo前尝试打开 brightness文件并写入，但是系统拒绝了shell的操作，因为此时不是root 用户</p>
+<p>因此</p>
+<figure class="highlight bash"><table><tr><td class="code"><pre><span class="line">$ <span class="built_in">echo</span> 3 | sudo <span class="built_in">tee</span> brightness </span><br><span class="line"><span class="comment"># tee 程序是用于显示程序的输出并将其复制到一个文件中</span></span><br></pre></td></tr></table></figure>
+
+<h1 id="习题"><a href="#习题" class="headerlink" title="习题"></a>习题</h1><p>查看shell的版本</p>
+<figure class="highlight bash"><table><tr><td class="code"><pre><span class="line">[root@VM-8-9-centos devices]<span class="comment"># echo $SHELL</span></span><br><span class="line">/bin/bash</span><br></pre></td></tr></table></figure>
+
+
+
+<h2 id="1-在-x2F-tmp-下新建一个名为-missing-的文件夹"><a href="#1-在-x2F-tmp-下新建一个名为-missing-的文件夹" class="headerlink" title="1.在 &#x2F;tmp 下新建一个名为 missing 的文件夹"></a>1.在 &#x2F;tmp 下新建一个名为 missing 的文件夹</h2><p>![Screenshot 2022-04-15 at 12.18.46](&#x2F;Users&#x2F;zhangyuyang&#x2F;Desktop&#x2F;blog&#x2F;source&#x2F;_posts&#x2F;missing-semester&#x2F;Lec1&#x2F;Screenshot 2022-04-15 at 12.18.46.png)</p>
+<h2 id="2-用-man-查看程序-touch-的使用手册。"><a href="#2-用-man-查看程序-touch-的使用手册。" class="headerlink" title="2.用 man 查看程序 touch 的使用手册。"></a>2.用 man 查看程序 touch 的使用手册。</h2><p>![Screenshot 2022-04-15 at 12.20.39](&#x2F;Users&#x2F;zhangyuyang&#x2F;Desktop&#x2F;blog&#x2F;source&#x2F;_posts&#x2F;missing-semester&#x2F;Lec1&#x2F;Screenshot 2022-04-15 at 12.20.39.png)</p>
+<h2 id="3-用-touch-在-missing-文件夹中新建一个叫-semester-的文件。"><a href="#3-用-touch-在-missing-文件夹中新建一个叫-semester-的文件。" class="headerlink" title="3.用 touch 在 missing 文件夹中新建一个叫 semester 的文件。"></a>3.用 touch 在 missing 文件夹中新建一个叫 semester 的文件。</h2><p>![Screenshot 2022-04-15 at 12.21.41](&#x2F;Users&#x2F;zhangyuyang&#x2F;Desktop&#x2F;blog&#x2F;source&#x2F;_posts&#x2F;missing-semester&#x2F;Lec1&#x2F;Screenshot 2022-04-15 at 12.21.41.png)</p>
+<h2 id="4-将以下内容一行一行地写入-semester-文件："><a href="#4-将以下内容一行一行地写入-semester-文件：" class="headerlink" title="4.将以下内容一行一行地写入 semester 文件："></a>4.将以下内容一行一行地写入 semester 文件：</h2><blockquote>
+<p>#!&#x2F;bin&#x2F;sh<br>curl –head –silent <a href="https://missing.csail.mit.edu/">https://missing.csail.mit.edu</a></p>
+</blockquote>
+<p>第一行可能有点棘手， <code>#</code> 在Bash中表示注释，而 <code>!</code> 即使被双引号（<code>&quot;</code>）包裹也具有特殊的含义。 单引号（<code>&#39;</code>）则不一样，此处利用这一点解决输入问题。</p>
+<p>![Screenshot 2022-04-15 at 12.24.38](&#x2F;Users&#x2F;zhangyuyang&#x2F;Desktop&#x2F;blog&#x2F;source&#x2F;_posts&#x2F;missing-semester&#x2F;Lec1&#x2F;Screenshot 2022-04-15 at 12.24.38.png)</p>
+<h2 id="5-尝试执行这个文件。例如，将该脚本的路径（-semester）输入到您的shell中并回车。如果程序无法执行，请使用-ls-命令来获取信息并理解其不能执行的原因。"><a href="#5-尝试执行这个文件。例如，将该脚本的路径（-semester）输入到您的shell中并回车。如果程序无法执行，请使用-ls-命令来获取信息并理解其不能执行的原因。" class="headerlink" title="5.尝试执行这个文件。例如，将该脚本的路径（./semester）输入到您的shell中并回车。如果程序无法执行，请使用 ls 命令来获取信息并理解其不能执行的原因。"></a>5.尝试执行这个文件。例如，将该脚本的路径（<code>./semester</code>）输入到您的shell中并回车。如果程序无法执行，请使用 ls 命令来获取信息并理解其不能执行的原因。</h2><p>![Screenshot 2022-04-15 at 12.26.07](&#x2F;Users&#x2F;zhangyuyang&#x2F;Desktop&#x2F;blog&#x2F;source&#x2F;_posts&#x2F;missing-semester&#x2F;Lec1&#x2F;Screenshot 2022-04-15 at 12.26.07.png)</p>
+<p>不是可执行文件</p>
+<h2 id="6-查看-chmod-的手册-例如，使用-man-chmod-命令"><a href="#6-查看-chmod-的手册-例如，使用-man-chmod-命令" class="headerlink" title="6.查看 chmod 的手册(例如，使用 man chmod 命令)"></a>6.查看 chmod 的手册(例如，使用 <code>man chmod</code> 命令)</h2><h2 id="7-使用-chmod-命令改变权限，使-semester-能够成功执行"><a href="#7-使用-chmod-命令改变权限，使-semester-能够成功执行" class="headerlink" title="7.使用 chmod 命令改变权限，使 ./semester 能够成功执行"></a>7.使用 chmod 命令改变权限，使 <code>./semester</code> 能够成功执行</h2><p>![Screenshot 2022-04-15 at 12.27.57](&#x2F;Users&#x2F;zhangyuyang&#x2F;Desktop&#x2F;blog&#x2F;source&#x2F;_posts&#x2F;missing-semester&#x2F;Lec1&#x2F;Screenshot 2022-04-15 at 12.27.57.png)</p>
+<h2 id="8-使用-和-gt-，将-semester-文件输出的最后更改日期信息，写入主目录下的-last-modified-txt-的文件中"><a href="#8-使用-和-gt-，将-semester-文件输出的最后更改日期信息，写入主目录下的-last-modified-txt-的文件中" class="headerlink" title="8.使用 | 和 &gt; ，将 semester 文件输出的最后更改日期信息，写入主目录下的 last-modified.txt 的文件中"></a>8.使用 <code>|</code> 和 <code>&gt;</code> ，将 semester 文件输出的最后更改日期信息，写入主目录下的 <code>last-modified.txt</code> 的文件中</h2><p>![Screenshot 2022-04-15 at 12.30.36](&#x2F;Users&#x2F;zhangyuyang&#x2F;Desktop&#x2F;blog&#x2F;source&#x2F;_posts&#x2F;missing-semester&#x2F;Lec1&#x2F;Screenshot 2022-04-15 at 12.30.36.png)</p>
+]]></content>
+      <categories>
+        <category>MIT Missing Semeter</category>
+      </categories>
+      <tags>
+        <tag>shell</tag>
+      </tags>
+  </entry>
+  <entry>
+    <title>post</title>
+    <url>/uncategorized/missing-semester/Lec10/</url>
+    <content><![CDATA[]]></content>
+  </entry>
+  <entry>
+    <title>post</title>
+    <url>/uncategorized/missing-semester/Lec11/</url>
+    <content><![CDATA[]]></content>
+  </entry>
+  <entry>
+    <title>post</title>
+    <url>/MIT-Missing-Semeter/missing-semester/Lec2/</url>
+    <content><![CDATA[<p>Lecture 2 是关于shell Tools 和 Script的</p>
+<span id="more"></span>
+
+<p>![Screenshot 2022-04-15 at 12.40.04](&#x2F;Users&#x2F;zhangyuyang&#x2F;Desktop&#x2F;blog&#x2F;source&#x2F;_posts&#x2F;missing-semester&#x2F;Lec2&#x2F;Screenshot 2022-04-15 at 12.40.04.png)</p>
+<p><code>bash</code>也支持<code>if</code>, <code>case</code>, <code>while</code> 和 <code>for</code> 这些控制流关键字。同样地， <code>bash</code> 也支持函数，它可以接受参数并基于参数进行操作。</p>
+<figure class="highlight bash"><table><tr><td class="code"><pre><span class="line">[root@VM-8-9-centos ~]<span class="comment"># vim mcd.sh</span></span><br><span class="line"><span class="comment"># mcd.sh 内容</span></span><br><span class="line"><span class="function"><span class="title">mcd</span></span> () &#123;</span><br><span class="line">    <span class="built_in">mkdir</span> -p <span class="string">&quot;<span class="variable">$1</span>&quot;</span></span><br><span class="line">    <span class="built_in">cd</span> <span class="string">&quot;<span class="variable">$1</span>&quot;</span></span><br><span class="line">&#125;</span><br><span class="line">[root@VM-8-9-centos ~]<span class="comment"># source mcd.sh </span></span><br><span class="line">[root@VM-8-9-centos ~]<span class="comment"># mcd test</span></span><br><span class="line">[root@VM-8-9-centos <span class="built_in">test</span>]<span class="comment"># </span></span><br></pre></td></tr></table></figure>
+
+<p>![Screenshot 2022-04-15 at 12.47.12](&#x2F;Users&#x2F;zhangyuyang&#x2F;Desktop&#x2F;blog&#x2F;source&#x2F;_posts&#x2F;missing-semester&#x2F;Lec2&#x2F;Screenshot 2022-04-15 at 12.47.12.png)</p>
+<p>E.g</p>
+<figure class="highlight bash"><table><tr><td class="code"><pre><span class="line">[root@VM-8-9-centos ~]<span class="comment"># mkdir test</span></span><br><span class="line">[root@VM-8-9-centos ~]<span class="comment"># cd $_ </span></span><br><span class="line">[root@VM-8-9-centos <span class="built_in">test</span>]<span class="comment"># </span></span><br></pre></td></tr></table></figure>
+
+<p>$_ 获取了 最后一个参数 （test）。</p>
+<p>![Screenshot 2022-04-15 at 12.50.36](&#x2F;Users&#x2F;zhangyuyang&#x2F;Desktop&#x2F;blog&#x2F;source&#x2F;_posts&#x2F;missing-semester&#x2F;Lec2&#x2F;Screenshot 2022-04-15 at 12.50.36.png)</p>
+<p>![Screenshot 2022-04-15 at 12.55.30](&#x2F;Users&#x2F;zhangyuyang&#x2F;Desktop&#x2F;blog&#x2F;source&#x2F;_posts&#x2F;missing-semester&#x2F;Lec2&#x2F;Screenshot 2022-04-15 at 12.55.30.png)</p>
+<figure class="highlight bash"><table><tr><td class="code"><pre><span class="line">$ <span class="literal">false</span> || <span class="built_in">echo</span> <span class="string">&quot;Opps fail&quot;</span> <span class="comment"># 如果前面的false了，就会运行后面的，如果前面的运行成功了，后面的不会运行</span></span><br></pre></td></tr></table></figure>
+
+<figure class="highlight bash"><table><tr><td class="code"><pre><span class="line">$ <span class="literal">false</span> &amp;&amp; <span class="built_in">echo</span> <span class="string">&quot;This will not print&quot;</span> <span class="comment"># 只有前面的成功了，才会运行后面的</span></span><br></pre></td></tr></table></figure>
+
+<p>![Screenshot 2022-04-15 at 12.56.48](&#x2F;Users&#x2F;zhangyuyang&#x2F;Desktop&#x2F;blog&#x2F;source&#x2F;_posts&#x2F;missing-semester&#x2F;Lec2&#x2F;Screenshot 2022-04-15 at 12.56.48.png)</p>
+<figure class="highlight bash"><table><tr><td class="code"><pre><span class="line">$ <span class="literal">false</span> ; <span class="built_in">echo</span> <span class="string">&quot;This will always print&quot;</span> <span class="comment"># 不论前面是否成功，都会打印后面的</span></span><br></pre></td></tr></table></figure>
+
+<p> ![Screenshot 2022-04-15 at 13.10.06](&#x2F;Users&#x2F;zhangyuyang&#x2F;Desktop&#x2F;blog&#x2F;source&#x2F;_posts&#x2F;missing-semester&#x2F;Lec2&#x2F;Screenshot 2022-04-15 at 13.10.06.png)</p>
+]]></content>
+      <categories>
+        <category>MIT Missing Semeter</category>
+      </categories>
+      <tags>
+        <tag>shell</tag>
+      </tags>
+  </entry>
+  <entry>
+    <title>post</title>
+    <url>/uncategorized/missing-semester/Lec3/</url>
+    <content><![CDATA[]]></content>
+  </entry>
+  <entry>
+    <title>post</title>
+    <url>/uncategorized/missing-semester/Lec6/</url>
+    <content><![CDATA[]]></content>
+  </entry>
+  <entry>
+    <title>post</title>
+    <url>/uncategorized/missing-semester/Lec5/</url>
+    <content><![CDATA[]]></content>
+  </entry>
+  <entry>
+    <title>post</title>
+    <url>/uncategorized/missing-semester/Lec4/</url>
+    <content><![CDATA[]]></content>
+  </entry>
+  <entry>
+    <title>post</title>
+    <url>/uncategorized/missing-semester/Lec8/</url>
+    <content><![CDATA[]]></content>
+  </entry>
+  <entry>
+    <title>post</title>
+    <url>/uncategorized/missing-semester/Lec7/</url>
+    <content><![CDATA[]]></content>
+  </entry>
+  <entry>
+    <title>post</title>
+    <url>/uncategorized/missing-semester/Lec9/</url>
+    <content><![CDATA[]]></content>
+  </entry>
 </search>

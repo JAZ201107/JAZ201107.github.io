@@ -2,6 +2,105 @@
 <urlset xmlns="http://www.sitemaps.org/schemas/sitemap/0.9">
   
   <url>
+    <loc>https://yu-yang.pro/MIT-Missing-Semeter/missing-semester/Lec2/</loc>
+    
+    <lastmod>2022-04-15</lastmod>
+    
+    <changefreq>monthly</changefreq>
+    <priority>0.6</priority>
+  </url>
+  
+  <url>
+    <loc>https://yu-yang.pro/MIT-Missing-Semeter/missing-semester/Lec1/</loc>
+    
+    <lastmod>2022-04-15</lastmod>
+    
+    <changefreq>monthly</changefreq>
+    <priority>0.6</priority>
+  </url>
+  
+  <url>
+    <loc>https://yu-yang.pro/uncategorized/missing-semester/Lec11/</loc>
+    
+    <lastmod>2022-04-13</lastmod>
+    
+    <changefreq>monthly</changefreq>
+    <priority>0.6</priority>
+  </url>
+  
+  <url>
+    <loc>https://yu-yang.pro/uncategorized/missing-semester/Lec10/</loc>
+    
+    <lastmod>2022-04-13</lastmod>
+    
+    <changefreq>monthly</changefreq>
+    <priority>0.6</priority>
+  </url>
+  
+  <url>
+    <loc>https://yu-yang.pro/uncategorized/missing-semester/Lec9/</loc>
+    
+    <lastmod>2022-04-13</lastmod>
+    
+    <changefreq>monthly</changefreq>
+    <priority>0.6</priority>
+  </url>
+  
+  <url>
+    <loc>https://yu-yang.pro/uncategorized/missing-semester/Lec8/</loc>
+    
+    <lastmod>2022-04-13</lastmod>
+    
+    <changefreq>monthly</changefreq>
+    <priority>0.6</priority>
+  </url>
+  
+  <url>
+    <loc>https://yu-yang.pro/uncategorized/missing-semester/Lec7/</loc>
+    
+    <lastmod>2022-04-13</lastmod>
+    
+    <changefreq>monthly</changefreq>
+    <priority>0.6</priority>
+  </url>
+  
+  <url>
+    <loc>https://yu-yang.pro/uncategorized/missing-semester/Lec6/</loc>
+    
+    <lastmod>2022-04-13</lastmod>
+    
+    <changefreq>monthly</changefreq>
+    <priority>0.6</priority>
+  </url>
+  
+  <url>
+    <loc>https://yu-yang.pro/uncategorized/missing-semester/Lec5/</loc>
+    
+    <lastmod>2022-04-13</lastmod>
+    
+    <changefreq>monthly</changefreq>
+    <priority>0.6</priority>
+  </url>
+  
+  <url>
+    <loc>https://yu-yang.pro/uncategorized/missing-semester/Lec4/</loc>
+    
+    <lastmod>2022-04-13</lastmod>
+    
+    <changefreq>monthly</changefreq>
+    <priority>0.6</priority>
+  </url>
+  
+  <url>
+    <loc>https://yu-yang.pro/uncategorized/missing-semester/Lec3/</loc>
+    
+    <lastmod>2022-04-13</lastmod>
+    
+    <changefreq>monthly</changefreq>
+    <priority>0.6</priority>
+  </url>
+  
+  <url>
     <loc>https://yu-yang.pro/Distributed-Systems/Distributed_Sytem/Designing-data-intensive-applications/Chapter5/</loc>
     
     <lastmod>2022-04-11</lastmod>
@@ -175,7 +274,7 @@
 
   <url>
     <loc>https://yu-yang.pro/</loc>
-    <lastmod>2022-04-11</lastmod>
+    <lastmod>2022-04-15</lastmod>
     <changefreq>daily</changefreq>
     <priority>1.0</priority>
   </url>
@@ -183,133 +282,140 @@
   
   <url>
     <loc>https://yu-yang.pro/tags/Distributed-Systems/</loc>
-    <lastmod>2022-04-11</lastmod>
+    <lastmod>2022-04-15</lastmod>
     <changefreq>weekly</changefreq>
     <priority>0.2</priority>
   </url>
   
   <url>
     <loc>https://yu-yang.pro/tags/MIT-6-824/</loc>
-    <lastmod>2022-04-11</lastmod>
+    <lastmod>2022-04-15</lastmod>
     <changefreq>weekly</changefreq>
     <priority>0.2</priority>
   </url>
   
   <url>
     <loc>https://yu-yang.pro/tags/Fault-Tolerant/</loc>
-    <lastmod>2022-04-11</lastmod>
+    <lastmod>2022-04-15</lastmod>
     <changefreq>weekly</changefreq>
     <priority>0.2</priority>
   </url>
   
   <url>
     <loc>https://yu-yang.pro/tags/classic-paper/</loc>
-    <lastmod>2022-04-11</lastmod>
+    <lastmod>2022-04-15</lastmod>
     <changefreq>weekly</changefreq>
     <priority>0.2</priority>
   </url>
   
   <url>
     <loc>https://yu-yang.pro/tags/Algorithms-4/</loc>
-    <lastmod>2022-04-11</lastmod>
+    <lastmod>2022-04-15</lastmod>
     <changefreq>weekly</changefreq>
     <priority>0.2</priority>
   </url>
   
   <url>
     <loc>https://yu-yang.pro/tags/Data-Structure/</loc>
-    <lastmod>2022-04-11</lastmod>
+    <lastmod>2022-04-15</lastmod>
     <changefreq>weekly</changefreq>
     <priority>0.2</priority>
   </url>
   
   <url>
     <loc>https://yu-yang.pro/tags/Leecode/</loc>
-    <lastmod>2022-04-11</lastmod>
+    <lastmod>2022-04-15</lastmod>
     <changefreq>weekly</changefreq>
     <priority>0.2</priority>
   </url>
   
   <url>
     <loc>https://yu-yang.pro/tags/Stack-Queue-Bag/</loc>
-    <lastmod>2022-04-11</lastmod>
+    <lastmod>2022-04-15</lastmod>
     <changefreq>weekly</changefreq>
     <priority>0.2</priority>
   </url>
   
   <url>
     <loc>https://yu-yang.pro/tags/Linux/</loc>
-    <lastmod>2022-04-11</lastmod>
+    <lastmod>2022-04-15</lastmod>
     <changefreq>weekly</changefreq>
     <priority>0.2</priority>
   </url>
   
   <url>
     <loc>https://yu-yang.pro/tags/Command-Line/</loc>
-    <lastmod>2022-04-11</lastmod>
+    <lastmod>2022-04-15</lastmod>
     <changefreq>weekly</changefreq>
     <priority>0.2</priority>
   </url>
   
   <url>
     <loc>https://yu-yang.pro/tags/MapReduce/</loc>
-    <lastmod>2022-04-11</lastmod>
+    <lastmod>2022-04-15</lastmod>
     <changefreq>weekly</changefreq>
     <priority>0.2</priority>
   </url>
   
   <url>
     <loc>https://yu-yang.pro/tags/Go/</loc>
-    <lastmod>2022-04-11</lastmod>
+    <lastmod>2022-04-15</lastmod>
     <changefreq>weekly</changefreq>
     <priority>0.2</priority>
   </url>
   
   <url>
     <loc>https://yu-yang.pro/tags/Google-File-Systems/</loc>
-    <lastmod>2022-04-11</lastmod>
+    <lastmod>2022-04-15</lastmod>
     <changefreq>weekly</changefreq>
     <priority>0.2</priority>
   </url>
   
   <url>
     <loc>https://yu-yang.pro/tags/Fault-Tolerant-Virtual-Machine/</loc>
-    <lastmod>2022-04-11</lastmod>
+    <lastmod>2022-04-15</lastmod>
     <changefreq>weekly</changefreq>
     <priority>0.2</priority>
   </url>
   
   <url>
     <loc>https://yu-yang.pro/tags/Hadoop/</loc>
-    <lastmod>2022-04-11</lastmod>
+    <lastmod>2022-04-15</lastmod>
     <changefreq>weekly</changefreq>
     <priority>0.2</priority>
   </url>
   
   <url>
     <loc>https://yu-yang.pro/tags/Book/</loc>
-    <lastmod>2022-04-11</lastmod>
+    <lastmod>2022-04-15</lastmod>
     <changefreq>weekly</changefreq>
     <priority>0.2</priority>
   </url>
   
   <url>
     <loc>https://yu-yang.pro/tags/Lab/</loc>
-    <lastmod>2022-04-11</lastmod>
+    <lastmod>2022-04-15</lastmod>
     <changefreq>weekly</changefreq>
     <priority>0.2</priority>
   </url>
   
   <url>
     <loc>https://yu-yang.pro/tags/Programming-Language/</loc>
-    <lastmod>2022-04-11</lastmod>
+    <lastmod>2022-04-15</lastmod>
     <changefreq>weekly</changefreq>
     <priority>0.2</priority>
   </url>
   
   <url>
     <loc>https://yu-yang.pro/tags/Golang/</loc>
-    <lastmod>2022-04-11</lastmod>
+    <lastmod>2022-04-15</lastmod>
+    <changefreq>weekly</changefreq>
+    <priority>0.2</priority>
+  </url>
+  
+  <url>
+    <loc>https://yu-yang.pro/tags/shell/</loc>
+    <lastmod>2022-04-15</lastmod>
     <changefreq>weekly</changefreq>
     <priority>0.2</priority>
   </url>
@@ -318,42 +424,49 @@
   
   <url>
     <loc>https://yu-yang.pro/categories/Distributed-Systems/</loc>
-    <lastmod>2022-04-11</lastmod>
+    <lastmod>2022-04-15</lastmod>
     <changefreq>weekly</changefreq>
     <priority>0.2</priority>
   </url>
   
   <url>
     <loc>https://yu-yang.pro/categories/Algorithm/</loc>
-    <lastmod>2022-04-11</lastmod>
+    <lastmod>2022-04-15</lastmod>
     <changefreq>weekly</changefreq>
     <priority>0.2</priority>
   </url>
   
   <url>
     <loc>https://yu-yang.pro/categories/Linux/</loc>
-    <lastmod>2022-04-11</lastmod>
+    <lastmod>2022-04-15</lastmod>
     <changefreq>weekly</changefreq>
     <priority>0.2</priority>
   </url>
   
   <url>
     <loc>https://yu-yang.pro/categories/papers/</loc>
-    <lastmod>2022-04-11</lastmod>
+    <lastmod>2022-04-15</lastmod>
     <changefreq>weekly</changefreq>
     <priority>0.2</priority>
   </url>
   
   <url>
     <loc>https://yu-yang.pro/categories/Algorithm/Algorithms-4/</loc>
-    <lastmod>2022-04-11</lastmod>
+    <lastmod>2022-04-15</lastmod>
     <changefreq>weekly</changefreq>
     <priority>0.2</priority>
   </url>
   
   <url>
     <loc>https://yu-yang.pro/categories/%E6%9D%82%E8%AE%B0/</loc>
-    <lastmod>2022-04-11</lastmod>
+    <lastmod>2022-04-15</lastmod>
+    <changefreq>weekly</changefreq>
+    <priority>0.2</priority>
+  </url>
+  
+  <url>
+    <loc>https://yu-yang.pro/categories/MIT-Missing-Semeter/</loc>
+    <lastmod>2022-04-15</lastmod>
     <changefreq>weekly</changefreq>
     <priority>0.2</priority>
   </url>
