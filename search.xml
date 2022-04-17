@@ -1212,7 +1212,81 @@
 <p>![Screenshot 2022-04-15 at 12.56.48](&#x2F;Users&#x2F;zhangyuyang&#x2F;Desktop&#x2F;blog&#x2F;source&#x2F;_posts&#x2F;missing-semester&#x2F;Lec2&#x2F;Screenshot 2022-04-15 at 12.56.48.png)</p>
 <figure class="highlight bash"><table><tr><td class="code"><pre><span class="line">$ <span class="literal">false</span> ; <span class="built_in">echo</span> <span class="string">&quot;This will always print&quot;</span> <span class="comment"># 不论前面是否成功，都会打印后面的</span></span><br></pre></td></tr></table></figure>
 
-<p> ![Screenshot 2022-04-15 at 13.10.06](&#x2F;Users&#x2F;zhangyuyang&#x2F;Desktop&#x2F;blog&#x2F;source&#x2F;_posts&#x2F;missing-semester&#x2F;Lec2&#x2F;Screenshot 2022-04-15 at 13.10.06.png)</p>
+<h2 id="command-substitution"><a href="#command-substitution" class="headerlink" title="command substitution"></a>command substitution</h2><p>![Screenshot 2022-04-15 at 13.10.06](&#x2F;Users&#x2F;zhangyuyang&#x2F;Desktop&#x2F;blog&#x2F;source&#x2F;_posts&#x2F;missing-semester&#x2F;Lec2&#x2F;Screenshot 2022-04-15 at 13.10.06.png)</p>
+<p>当您通过 <code>$( CMD )</code> 这样的方式来执行<code>CMD</code> 这个命令时，它的输出结果会替换掉 <code>$( CMD )</code> 。</p>
+<h3 id="process-substitiion"><a href="#process-substitiion" class="headerlink" title="process substitiion"></a>process substitiion</h3><p><code>&lt;( CMD )</code> 会执行 <code>CMD</code> 并将结果输出到一个临时文件中，并将 <code>&lt;( CMD )</code> 替换成临时文件名。这在我们希望返回值通过文件而不是STDIN传递时很有用。例如， <code>diff &lt;(ls foo) &lt;(ls bar)</code> 会显示文件夹 <code>foo</code> 和 <code>bar</code> 中文件的区别。</p>
+<figure class="highlight bash"><table><tr><td class="code"><pre><span class="line"><span class="meta">#!/bin/bash</span></span><br><span class="line"></span><br><span class="line"><span class="built_in">echo</span> <span class="string">&quot;Starting program at <span class="subst">$(date)</span>&quot;</span> <span class="comment"># date会被替换成日期和时间</span></span><br><span class="line"></span><br><span class="line"><span class="built_in">echo</span> <span class="string">&quot;Running program <span class="variable">$0</span> with <span class="variable">$#</span> arguments with pid $$&quot;</span></span><br><span class="line"></span><br><span class="line"><span class="keyword">for</span> file <span class="keyword">in</span> <span class="string">&quot;<span class="variable">$@</span>&quot;</span>; <span class="keyword">do</span></span><br><span class="line">    grep foobar <span class="string">&quot;<span class="variable">$file</span>&quot;</span> &gt; /dev/null 2&gt; /dev/null</span><br><span class="line">    <span class="comment"># 如果模式没有找到，则grep退出状态为 1</span></span><br><span class="line">    <span class="comment"># 我们将标准输出流和标准错误流重定向到Null，因为我们并不关心这些信息</span></span><br><span class="line">    <span class="keyword">if</span> [[ $? -ne 0 ]]; <span class="keyword">then</span></span><br><span class="line">        <span class="built_in">echo</span> <span class="string">&quot;File <span class="variable">$file</span> does not have any foobar, adding one&quot;</span></span><br><span class="line">        <span class="built_in">echo</span> <span class="string">&quot;# foobar&quot;</span> &gt;&gt; <span class="string">&quot;<span class="variable">$file</span>&quot;</span></span><br><span class="line">    <span class="keyword">fi</span></span><br><span class="line"><span class="keyword">done</span></span><br></pre></td></tr></table></figure>
+
+<p>![Screenshot 2022-04-17 at 14.11.16](&#x2F;Users&#x2F;zhangyuyang&#x2F;Desktop&#x2F;blog&#x2F;source&#x2F;_posts&#x2F;missing-semester&#x2F;Lec2&#x2F;Screenshot 2022-04-17 at 14.11.16.png)</p>
+<h2 id="通配-globbing"><a href="#通配-globbing" class="headerlink" title="通配(globbing)"></a>通配(globbing)</h2><ul>
+<li>通配符 - 当你想要利用通配符进行匹配时，你可以分别使用 <code>?</code> 和 <code>*</code> 来匹配一个或任意个字符。例如，对于文件<code>foo</code>, <code>foo1</code>, <code>foo2</code>, <code>foo10</code> 和 <code>bar</code>, <code>rm foo?</code>这条命令会删除<code>foo1</code> 和 <code>foo2</code> ，而<code>rm foo*</code> 则会删除除了<code>bar</code>之外的所有文件。</li>
+<li>花括号<code>&#123;&#125;</code> - 当你有一系列的指令，其中包含一段公共子串时，可以用花括号来自动展开这些命令。这在批量移动或转换文件时非常方便。</li>
+</ul>
+<p>![Screenshot 2022-04-17 at 14.13.56](&#x2F;Users&#x2F;zhangyuyang&#x2F;Desktop&#x2F;blog&#x2F;source&#x2F;_posts&#x2F;missing-semester&#x2F;Lec2&#x2F;Screenshot 2022-04-17 at 14.13.56.png)</p>
+<figure class="highlight bash"><table><tr><td class="code"><pre><span class="line">convert image.&#123;png,jpg&#125;</span><br><span class="line"><span class="comment"># 会展开为</span></span><br><span class="line">convert image.png image.jpg</span><br><span class="line"></span><br><span class="line"><span class="built_in">cp</span> /path/to/project/&#123;foo,bar,baz&#125;.sh /newpath</span><br><span class="line"><span class="comment"># 会展开为</span></span><br><span class="line"><span class="built_in">cp</span> /path/to/project/foo.sh /path/to/project/bar.sh /path/to/project/baz.sh /newpath</span><br><span class="line"></span><br><span class="line"><span class="comment"># 也可以结合通配使用</span></span><br><span class="line"><span class="built_in">mv</span> *&#123;.py,.sh&#125; folder</span><br><span class="line"><span class="comment"># 会移动所有 *.py 和 *.sh 文件</span></span><br><span class="line"></span><br><span class="line"><span class="built_in">mkdir</span> foo bar</span><br><span class="line"></span><br><span class="line"><span class="comment"># 下面命令会创建foo/a, foo/b, ... foo/h, bar/a, bar/b, ... bar/h这些文件</span></span><br><span class="line"><span class="built_in">touch</span> &#123;foo,bar&#125;/&#123;a..h&#125;</span><br><span class="line"><span class="built_in">touch</span> foo/x bar/y</span><br><span class="line"><span class="comment"># 比较文件夹 foo 和 bar 中包含文件的不同</span></span><br><span class="line">diff &lt;(<span class="built_in">ls</span> foo) &lt;(<span class="built_in">ls</span> bar)</span><br><span class="line"><span class="comment"># 输出</span></span><br><span class="line"><span class="comment"># &lt; x</span></span><br><span class="line"><span class="comment"># ---</span></span><br><span class="line"><span class="comment"># &gt; y</span></span><br></pre></td></tr></table></figure>
+
+
+
+<p>![Screenshot 2022-04-17 at 14.16.53](&#x2F;Users&#x2F;zhangyuyang&#x2F;Desktop&#x2F;blog&#x2F;source&#x2F;_posts&#x2F;missing-semester&#x2F;Lec2&#x2F;Screenshot 2022-04-17 at 14.16.53.png)</p>
+<p>编写 <code>bash</code> 脚本有时候会很别扭和反直觉。例如 <a href="https://github.com/koalaman/shellcheck">shellcheck</a> 这样的工具可以帮助你定位sh&#x2F;bash脚本中的错误。</p>
+<h2 id="python-script"><a href="#python-script" class="headerlink" title="python script"></a>python script</h2><figure class="highlight python"><table><tr><td class="code"><pre><span class="line"><span class="comment">#!/usr/local/bin/python</span></span><br><span class="line"><span class="keyword">import</span> sys</span><br><span class="line"><span class="keyword">for</span> arg <span class="keyword">in</span> <span class="built_in">reversed</span>(sys.argv[<span class="number">1</span>:]):</span><br><span class="line">    <span class="built_in">print</span>(arg)</span><br></pre></td></tr></table></figure>
+
+<p>内核知道去用 python 解释器而不是 shell 命令来运行这段脚本，是因为脚本的开头第一行的 <a href="https://en.wikipedia.org/wiki/Shebang_(Unix)">shebang</a>。</p>
+<p>运行方式：</p>
+<ol>
+<li>直接运行</li>
+</ol>
+<p>![Screenshot 2022-04-17 at 14.24.02](&#x2F;Users&#x2F;zhangyuyang&#x2F;Desktop&#x2F;blog&#x2F;source&#x2F;_posts&#x2F;missing-semester&#x2F;Lec2&#x2F;Screenshot 2022-04-17 at 14.24.02.png)</p>
+<ol start="2">
+<li>使用 shell 来运行 ![Screenshot 2022-04-17 at 14.24.34](&#x2F;Users&#x2F;zhangyuyang&#x2F;Desktop&#x2F;blog&#x2F;source&#x2F;_posts&#x2F;missing-semester&#x2F;Lec2&#x2F;Screenshot 2022-04-17 at 14.24.34.png)</li>
+</ol>
+<p> 存在问题： 不同machine之间，python安装的位置可能不同，因此，使用<code>/usr/local/bin/python</code>,不一定可以正确运行。</p>
+<p>解决方式：  在 <code>shebang</code> 行中使用 <a href="https://man7.org/linux/man-pages/man1/env.1.html"><code>env</code></a> 命令是一种好的实践，它会利用环境变量中的程序来解析该脚本，这样就提高来您的脚本的可移植性。</p>
+<p>![Screenshot 2022-04-17 at 14.26.39](&#x2F;Users&#x2F;zhangyuyang&#x2F;Desktop&#x2F;blog&#x2F;source&#x2F;_posts&#x2F;missing-semester&#x2F;Lec2&#x2F;Screenshot 2022-04-17 at 14.26.39.png)</p>
+<p>编写 <code>bash</code> 脚本有时候会很别扭和反直觉。例如 <a href="https://github.com/koalaman/shellcheck">shellcheck</a> 这样的工具可以帮助你定位sh&#x2F;bash脚本中的错误。</p>
+<p>![Screenshot 2022-04-17 at 14.29.16](&#x2F;Users&#x2F;zhangyuyang&#x2F;Desktop&#x2F;blog&#x2F;source&#x2F;_posts&#x2F;missing-semester&#x2F;Lec2&#x2F;Screenshot 2022-04-17 at 14.29.16.png)</p>
+<h2 id="如何查看命令如何使用"><a href="#如何查看命令如何使用" class="headerlink" title="如何查看命令如何使用"></a>如何查看命令如何使用</h2><ul>
+<li><p>man</p>
+</li>
+<li><p>-h –help</p>
+</li>
+<li><p><a href="https://tldr.sh/">TLDR pages</a> 是一个很不错的替代品，它提供了一些案例，可以帮助您快速找到正确的选项。![Screenshot 2022-04-17 at 14.32.02](&#x2F;Users&#x2F;zhangyuyang&#x2F;Desktop&#x2F;blog&#x2F;source&#x2F;_posts&#x2F;missing-semester&#x2F;Lec2&#x2F;Screenshot 2022-04-17 at 14.32.02.png)</p>
+</li>
+</ul>
+<p>  ![Screenshot 2022-04-17 at 14.32.10](&#x2F;Users&#x2F;zhangyuyang&#x2F;Desktop&#x2F;blog&#x2F;source&#x2F;_posts&#x2F;missing-semester&#x2F;Lec2&#x2F;Screenshot 2022-04-17 at 14.32.10.png)</p>
+<h3 id="查找文件"><a href="#查找文件" class="headerlink" title="查找文件"></a>查找文件</h3><p>所有的类UNIX系统都包含一个名为 <a href="https://man7.org/linux/man-pages/man1/find.1.html"><code>find</code></a> 的工具，它是 shell 上用于查找文件的绝佳工具。<code>find</code>命令会递归地搜索符合条件的文件，例如：</p>
+<figure class="highlight bash"><table><tr><td class="code"><pre><span class="line"><span class="comment"># 查找所有名称为src的文件夹</span></span><br><span class="line">find . -name src -<span class="built_in">type</span> d</span><br><span class="line"><span class="comment"># 查找所有文件夹路径中包含test的python文件</span></span><br><span class="line">find . -path <span class="string">&#x27;*/test/*.py&#x27;</span> -<span class="built_in">type</span> f</span><br><span class="line"><span class="comment"># 查找前一天修改的所有文件</span></span><br><span class="line">find . -mtime -1</span><br><span class="line"><span class="comment"># 查找所有大小在500k至10M的tar.gz文件</span></span><br><span class="line">find . -size +500k -size -10M -name <span class="string">&#x27;*.tar.gz&#x27;</span></span><br></pre></td></tr></table></figure>
+
+<p>![Screenshot 2022-04-17 at 14.34.27](&#x2F;Users&#x2F;zhangyuyang&#x2F;Desktop&#x2F;blog&#x2F;source&#x2F;_posts&#x2F;missing-semester&#x2F;Lec2&#x2F;Screenshot 2022-04-17 at 14.34.27.png)</p>
+<p>除了列出所寻找的文件之外，find 还能对所有查找到的文件进行操作。这能极大地简化一些单调的任务</p>
+<figure class="highlight bash"><table><tr><td class="code"><pre><span class="line"><span class="comment"># 删除全部扩展名为.tmp 的文件</span></span><br><span class="line">find . -name <span class="string">&#x27;*.tmp&#x27;</span> -<span class="built_in">exec</span> <span class="built_in">rm</span> &#123;&#125; \;</span><br><span class="line"><span class="comment"># 查找全部的 PNG 文件并将其转换为 JPG</span></span><br><span class="line">find . -name <span class="string">&#x27;*.png&#x27;</span> -<span class="built_in">exec</span> convert &#123;&#125; &#123;&#125;.jpg \;</span><br></pre></td></tr></table></figure>
+
+
+
+<p>![Screenshot 2022-04-17 at 14.35.40](&#x2F;Users&#x2F;zhangyuyang&#x2F;Desktop&#x2F;blog&#x2F;source&#x2F;_posts&#x2F;missing-semester&#x2F;Lec2&#x2F;Screenshot 2022-04-17 at 14.35.40.png)</p>
+<p>尽管 <code>find</code> 用途广泛，它的语法却比较难以记忆。例如，为了查找满足模式 <code>PATTERN</code> 的文件，您需要执行 <code>find -name &#39;*PATTERN*&#39;</code> (如果您希望模式匹配时是不区分大小写，可以使用<code>-iname</code>选项）</p>
+<p><a href="https://github.com/sharkdp/fd"><code>fd</code></a> 就是一个更简单、更快速、更友好的程序，它可以用来作为<code>find</code>的替代品。它有很多不错的默认设置，例如输出着色、默认支持正则匹配、支持unicode并且我认为它的语法更符合直觉。以模式<code>PATTERN</code> 搜索的语法是 <code>fd PATTERN</code>。</p>
+<p>![Screenshot 2022-04-17 at 14.38.06](&#x2F;Users&#x2F;zhangyuyang&#x2F;Desktop&#x2F;blog&#x2F;source&#x2F;_posts&#x2F;missing-semester&#x2F;Lec2&#x2F;Screenshot 2022-04-17 at 14.38.06.png)</p>
+<p>大多数人都认为 <code>find</code> 和 <code>fd</code> 已经很好用了，但是有的人可能想知道，我们是不是可以有更高效的方法，例如不要每次都搜索文件而是通过编译索引或建立数据库的方式来实现更加快速地搜索。</p>
+<p>这就要靠 <a href="https://man7.org/linux/man-pages/man1/locate.1.html"><code>locate</code></a> 了。 <code>locate</code> 使用一个由 <a href="https://man7.org/linux/man-pages/man1/updatedb.1.html"><code>updatedb</code></a>负责更新的数据库，在大多数系统中 <code>updatedb</code> 都会通过 <a href="https://man7.org/linux/man-pages/man8/cron.8.html"><code>cron</code></a> 每日更新。这便需要我们在速度和时效性之间作出权衡。而且，<code>find</code> 和类似的工具可以通过别的属性比如文件大小、修改时间或是权限来查找文件，<code>locate</code>则只能通过文件名。 <a href="https://unix.stackexchange.com/questions/60205/locate-vs-find-usage-pros-and-cons-of-each-other">这里</a>有一个更详细的对比。</p>
+<p>updata database</p>
+<figure class="highlight bash"><table><tr><td class="code"><pre><span class="line">$ updatedb</span><br></pre></td></tr></table></figure>
+
+<h3 id="查找代码"><a href="#查找代码" class="headerlink" title="查找代码"></a>查找代码</h3><p>grep</p>
+<p>-R 递归地进入子目录并搜索所有的文本文件。![Screenshot 2022-04-17 at 14.40.42](&#x2F;Users&#x2F;zhangyuyang&#x2F;Desktop&#x2F;blog&#x2F;source&#x2F;_posts&#x2F;missing-semester&#x2F;Lec2&#x2F;Screenshot 2022-04-17 at 14.40.42.png)</p>
+<p>-C: 获取查找结果的上下文（Context） <code>grep -C 5</code> 会输出匹配结果前后五行。</p>
+<p>出现了很多 find 的替代品，包括 <a href="https://beyondgrep.com/">ack</a>, <a href="https://github.com/ggreer/the_silver_searcher">ag</a> 和 <a href="https://github.com/BurntSushi/ripgrep">rg</a>。它们都特别好用，但是功能也都差不多，我比较常用的是 ripgrep (<code>rg</code>) ，因为它速度快，而且用法非常符合直觉。例子如下：</p>
+<figure class="highlight bash"><table><tr><td class="code"><pre><span class="line"><span class="comment"># 查找所有使用了 requests 库的文件</span></span><br><span class="line">rg -t py <span class="string">&#x27;import requests&#x27;</span></span><br><span class="line"><span class="comment"># 查找所有没有写 shebang 的文件（包含隐藏文件）</span></span><br><span class="line">rg -u --files-without-match <span class="string">&quot;^#!&quot;</span></span><br><span class="line"><span class="comment"># 查找所有的foo字符串，并打印其之后的5行</span></span><br><span class="line">rg foo -A 5</span><br><span class="line"><span class="comment"># 打印匹配的统计信息（匹配的行和文件的数量 ）</span></span><br><span class="line">rg --stats PATTERN</span><br></pre></td></tr></table></figure>
+
+<p>![Screenshot 2022-04-17 at 14.43.06](&#x2F;Users&#x2F;zhangyuyang&#x2F;Desktop&#x2F;blog&#x2F;source&#x2F;_posts&#x2F;missing-semester&#x2F;Lec2&#x2F;Screenshot 2022-04-17 at 14.43.06.png)</p>
+<h3 id="查找shell命令"><a href="#查找shell命令" class="headerlink" title="查找shell命令"></a>查找shell命令</h3><p>history</p>
+<p>![Screenshot 2022-04-17 at 14.45.12](&#x2F;Users&#x2F;zhangyuyang&#x2F;Desktop&#x2F;blog&#x2F;source&#x2F;_posts&#x2F;missing-semester&#x2F;Lec2&#x2F;Screenshot 2022-04-17 at 14.45.12.png)</p>
+<h3 id="文件夹导航"><a href="#文件夹导航" class="headerlink" title="文件夹导航"></a>文件夹导航</h3><ul>
+<li>tree</li>
+<li>ls -R</li>
+<li>broot</li>
+<li></li>
+</ul>
 ]]></content>
       <categories>
         <category>MIT Missing Semeter</category>
