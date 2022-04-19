@@ -29,8 +29,8 @@
 <meta property="og:site_name" content="Yuyang&#39;s 博客">
 <meta property="og:description" content="本片文章是MapReduce经典论文的阅读">
 <meta property="og:locale" content="en_US">
-<meta property="og:image" content="https://yu-yang.pro/papers/Distributed_Sytem/MapReduce/mapreduce_work.jpg">
-<meta property="og:image" content="https://yu-yang.pro/Users/zhangyuyang/Desktop/blog/source/_posts/MapReduce/1*4m9UTM4e1lrwWhdMJX29SQ.png">
+<meta property="og:image" content="https://yu-yang.pro/papers/Distributed_Sytem/MapReduce/Distributed_Sytem/MapReduce/mapreduce_work.jpg">
+<meta property="og:image" content="https://yu-yang.pro/papers/Distributed_Sytem/MapReduce/zhangyuyang/Desktop/blog/source/_posts/MapReduce/1*4m9UTM4e1lrwWhdMJX29SQ.png">
 <meta property="article:published_time" content="2022-03-30T09:55:45.000Z">
 <meta property="article:modified_time" content="2022-03-30T09:55:45.000Z">
 <meta property="article:author" content="Yuyang Zhang">
@@ -39,7 +39,7 @@
 <meta property="article:tag" content="classic paper">
 <meta property="article:tag" content="MapReduce">
 <meta name="twitter:card" content="summary">
-<meta name="twitter:image" content="https://yu-yang.pro/papers/Distributed_Sytem/MapReduce/mapreduce_work.jpg">
+<meta name="twitter:image" content="https://yu-yang.pro/papers/Distributed_Sytem/MapReduce/Distributed_Sytem/MapReduce/mapreduce_work.jpg">
 
 <link rel="canonical" href="https://yu-yang.pro/papers/Distributed_Sytem/MapReduce/">
 
@@ -250,14 +250,14 @@
                 <i class="far fa-file-word"></i>
               </span>
                 <span class="post-meta-item-text">Symbols count in article: </span>
-              <span>20k</span>
+              <span>24k</span>
             </span>
             <span class="post-meta-item" title="Reading time">
               <span class="post-meta-item-icon">
                 <i class="far fa-clock"></i>
               </span>
                 <span class="post-meta-item-text">Reading time &asymp;</span>
-              <span>18 mins.</span>
+              <span>21 mins.</span>
             </span>
 
         </div>
@@ -305,7 +305,7 @@
 <figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br></pre></td><td class="code"><pre><span class="line">map(String key, String value):</span><br><span class="line">	// key: document name </span><br><span class="line">	// value: document contents </span><br><span class="line">	for each word w in value: </span><br><span class="line">		EmitIntermediate(w, &quot;1&quot;);</span><br><span class="line">		</span><br><span class="line">reduce(String key, Iterator values): </span><br><span class="line">	// key: a word </span><br><span class="line">	// values: a list of counts </span><br><span class="line">	int result = 0; </span><br><span class="line">	for each v in values:</span><br><span class="line">  		result += ParseInt(v); </span><br><span class="line">	Emit(AsString(result)); </span><br></pre></td></tr></table></figure>
 
 <p>​    The map function emits each word plus an associated count of occurrences (just ‘1’ in this simple example). The reduce function sums together all counts emitted for a particular word. In addition, the user writes code to fill in a mapreduce specification object with the names of the input and output files, and optional tuning parameters. The user then invokes the MapReduce function, passing it the specification object. The user’s code is linked together with the MapReduce library (implemented in C++). Appendix A contains the full program text for this example.</p>
-<p><img src="/papers/Distributed_Sytem/MapReduce/mapreduce_work.jpg"></p>
+<p><img src="/papers/Distributed_Sytem/MapReduce/Distributed_Sytem/MapReduce/mapreduce_work.jpg"></p>
 <h2 id="2-2-Types"><a href="#2-2-Types" class="headerlink" title="2.2 Types"></a>2.2 Types</h2><p>Even though the previous pseudo-code is written in terms of string inputs and outputs, conceptually the map and reduce functions supplied by the user have associated types: </p>
 <p>​            map (k1,v1) → list(k2,v2)</p>
 <p>​            reduce (k2,list(v2)) → list(v2) </p>
@@ -333,7 +333,7 @@
           </div> 
 
 <h2 id="3-1-Execution-Overview"><a href="#3-1-Execution-Overview" class="headerlink" title="3.1 Execution Overview"></a>3.1 Execution Overview</h2><p>The Map invocations are distributed across multiple machines by automatically partitioning the input data into a set of M splits. The input splits can be processed in parallel by different machines. Reduce invocations are distributed by partitioning the intermediate key space into R pieces using a partitioning function <font color="red">(e.g., hash(key) mod R)</font>. The number of partitions (R) and the partitioning function are <font color="red">specified by the user</font>. Figure 1 shows the overall flow of a MapReduce operation in our implementation. When the user program calls the MapReduce function, the following sequence of actions occurs (the numbered labels in Figure 1 correspond to the numbers in the list below):</p>
-<p><img src="/Users/zhangyuyang/Desktop/blog/source/_posts/MapReduce/1*4m9UTM4e1lrwWhdMJX29SQ.png"></p>
+<p><img src="/papers/Distributed_Sytem/MapReduce/zhangyuyang/Desktop/blog/source/_posts/MapReduce/1*4m9UTM4e1lrwWhdMJX29SQ.png"></p>
 <ol>
 <li>The MapReduce library in the user program first splits the input files into M peices of typically 16 megabytes to 64 megabytes(MB) per piece (controllable)by the user via an optional parameter). It then starts up <font color="red">many copies of the program</font> on a cluster of machines.</li>
 <li>One of the copies of the program in special - the master. The rest are workers that are assigned work by the master. There are workers that assigned work by the master. There are M map tasks and R reduce tasks to assign. The master pricks <font color="red">idle workers</font> and assigns each one a map task or a reduce task.</li>
@@ -495,20 +495,20 @@
       <div class="site-state-item site-state-posts">
           <a href="/archives/">
         
-          <span class="site-state-item-count">28</span>
+          <span class="site-state-item-count">34</span>
           <span class="site-state-item-name">posts</span>
         </a>
       </div>
       <div class="site-state-item site-state-categories">
             <a href="/categories/">
           
-        <span class="site-state-item-count">7</span>
+        <span class="site-state-item-count">8</span>
         <span class="site-state-item-name">categories</span></a>
       </div>
       <div class="site-state-item site-state-tags">
             <a href="/tags/">
           
-        <span class="site-state-item-count">20</span>
+        <span class="site-state-item-count">21</span>
         <span class="site-state-item-name">tags</span></a>
       </div>
   </nav>
@@ -565,12 +565,12 @@
     <span class="post-meta-item-icon">
       <i class="fa fa-chart-area"></i>
     </span>
-    <span title="Symbols count total">73k</span>
+    <span title="Symbols count total">106k</span>
     <span class="post-meta-divider">|</span>
     <span class="post-meta-item-icon">
       <i class="fa fa-coffee"></i>
     </span>
-    <span title="Reading time total">1:06</span>
+    <span title="Reading time total">1:36</span>
 </div>
 
         

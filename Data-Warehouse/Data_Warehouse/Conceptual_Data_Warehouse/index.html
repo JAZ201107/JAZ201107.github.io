@@ -1,0 +1,736 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=2">
+<meta name="theme-color" content="#222">
+<meta name="generator" content="Hexo 6.1.0">
+  <link rel="apple-touch-icon" sizes="180x180" href="/images/apple-touch-icon-next.png">
+  <link rel="icon" type="image/png" sizes="32x32" href="/images/favicon-32x32-next.png">
+  <link rel="icon" type="image/png" sizes="16x16" href="/images/favicon-16x16-next.png">
+  <link rel="mask-icon" href="/images/logo.svg" color="#222">
+  <meta name="google-site-verification" content="8PaqjDEjjclkaTafEbNosHDhMjcCoFWL0eEGwg76laY">
+
+<link rel="stylesheet" href="/css/main.css">
+
+
+<link rel="stylesheet" href="/lib/font-awesome/css/all.min.css">
+  <link rel="stylesheet" href="//cdn.jsdelivr.net/gh/fancyapps/fancybox@3/dist/jquery.fancybox.min.css">
+
+<script id="hexo-configurations">
+    var NexT = window.NexT || {};
+    var CONFIG = {"hostname":"yu-yang.pro","root":"/","scheme":"Muse","version":"7.8.0","exturl":false,"sidebar":{"position":"left","display":"always","padding":18,"offset":12,"onmobile":false},"copycode":{"enable":true,"show_result":true,"style":"mac"},"back2top":{"enable":true,"sidebar":false,"scrollpercent":true},"bookmark":{"enable":false,"color":"#222","save":"auto"},"fancybox":true,"mediumzoom":false,"lazyload":false,"pangu":false,"comments":{"style":"tabs","active":null,"storage":true,"lazyload":false,"nav":null},"algolia":{"hits":{"per_page":10},"labels":{"input_placeholder":"Search for Posts","hits_empty":"We didn't find any results for the search: ${query}","hits_stats":"${hits} results found in ${time} ms"}},"localsearch":{"enable":true,"trigger":"auto","top_n_per_article":1,"unescape":false,"preload":false},"motion":{"enable":true,"async":false,"transition":{"post_block":"fadeIn","post_header":"slideDownIn","post_body":"slideDownIn","coll_header":"slideLeftIn","sidebar":"slideUpIn"}},"path":"search.xml"};
+  </script>
+
+  <meta name="description" content="这一章讲什么是Data Warehouse以及基本的概念 A data warehouse is a particular database targeted toward decision support. It takes data from various operational databases and other data sources and transforms it into">
+<meta property="og:type" content="article">
+<meta property="og:title" content="Data Warehouse Concepts">
+<meta property="og:url" content="https://yu-yang.pro/Data-Warehouse/Data_Warehouse/Conceptual_Data_Warehouse/index.html">
+<meta property="og:site_name" content="Yuyang&#39;s 博客">
+<meta property="og:description" content="这一章讲什么是Data Warehouse以及基本的概念 A data warehouse is a particular database targeted toward decision support. It takes data from various operational databases and other data sources and transforms it into">
+<meta property="og:locale" content="en_US">
+<meta property="article:published_time" content="2022-04-18T02:37:00.000Z">
+<meta property="article:modified_time" content="2022-04-18T13:47:08.351Z">
+<meta property="article:author" content="Yuyang Zhang">
+<meta property="article:tag" content="Database">
+<meta name="twitter:card" content="summary">
+
+<link rel="canonical" href="https://yu-yang.pro/Data-Warehouse/Data_Warehouse/Conceptual_Data_Warehouse/">
+
+
+<script id="page-configurations">
+  // https://hexo.io/docs/variables.html
+  CONFIG.page = {
+    sidebar: "",
+    isHome : false,
+    isPost : true,
+    lang   : 'en'
+  };
+</script>
+
+  <title>Data Warehouse Concepts | Yuyang's 博客</title>
+  
+
+
+
+
+
+
+  <noscript>
+  <style>
+  .use-motion .brand,
+  .use-motion .menu-item,
+  .sidebar-inner,
+  .use-motion .post-block,
+  .use-motion .pagination,
+  .use-motion .comments,
+  .use-motion .post-header,
+  .use-motion .post-body,
+  .use-motion .collection-header { opacity: initial; }
+
+  .use-motion .site-title,
+  .use-motion .site-subtitle {
+    opacity: initial;
+    top: initial;
+  }
+
+  .use-motion .logo-line-before i { left: initial; }
+  .use-motion .logo-line-after i { right: initial; }
+  </style>
+</noscript>
+
+</head>
+
+<body itemscope itemtype="http://schema.org/WebPage">
+  <div class="container use-motion">
+    <div class="headband"></div>
+
+    <header class="header" itemscope itemtype="http://schema.org/WPHeader">
+      <div class="header-inner"><div class="site-brand-container">
+  <div class="site-nav-toggle">
+    <div class="toggle" aria-label="Toggle navigation bar">
+      <span class="toggle-line toggle-line-first"></span>
+      <span class="toggle-line toggle-line-middle"></span>
+      <span class="toggle-line toggle-line-last"></span>
+    </div>
+  </div>
+
+  <div class="site-meta">
+
+    <a href="/" class="brand" rel="start">
+      <span class="logo-line-before"><i></i></span>
+      <h1 class="site-title">Yuyang's 博客</h1>
+      <span class="logo-line-after"><i></i></span>
+    </a>
+  </div>
+
+  <div class="site-nav-right">
+    <div class="toggle popup-trigger">
+        <i class="fa fa-search fa-fw fa-lg"></i>
+    </div>
+  </div>
+</div>
+
+
+
+
+<nav class="site-nav">
+  <ul id="menu" class="main-menu menu">
+        <li class="menu-item menu-item-home">
+
+    <a href="/" rel="section"><i class="fa fa-home fa-fw"></i>Home</a>
+
+  </li>
+        <li class="menu-item menu-item-tags">
+
+    <a href="/tags/" rel="section"><i class="fa fa-tags fa-fw"></i>Tags</a>
+
+  </li>
+        <li class="menu-item menu-item-categories">
+
+    <a href="/categories/" rel="section"><i class="fa fa-th fa-fw"></i>Categories</a>
+
+  </li>
+        <li class="menu-item menu-item-archives">
+
+    <a href="/archives/" rel="section"><i class="fa fa-archive fa-fw"></i>Archives</a>
+
+  </li>
+      <li class="menu-item menu-item-search">
+        <a role="button" class="popup-trigger"><i class="fa fa-search fa-fw"></i>Search
+        </a>
+      </li>
+  </ul>
+</nav>
+
+
+
+  <div class="search-pop-overlay">
+    <div class="popup search-popup">
+        <div class="search-header">
+  <span class="search-icon">
+    <i class="fa fa-search"></i>
+  </span>
+  <div class="search-input-container">
+    <input autocomplete="off" autocapitalize="off"
+           placeholder="Searching..." spellcheck="false"
+           type="search" class="search-input">
+  </div>
+  <span class="popup-btn-close">
+    <i class="fa fa-times-circle"></i>
+  </span>
+</div>
+<div id="search-result">
+  <div id="no-result">
+    <i class="fa fa-spinner fa-pulse fa-5x fa-fw"></i>
+  </div>
+</div>
+
+    </div>
+  </div>
+
+</div>
+    </header>
+
+    
+  <div class="back-to-top">
+    <i class="fa fa-arrow-up"></i>
+    <span>0%</span>
+  </div>
+  <div class="reading-progress-bar"></div>
+
+
+    <main class="main">
+      <div class="main-inner">
+        <div class="content-wrap">
+          
+
+          <div class="content post posts-expand">
+            
+
+    
+  
+  
+  <article itemscope itemtype="http://schema.org/Article" class="post-block" lang="en">
+    <link itemprop="mainEntityOfPage" href="https://yu-yang.pro/Data-Warehouse/Data_Warehouse/Conceptual_Data_Warehouse/">
+
+    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
+      <meta itemprop="image" content="/images/profile_img.jpg">
+      <meta itemprop="name" content="Yuyang Zhang">
+      <meta itemprop="description" content="stay hungry stay foolish">
+    </span>
+
+    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
+      <meta itemprop="name" content="Yuyang's 博客">
+    </span>
+      <header class="post-header">
+        <h1 class="post-title" itemprop="name headline">
+          Data Warehouse Concepts
+        </h1>
+
+        <div class="post-meta">
+            <span class="post-meta-item">
+              <span class="post-meta-item-icon">
+                <i class="far fa-calendar"></i>
+              </span>
+              <span class="post-meta-item-text">Posted on</span>
+              
+
+              <time title="Created: 2022-04-18 10:37:00 / Modified: 21:47:08" itemprop="dateCreated datePublished" datetime="2022-04-18T10:37:00+08:00">2022-04-18</time>
+            </span>
+            <span class="post-meta-item">
+              <span class="post-meta-item-icon">
+                <i class="far fa-folder"></i>
+              </span>
+              <span class="post-meta-item-text">In</span>
+                <span itemprop="about" itemscope itemtype="http://schema.org/Thing">
+                  <a href="/categories/Data-Warehouse/" itemprop="url" rel="index"><span itemprop="name">Data Warehouse</span></a>
+                </span>
+            </span>
+
+          
+            <span class="post-meta-item" title="Views" id="busuanzi_container_page_pv" style="display: none;">
+              <span class="post-meta-item-icon">
+                <i class="fa fa-eye"></i>
+              </span>
+              <span class="post-meta-item-text">Views: </span>
+              <span id="busuanzi_value_page_pv"></span>
+            </span><br>
+            <span class="post-meta-item" title="Symbols count in article">
+              <span class="post-meta-item-icon">
+                <i class="far fa-file-word"></i>
+              </span>
+                <span class="post-meta-item-text">Symbols count in article: </span>
+              <span>20k</span>
+            </span>
+            <span class="post-meta-item" title="Reading time">
+              <span class="post-meta-item-icon">
+                <i class="far fa-clock"></i>
+              </span>
+                <span class="post-meta-item-text">Reading time &asymp;</span>
+              <span>18 mins.</span>
+            </span>
+
+        </div>
+      </header>
+
+    
+    
+    
+    <div class="post-body" itemprop="articleBody">
+
+      
+        <p>这一章讲什么是Data Warehouse以及基本的概念</p>
+<p>A data warehouse is a particular database targeted toward decision support. It takes data from <font color="red">various operational databases and other data sources</font> and transforms it into new structures that fit better for the task of performing business analysis.</p>
+<span id="more"></span>
+
+<h1 id="Multidimensional-Model"><a href="#Multidimensional-Model" class="headerlink" title="Multidimensional Model"></a>Multidimensional Model</h1><p>传统的database systems：</p>
+<ul>
+<li>designed and tuned to support the daily operations of an organization</li>
+<li>primary concern is to ensure fast, concurrent access to data.</li>
+<li>requires:<ul>
+<li>transaction processing</li>
+<li>concurrency control capabilities</li>
+<li>recovery techniques that guarantee data consistency</li>
+</ul>
+</li>
+<li>known as <font color="red">operational databases</font> or <font color="red">online transaction processing (OLTP) </font>systems.</li>
+</ul>
+<p>传统database system 存在的缺点：</p>
+<ul>
+<li>perform poorly when executing complex queries that need to join many relational tables together or to aggregate large volumes of data.</li>
+<li>do not include historical data.</li>
+</ul>
+<p>所以需要新的data paradigm –&gt; <font color="red">online analytical processing(OLAP)</font>： analyze the data in organizational databases to support decision making.</p>
+<p>因此，一种新的 database model 也随之出现： data warehouse：large repositories that consolidate data from different sources。</p>
+<p>data warehouse 也可以用于：reporting, data mining, and statistical analysis.</p>
+<p>Data warehouse 和 OLAP 是基于 <strong>multidimensional model</strong>： views data in an n-dimensional space, usually called a data cube or a hypercube.</p>
+<p>![Screenshot 2022-04-18 at 10.57.24](&#x2F;Users&#x2F;zhangyuyang&#x2F;Desktop&#x2F;blog&#x2F;source&#x2F;_posts&#x2F;Data_Warehouse&#x2F;Conceptual_Data_Warehouse&#x2F;Screenshot 2022-04-18 at 10.57.24.png)</p>
+<p>A data cube is defined by dimensions and facts：</p>
+<ul>
+<li>Dimensions：perspectives used to analyze the data.  For example, in Fig.3.1, The cube has three dimensions: Product, Time, and Customer. <ul>
+<li>dimension level &#x2F; data granularity : level of detail at which measures are represented for each dimension of the cube. In the example, sales figures are aggregated to the levels Category, Quarter, and City, respectively.</li>
+<li>members: Instances of a dimension are called members. For example, Seafood and Beverages are members of the Product dimension at the Category level.</li>
+<li>attributes: Dimensions also have associated attributes describing them. For example, the Product dimension could contain attributes such as ProductNumber and UnitPrice, which are not shown in the figure.</li>
+</ul>
+</li>
+<li>facts: the cells of a data cube, have associated numeric values called <strong>measures</strong>. each number shown in a cell of the data cube in Fig.3.1 represents a measure Quantity, indicating the number of units sold (in thousands) by category, quarter, and customer’s city.<ul>
+<li>a data cube contains several measures, e.g. Amount, indicating the total sales amount(not shown)</li>
+</ul>
+</li>
+</ul>
+<p>A data cube may be <strong>sparse</strong> or <strong>dense</strong>: epending on whether it has measures associated with each combination of dimension values.</p>
+<p>dense: all products are bought by all customers during the period of time considered.</p>
+<p>sparse: not all customers may have ordered products of all categories during all quarters of the year. </p>
+<p>Actually, in real-world applications, cubes are typically sparse.</p>
+<h2 id="Hierarchies"><a href="#Hierarchies" class="headerlink" title="Hierarchies"></a>Hierarchies</h2><p>An analyst may want to see the sales figures at a finer granularity, such as at the month level, or at a coarser granularity, such as at the customer’s country level.</p>
+<p>hierarchies allow viewing data at several granularities:</p>
+<ul>
+<li>by defining a sequence of mappings relating lower-level, detailed concepts to higher-level, more general concepts.</li>
+<li>the <strong>lower level</strong> is called the child</li>
+<li>the <strong>higher level</strong> is called the <strong>parent</strong>. </li>
+<li>The hierarchical structure of a dimension is called the <strong>dimension schema</strong></li>
+<li>a dimension instance comprises the members at all levels in a dimension.</li>
+</ul>
+<p>![Screenshot 2022-04-18 at 11.11.55](&#x2F;Users&#x2F;zhangyuyang&#x2F;Desktop&#x2F;blog&#x2F;source&#x2F;_posts&#x2F;Data_Warehouse&#x2F;Conceptual_Data_Warehouse&#x2F;Screenshot 2022-04-18 at 11.11.55.png)</p>
+<p>Ex: For the Time dimension, the lowest granularity is Day, which aggregates into Month, which in turn aggregates into Quarter, Semester, and Year. </p>
+<p>It is usual to represent the top of the hierarchy with a distinguished level called <strong>All.</strong></p>
+<p>![Screenshot 2022-04-18 at 11.14.01](&#x2F;Users&#x2F;zhangyuyang&#x2F;Desktop&#x2F;blog&#x2F;source&#x2F;_posts&#x2F;Data_Warehouse&#x2F;Conceptual_Data_Warehouse&#x2F;Screenshot 2022-04-18 at 11.14.01.png)</p>
+<p>All categories are grouped under a member called all, which is the only member of the distinguished level All.</p>
+<ul>
+<li>obtaining the aggregation of measures for the whole hierarchy, that is, for obtaining the total sales for all products.</li>
+</ul>
+<p>In real-world applications, there exist many kinds of hierarchies.</p>
+<p><font color="red">&#x3D;===&#x3D;&#x3D;&#x3D;&#x3D; Chapter 4 5&#x3D;======&#x3D;</font></p>
+<h2 id="Measures"><a href="#Measures" class="headerlink" title="Measures"></a>Measures</h2><p>Each measure in a cube is associated with an aggregation function that combines several measure values into a single one.</p>
+<p><strong>Summarizability</strong>: refers to the correct aggregation of cube measures along dimension hierarchies, in order to obtain consistent aggregation results. some conditions may hold:</p>
+<ul>
+<li><strong>Disjointness of instances:</strong> For example, in the hierarchy of Fig. 3.3, a product cannot belong to two categories</li>
+<li><strong>Completeness</strong>:  For example, the instances of the Time hierarchy in Fig.3.2 must contain all days in the period of interest, and each day must be assigned to a month.</li>
+<li><strong>Correctness:</strong> correct use of the aggregation functions.</li>
+</ul>
+<p>According to the way in which they can be aggregated, measures can be classified as follows:</p>
+<ul>
+<li><strong>Additive measures</strong> summarized along all the dimensions, using addition</li>
+<li><strong>Semiadditive measures</strong> summarized using addition along some, but not all, dimensions.</li>
+<li>**Nonadditive measures ** cannot be meaningfully summarized using addi- tion across any dimension. Typical examples are item price, cost per unit, and exchange rate.</li>
+</ul>
+<p>To avoid computing the whole aggregation from scratch each time the data warehouse is queried, OLAP tools implement <strong>incremental aggregation mechanisms</strong>. </p>
+<p>However incremental aggregation computation is not always possible, since this depends on the kind of aggregation function used. This leads to another classification of measures:</p>
+<ul>
+<li><strong>Distributive measures</strong>: are defined by an aggregation function that can be computed in a distributed way. The usual aggregation functions such as the count, sum, minimum, and maximum are distributive. However, the distinct count function is not.</li>
+<li><strong>Algebraic measures</strong> are defined by an aggregation function that can be expressed as a scalar function of distributive ones. <ul>
+<li>Ex: the average, which can be computed by dividing the sum by the count, the latter two functions being distributive.</li>
+</ul>
+</li>
+<li><strong>Holistic measures</strong>: measures that cannot be computed from other subaggregates.</li>
+</ul>
+<h1 id="OLAP-Operations"><a href="#OLAP-Operations" class="headerlink" title="OLAP Operations"></a>OLAP Operations</h1><p>Ex:</p>
+<p>user starts from Fig. 3.4a, a cube containing quarterly sales quantities (in thousands) by product categories and customer cities for the year 2012.</p>
+<p>![Screenshot 2022-04-18 at 11.33.16](&#x2F;Users&#x2F;zhangyuyang&#x2F;Desktop&#x2F;blog&#x2F;source&#x2F;_posts&#x2F;Data_Warehouse&#x2F;Conceptual_Data_Warehouse&#x2F;Screenshot 2022-04-18 at 11.33.16.png)</p>
+<p>user first wants to compute the sales quantities by country. For this, she applies a <font color="red">roll-up</font> operation to the Country level along the Customer dimension.</p>
+<p>![Screenshot 2022-04-18 at 11.33.57](&#x2F;Users&#x2F;zhangyuyang&#x2F;Desktop&#x2F;blog&#x2F;source&#x2F;_posts&#x2F;Data_Warehouse&#x2F;Conceptual_Data_Warehouse&#x2F;Screenshot 2022-04-18 at 11.33.57.png)</p>
+<p>Our user then notices that sales of the category Seafood in France are significantly higher in the first quarter compared to the other ones. Thus, she first takes the cube back to the City aggregation level and then applies a <font color="red">drill-down </font>along the Time dimension to the Month level to find out whether this high value occurred during a particular month.![Screenshot 2022-04-18 at 11.36.16](&#x2F;Users&#x2F;zhangyuyang&#x2F;Desktop&#x2F;blog&#x2F;source&#x2F;_posts&#x2F;Data_Warehouse&#x2F;Conceptual_Data_Warehouse&#x2F;Screenshot 2022-04-18 at 11.36.16.png)</p>
+<p>she <font color="red">sorts </font>the products by name. (a,b,c..p..s)</p>
+<p>![Screenshot 2022-04-18 at 11.41.47](&#x2F;Users&#x2F;zhangyuyang&#x2F;Desktop&#x2F;blog&#x2F;source&#x2F;_posts&#x2F;Data_Warehouse&#x2F;Conceptual_Data_Warehouse&#x2F;Screenshot 2022-04-18 at 11.41.47.png)</p>
+<p><font color="red">pivoting</font> the model without changing granularities. </p>
+<p>![Screenshot 2022-04-18 at 11.37.57](&#x2F;Users&#x2F;zhangyuyang&#x2F;Desktop&#x2F;blog&#x2F;source&#x2F;_posts&#x2F;Data_Warehouse&#x2F;Conceptual_Data_Warehouse&#x2F;Screenshot 2022-04-18 at 11.37.57.png)</p>
+<p>she applies a <font color="red">slice</font> operation that results in the subcube to visualize the data only for Paris.</p>
+<p>![Screenshot 2022-04-18 at 11.39.00](&#x2F;Users&#x2F;zhangyuyang&#x2F;Desktop&#x2F;blog&#x2F;source&#x2F;_posts&#x2F;Data_Warehouse&#x2F;Conceptual_Data_Warehouse&#x2F;Screenshot 2022-04-18 at 11.39.00.png)</p>
+<p>user goes back to the original cube and builds a subcube, with the same dimensionality, but only containing sales figures for the first two quarters and for the cities Lyon and Paris. This is done with a <font color="red">dice</font> operation</p>
+<p>![Screenshot 2022-04-18 at 11.39.09](&#x2F;Users&#x2F;zhangyuyang&#x2F;Desktop&#x2F;blog&#x2F;source&#x2F;_posts&#x2F;Data_Warehouse&#x2F;Conceptual_Data_Warehouse&#x2F;Screenshot 2022-04-18 at 11.39.09.png)</p>
+<p>user now wants to compare the sales quantities in 2012 with those in 2011. For this, she needs the cube in Fig. 3.4h, which has the same structure as the one for 2012</p>
+<p>![Screenshot 2022-04-18 at 11.39.20](&#x2F;Users&#x2F;zhangyuyang&#x2F;Desktop&#x2F;blog&#x2F;source&#x2F;_posts&#x2F;Data_Warehouse&#x2F;Conceptual_Data_Warehouse&#x2F;Screenshot 2022-04-18 at 11.39.20.png)</p>
+<p>she uses the <font color="red">drill-across</font> operation that, given two cubes, builds a new one with the measures of both in each cell. </p>
+<p>![Screenshot 2022-04-18 at 11.39.35](&#x2F;Users&#x2F;zhangyuyang&#x2F;Desktop&#x2F;blog&#x2F;source&#x2F;_posts&#x2F;Data_Warehouse&#x2F;Conceptual_Data_Warehouse&#x2F;Screenshot 2022-04-18 at 11.39.35.png)</p>
+<p>user now wants to compute the percentage change of sales between the 2 years.She  applies to it the <font color="red">add measure</font> operation, which computes a new value for each cell from the values in the original cube. </p>
+<p>![Screenshot 2022-04-18 at 11.39.42](&#x2F;Users&#x2F;zhangyuyang&#x2F;Desktop&#x2F;blog&#x2F;source&#x2F;_posts&#x2F;Data_Warehouse&#x2F;Conceptual_Data_Warehouse&#x2F;Screenshot 2022-04-18 at 11.39.42.png)</p>
+<p>user goes back to the original cube, she first wants to compute to total sales by quarter and city. This is obtained by the <font color="red">sum </font>aggregation operation,</p>
+<p>![Screenshot 2022-04-18 at 11.42.22](&#x2F;Users&#x2F;zhangyuyang&#x2F;Desktop&#x2F;blog&#x2F;source&#x2F;_posts&#x2F;Data_Warehouse&#x2F;Conceptual_Data_Warehouse&#x2F;Screenshot 2022-04-18 at 11.42.22.png)</p>
+<p>she uses the <font color="red">max </font>operation to obtain the maximum sales by quarter and city</p>
+<p>![Screenshot 2022-04-18 at 11.54.33](&#x2F;Users&#x2F;zhangyuyang&#x2F;Desktop&#x2F;blog&#x2F;source&#x2F;_posts&#x2F;Data_Warehouse&#x2F;Conceptual_Data_Warehouse&#x2F;Screenshot 2022-04-18 at 11.54.33.png)</p>
+<p>she computes the top two sales by quarter and city, which is also obtained with the max operation </p>
+<p>![Screenshot 2022-04-18 at 11.40.12](&#x2F;Users&#x2F;zhangyuyang&#x2F;Desktop&#x2F;blog&#x2F;source&#x2F;_posts&#x2F;Data_Warehouse&#x2F;Conceptual_Data_Warehouse&#x2F;Screenshot 2022-04-18 at 11.40.12.png)</p>
+<p>the user goes back to the original cube, computes the quarterly sales that amount to 70% of the total sales by city and category.  She explores this in two possible ways: according to the ascending order of quarters, as shown in Fig.3.4n, and according to the descending order of quantity, as shown in Fig. 3.4o. In both cases, she applies the <font color="red">top percent </font>aggregation operation.</p>
+<p>![Screenshot 2022-04-18 at 11.40.19](&#x2F;Users&#x2F;zhangyuyang&#x2F;Desktop&#x2F;blog&#x2F;source&#x2F;_posts&#x2F;Data_Warehouse&#x2F;Conceptual_Data_Warehouse&#x2F;Screenshot 2022-04-18 at 11.40.19.png)</p>
+<p>![Screenshot 2022-04-18 at 11.40.27](&#x2F;Users&#x2F;zhangyuyang&#x2F;Desktop&#x2F;blog&#x2F;source&#x2F;_posts&#x2F;Data_Warehouse&#x2F;Conceptual_Data_Warehouse&#x2F;Screenshot 2022-04-18 at 11.40.27.png)</p>
+<p>She also wants to rank the quarterly sales by category and city in descending order of quantity</p>
+<p>![Screenshot 2022-04-18 at 11.40.33](&#x2F;Users&#x2F;zhangyuyang&#x2F;Desktop&#x2F;blog&#x2F;source&#x2F;_posts&#x2F;Data_Warehouse&#x2F;Conceptual_Data_Warehouse&#x2F;Screenshot 2022-04-18 at 11.40.33.png)</p>
+<p>user wants to apply <font color="red">window</font> operations to the cube in Fig. 3.4c. She starts by requesting a 3-month moving average to obtain the result</p>
+<p>![Screenshot 2022-04-18 at 11.40.43](&#x2F;Users&#x2F;zhangyuyang&#x2F;Desktop&#x2F;blog&#x2F;source&#x2F;_posts&#x2F;Data_Warehouse&#x2F;Conceptual_Data_Warehouse&#x2F;Screenshot 2022-04-18 at 11.40.43.png)</p>
+<p>Then, she asks the year-to- date computation</p>
+<p>![Screenshot 2022-04-18 at 11.40.50](&#x2F;Users&#x2F;zhangyuyang&#x2F;Desktop&#x2F;blog&#x2F;source&#x2F;_posts&#x2F;Data_Warehouse&#x2F;Conceptual_Data_Warehouse&#x2F;Screenshot 2022-04-18 at 11.40.50.png)</p>
+<p>user wants to add to the original cube data from Spain, which are contained in another cube. She obtains this by performing a <font color="red">union</font> of the two cubes</p>
+<p>![Screenshot 2022-04-18 at 11.40.58](&#x2F;Users&#x2F;zhangyuyang&#x2F;Desktop&#x2F;blog&#x2F;source&#x2F;_posts&#x2F;Data_Warehouse&#x2F;Conceptual_Data_Warehouse&#x2F;Screenshot 2022-04-18 at 11.40.58.png)</p>
+<p>she also wants to remove from the original cube all sales measures except the top two sales by quarter and city. For this, she performs the difference of the original cube in Fig. 3.4a and the cube in Fig. 3.4m, yielding the result in Fig. 3.4t.</p>
+<p>![Screenshot 2022-04-18 at 11.41.05](&#x2F;Users&#x2F;zhangyuyang&#x2F;Desktop&#x2F;blog&#x2F;source&#x2F;_posts&#x2F;Data_Warehouse&#x2F;Conceptual_Data_Warehouse&#x2F;Screenshot 2022-04-18 at 11.41.05.png)</p>
+<p>analogous to the relational algebra operations：</p>
+<blockquote>
+<p>roll-up operation aggregates measures along a dimension hierarchy (using an aggregate function) to obtain measures at a coarser granularity.</p>
+<blockquote>
+<p> ROLLUP(CubeName, (Dimension → Level)<em>, AggFunction(Measure)</em>)</p>
+<p>ROLLUP(Sales, Customer → Country, SUM(Quantity))</p>
+</blockquote>
+</blockquote>
+<p>![Screenshot 2022-04-18 at 12.11.57](&#x2F;Users&#x2F;zhangyuyang&#x2F;Desktop&#x2F;blog&#x2F;source&#x2F;_posts&#x2F;Data_Warehouse&#x2F;Conceptual_Data_Warehouse&#x2F;Screenshot 2022-04-18 at 12.11.57.png)</p>
+<h1 id="Data-Warehouse"><a href="#Data-Warehouse" class="headerlink" title="Data Warehouse"></a>Data Warehouse</h1><p>A data warehouse is defined as a collection of subject-oriented, integrated, nonvolatile, and time-varying data to support management decisions:</p>
+<ul>
+<li><p><strong>Subject oriented</strong>: data warehouses focus on the analytical needs of different areas of an organization.</p>
+</li>
+<li><p><strong>Integrated</strong>: data obtained from several operational and external systems must be joined together</p>
+</li>
+<li><p><strong>Nonvolatile</strong>:  durability of data is ensured by disallowing data modification and removal, thus expanding the scope of the data to a longer period of time than operational systems usually offer.</p>
+</li>
+<li><p><strong>Time varying</strong>: the possibility of retaining different values for the same information, as well as the time when changes to these values occurred.</p>
+</li>
+</ul>
+<p><font color="red">data marts</font>: a sales department may only need sales data, while a human resources department may need demographic data and data about the employees. These departmental data warehouses are called data marts.</p>
+<p>A data warehouse can be seen as a collection of data marts. </p>
+<p>bottum-up approach: a data warehouse is built by first building the smaller data marts and then merging these to obtain the data warehouse.</p>
+<p>top-down fashion: data marts are obtained from the data warehouse, s sometimes just a logical view of a data warehouse.</p>
+<h1 id="Data-Warehouse-Architecture"><a href="#Data-Warehouse-Architecture" class="headerlink" title="Data Warehouse Architecture"></a>Data Warehouse Architecture</h1><p>![Screenshot 2022-04-18 at 12.17.09](&#x2F;Users&#x2F;zhangyuyang&#x2F;Desktop&#x2F;blog&#x2F;source&#x2F;_posts&#x2F;Data_Warehouse&#x2F;Conceptual_Data_Warehouse&#x2F;Screenshot 2022-04-18 at 12.17.09.png)</p>
+<ul>
+<li>back-end tier: composed of extraction, transformation, and loading (ETL) tools, used to feed data into the data warehouse from <ul>
+<li>operational databases </li>
+<li>other data sources <ul>
+<li>internal or external from the organization</li>
+</ul>
+</li>
+<li>data staging area, which is an intermediate database where all the data integration and transformation processes are run prior to the loading of the data into the data warehouse.</li>
+</ul>
+</li>
+<li>data warehouse tier: composed of an enterprise data ware- house and&#x2F;or several data marts and a metadata repository storing information about the data warehouse and its contents.</li>
+<li>OLAP tier: composed of an OLAP server, which provides a multidimensional view of the data, regardless of the actual way in which data are stored in the underlying system.</li>
+<li>front-end tier: used for data analysis and visualization. It contains client tools such as OLAP tools, reporting tools, statistical tools, and data mining tools.</li>
+</ul>
+<h2 id="Back-End-Tier"><a href="#Back-End-Tier" class="headerlink" title="Back-End Tier"></a>Back-End Tier</h2><p>![Screenshot 2022-04-18 at 12.17.09](&#x2F;Users&#x2F;zhangyuyang&#x2F;Desktop&#x2F;blog&#x2F;source&#x2F;_posts&#x2F;Data_Warehouse&#x2F;Conceptual_Data_Warehouse&#x2F;Screenshot 2022-04-18 at 12.17.09.png)</p>
+<p>ETL process:</p>
+<ul>
+<li>Extraction:<ul>
+<li>gathers data from multiple, heterogeneous data sources. In order to solve interoperability problems, data are extracted whenever possible using APIs, such as JDBC</li>
+</ul>
+</li>
+<li>Transformation: modifies the data from the format of the data sources to the warehouse format.<ul>
+<li>cleaning: removes errors and inconsistencies in the data and converts it into a standardized format</li>
+<li>integration: reconciles data from different data sources, both at the schema and at the data level</li>
+<li>aggregation: summarizes the data obtained from data sources according to the level of detail, or granularity, of the data warehouse.</li>
+</ul>
+</li>
+<li>Loading: feeds the data warehouse with the transformed data. This also includes refreshing the data warehouse, that is, propagating updates from the data sources to the data warehouse at a specified frequency in order to provide up-to-date data for the decision-making process.</li>
+</ul>
+<p>ETL processes usually require a data staging area, that is, a database in which the data extracted from the sources undergoes successive modifications to eventually be ready to be loaded into the data warehouse. Such a database is usually called <strong>operational data store</strong>.</p>
+<h2 id="Data-Warehouse-Tier"><a href="#Data-Warehouse-Tier" class="headerlink" title="Data Warehouse Tier"></a>Data Warehouse Tier</h2><p>![Screenshot 2022-04-18 at 12.17.09](&#x2F;Users&#x2F;zhangyuyang&#x2F;Desktop&#x2F;blog&#x2F;source&#x2F;_posts&#x2F;Data_Warehouse&#x2F;Conceptual_Data_Warehouse&#x2F;Screenshot 2022-04-18 at 12.17.09.png)</p>
+<p>enterprise data warehouse： centralized and encompasses an entire organization</p>
+<p>data mart: a specialized data warehouse targeted toward a particular functional or departmental area in an organization.</p>
+<p>Metadata: has been tradi- tionally classified into technical and business metadata</p>
+<ul>
+<li>Business metadata: describes the meaning (or semantics) of the data and organizational rules, policies, and constraints related to the data.</li>
+<li>technical  metadate: describes how data are structured and stored in a computer system and the applications and processes that manipulate such data.</li>
+</ul>
+<h2 id="OLAP-tier"><a href="#OLAP-tier" class="headerlink" title="OLAP tier"></a>OLAP tier</h2><p>![Screenshot 2022-04-18 at 12.17.09](&#x2F;Users&#x2F;zhangyuyang&#x2F;Desktop&#x2F;blog&#x2F;source&#x2F;_posts&#x2F;Data_Warehouse&#x2F;Conceptual_Data_Warehouse&#x2F;Screenshot 2022-04-18 at 12.17.09.png)</p>
+<p>XMLA (XML for Analysis): aims at providing a common language for exchanging multidimensional data between client applications and OLAP servers.</p>
+<p>MDX (MultiDimensional eXpressions): a query language for OLAP databases.</p>
+<p>SQL&#x2F;OLAP: The SQL standard has also been extended for providing analytical capabilities</p>
+<h2 id="Front-End-Tier"><a href="#Front-End-Tier" class="headerlink" title="Front-End Tier"></a>Front-End Tier</h2><p>![Screenshot 2022-04-18 at 12.17.09](&#x2F;Users&#x2F;zhangyuyang&#x2F;Desktop&#x2F;blog&#x2F;source&#x2F;_posts&#x2F;Data_Warehouse&#x2F;Conceptual_Data_Warehouse&#x2F;Screenshot 2022-04-18 at 12.17.09.png)</p>
+<ul>
+<li>OLAP tools: allow interactive exploration and manipulation of the warehouse data</li>
+<li>Reporting tools: enable the production, delivery, and management of reports, which can be paper-based reports or interactive, web-based reports.</li>
+<li>Statistical tool: used to analyze and visualize the cube data using statistical methods.</li>
+<li>Data mining tools: allow users to analyze data in order to discover valuable knowledge such as patterns and trends; they also allow predictions to be made on the basis of current data.</li>
+</ul>
+
+    </div>
+
+    
+    
+    
+    
+        
+
+<div>
+<ul class="post-copyright">
+  <li class="post-copyright-author">
+    <strong>Post author:  </strong>Yuyang Zhang
+  </li>
+  <li class="post-copyright-link">
+    <strong>Post link: </strong>
+    <a href="https://yu-yang.pro/Data-Warehouse/Data_Warehouse/Conceptual_Data_Warehouse/" title="Data Warehouse Concepts">https://yu-yang.pro/Data-Warehouse/Data_Warehouse/Conceptual_Data_Warehouse/</a>
+  </li>
+  <li class="post-copyright-license">
+    <strong>Copyright Notice:  </strong>All articles in this blog are licensed under <a href="https://creativecommons.org/licenses/by-nc-sa/4.0/" rel="noopener" target="_blank"><i class="fab fa-fw fa-creative-commons"></i>BY-NC-SA</a> unless stating additionally.
+  </li>
+</ul>
+</div>
+
+
+      <footer class="post-footer">
+          <div class="post-tags">
+              <a href="/tags/Database/" rel="tag"><i class="fa fa-tag"></i> Database</a>
+          </div>
+
+        
+
+
+        
+    <div class="post-nav">
+      <div class="post-nav-item">
+    <a href="/Data-Warehouse/Data_Warehouse/Data_Warehouse_Concepts/" rel="prev" title="Conceptual Data Warehouse Design">
+      <i class="fa fa-chevron-left"></i> Conceptual Data Warehouse Design
+    </a></div>
+      <div class="post-nav-item">
+    <a href="/uncategorized/Data_Warehouse/Logical_Data_Warehouse_Design/" rel="next" title="post">
+      post <i class="fa fa-chevron-right"></i>
+    </a></div>
+    </div>
+      </footer>
+    
+  </article>
+  
+  
+  
+
+
+
+          </div>
+          
+
+<script>
+  window.addEventListener('tabs:register', () => {
+    let { activeClass } = CONFIG.comments;
+    if (CONFIG.comments.storage) {
+      activeClass = localStorage.getItem('comments_active') || activeClass;
+    }
+    if (activeClass) {
+      let activeTab = document.querySelector(`a[href="#comment-${activeClass}"]`);
+      if (activeTab) {
+        activeTab.click();
+      }
+    }
+  });
+  if (CONFIG.comments.storage) {
+    window.addEventListener('tabs:click', event => {
+      if (!event.target.matches('.tabs-comment .tab-content .tab-pane')) return;
+      let commentClass = event.target.classList[1];
+      localStorage.setItem('comments_active', commentClass);
+    });
+  }
+</script>
+
+        </div>
+          
+  
+  <div class="toggle sidebar-toggle">
+    <span class="toggle-line toggle-line-first"></span>
+    <span class="toggle-line toggle-line-middle"></span>
+    <span class="toggle-line toggle-line-last"></span>
+  </div>
+
+  <aside class="sidebar">
+    <div class="sidebar-inner">
+
+      <ul class="sidebar-nav motion-element">
+        <li class="sidebar-nav-toc">
+          Table of Contents
+        </li>
+        <li class="sidebar-nav-overview">
+          Overview
+        </li>
+      </ul>
+
+      <!--noindex-->
+      <div class="post-toc-wrap sidebar-panel">
+          <div class="post-toc motion-element"><ol class="nav"><li class="nav-item nav-level-1"><a class="nav-link" href="#Multidimensional-Model"><span class="nav-number">1.</span> <span class="nav-text">Multidimensional Model</span></a><ol class="nav-child"><li class="nav-item nav-level-2"><a class="nav-link" href="#Hierarchies"><span class="nav-number">1.1.</span> <span class="nav-text">Hierarchies</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#Measures"><span class="nav-number">1.2.</span> <span class="nav-text">Measures</span></a></li></ol></li><li class="nav-item nav-level-1"><a class="nav-link" href="#OLAP-Operations"><span class="nav-number">2.</span> <span class="nav-text">OLAP Operations</span></a></li><li class="nav-item nav-level-1"><a class="nav-link" href="#Data-Warehouse"><span class="nav-number">3.</span> <span class="nav-text">Data Warehouse</span></a></li><li class="nav-item nav-level-1"><a class="nav-link" href="#Data-Warehouse-Architecture"><span class="nav-number">4.</span> <span class="nav-text">Data Warehouse Architecture</span></a><ol class="nav-child"><li class="nav-item nav-level-2"><a class="nav-link" href="#Back-End-Tier"><span class="nav-number">4.1.</span> <span class="nav-text">Back-End Tier</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#Data-Warehouse-Tier"><span class="nav-number">4.2.</span> <span class="nav-text">Data Warehouse Tier</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#OLAP-tier"><span class="nav-number">4.3.</span> <span class="nav-text">OLAP tier</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#Front-End-Tier"><span class="nav-number">4.4.</span> <span class="nav-text">Front-End Tier</span></a></li></ol></li></ol></div>
+      </div>
+      <!--/noindex-->
+
+      <div class="site-overview-wrap sidebar-panel">
+        <div class="site-author motion-element" itemprop="author" itemscope itemtype="http://schema.org/Person">
+    <img class="site-author-image" itemprop="image" alt="Yuyang Zhang"
+      src="/images/profile_img.jpg">
+  <p class="site-author-name" itemprop="name">Yuyang Zhang</p>
+  <div class="site-description" itemprop="description">stay hungry stay foolish</div>
+</div>
+<div class="site-state-wrap motion-element">
+  <nav class="site-state">
+      <div class="site-state-item site-state-posts">
+          <a href="/archives/">
+        
+          <span class="site-state-item-count">34</span>
+          <span class="site-state-item-name">posts</span>
+        </a>
+      </div>
+      <div class="site-state-item site-state-categories">
+            <a href="/categories/">
+          
+        <span class="site-state-item-count">8</span>
+        <span class="site-state-item-name">categories</span></a>
+      </div>
+      <div class="site-state-item site-state-tags">
+            <a href="/tags/">
+          
+        <span class="site-state-item-count">21</span>
+        <span class="site-state-item-name">tags</span></a>
+      </div>
+  </nav>
+</div>
+  <div class="links-of-author motion-element">
+      <span class="links-of-author-item">
+        <a href="mailto:zhangyuyang1211@gmail.com" title="E-Mail → mailto:zhangyuyang1211@gmail.com" rel="noopener" target="_blank"><i class="fa fa-envelope fa-fw"></i>E-Mail</a>
+      </span>
+  </div>
+
+
+  <div class="links-of-blogroll motion-element">
+    <div class="links-of-blogroll-title"><i class="fa fa-link fa-fw"></i>
+      Links
+    </div>
+    <ul class="links-of-blogroll-list">
+        <li class="links-of-blogroll-item">
+          <a href="http://nil.csail.mit.edu/6.824/2021/schedule.html" title="http:&#x2F;&#x2F;nil.csail.mit.edu&#x2F;6.824&#x2F;2021&#x2F;schedule.html" rel="noopener" target="_blank">MIT 6.824 Distributed Systems</a>
+        </li>
+        <li class="links-of-blogroll-item">
+          <a href="https://yuyang-dissys.super.site/" title="https:&#x2F;&#x2F;yuyang-dissys.super.site&#x2F;" rel="noopener" target="_blank">Distributed System</a>
+        </li>
+    </ul>
+  </div>
+
+      </div>
+
+      
+      
+
+    </div>
+  </aside>
+  <div id="sidebar-dimmer"></div>
+
+
+      </div>
+    </main>
+
+    <footer class="footer">
+      <div class="footer-inner">
+        
+
+        
+
+<div class="copyright">
+  
+  &copy; 
+  <span itemprop="copyrightYear">2022</span>
+  <span class="with-love">
+    <i class="fa fa-heart"></i>
+  </span>
+  <span class="author" itemprop="copyrightHolder">Yuyang Zhang</span>
+    <span class="post-meta-divider">|</span>
+    <span class="post-meta-item-icon">
+      <i class="fa fa-chart-area"></i>
+    </span>
+    <span title="Symbols count total">106k</span>
+    <span class="post-meta-divider">|</span>
+    <span class="post-meta-item-icon">
+      <i class="fa fa-coffee"></i>
+    </span>
+    <span title="Reading time total">1:36</span>
+</div>
+
+        
+<div class="busuanzi-count">
+  <script async src="https://busuanzi.ibruce.info/busuanzi/2.3/busuanzi.pure.mini.js"></script>
+    <span class="post-meta-item" id="busuanzi_container_site_uv" style="display: none;">
+      <span class="post-meta-item-icon">
+        <i class="fa fa-user"></i>
+      </span>
+      <span class="site-uv" title="Total Visitors">
+        <span id="busuanzi_value_site_uv"></span>
+      </span>
+    </span>
+    <span class="post-meta-divider">|</span>
+    <span class="post-meta-item" id="busuanzi_container_site_pv" style="display: none;">
+      <span class="post-meta-item-icon">
+        <i class="fa fa-eye"></i>
+      </span>
+      <span class="site-pv" title="Total Views">
+        <span id="busuanzi_value_site_pv"></span>
+      </span>
+    </span>
+</div>
+
+
+
+
+
+
+
+
+      </div>
+    </footer>
+  </div>
+
+  
+  <script src="/lib/anime.min.js"></script>
+  <script src="//cdn.jsdelivr.net/npm/jquery@3/dist/jquery.min.js"></script>
+  <script src="//cdn.jsdelivr.net/gh/fancyapps/fancybox@3/dist/jquery.fancybox.min.js"></script>
+  <script src="/lib/velocity/velocity.min.js"></script>
+  <script src="/lib/velocity/velocity.ui.min.js"></script>
+
+<script src="/js/utils.js"></script>
+
+<script src="/js/motion.js"></script>
+
+
+<script src="/js/schemes/muse.js"></script>
+
+
+<script src="/js/next-boot.js"></script>
+
+
+
+
+  
+
+
+
+
+  
+<script src="/js/local-search.js"></script>
+
+
+
+
+
+
+
+
+
+
+
+
+
+  
+
+  
+
+  
+
+<script src="/live2dw/lib/L2Dwidget.min.js?094cbace49a39548bed64abff5988b05"></script><script>L2Dwidget.init({"pluginRootPath":"live2dw/","pluginJsPath":"lib/","pluginModelPath":"assets/","tagMode":false,"log":false,"model":{"jsonPath":"/live2dw/assets/wanko.model.json"},"display":{"position":"right","width":150,"height":300},"mobile":{"show":true}});</script></body>
+</html>
