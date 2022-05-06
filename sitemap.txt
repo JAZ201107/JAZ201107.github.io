@@ -1,8 +1,12 @@
+https://yu-yang.pro/uncategorized/itheima/hive/
+https://yu-yang.pro/uncategorized/itheima/hBase/
+https://yu-yang.pro/Software/Software_Construction_MIT_6.031/01/
 https://yu-yang.pro/Distributed-Systems/Distributed_Sytem/Designing-data-intensive-applications/Chapter7/
+https://yu-yang.pro/%E6%9D%82%E8%AE%B0/%E6%9D%82%E8%AE%B0/
+https://yu-yang.pro/MIT-Missing-Semeter/missing-semester/Lec5/
 https://yu-yang.pro/Distributed-Systems/Distributed_Sytem/Designing-data-intensive-applications/Chapter6/
 https://yu-yang.pro/MIT-Missing-Semeter/missing-semester/Lec4/
 https://yu-yang.pro/MIT-Missing-Semeter/missing-semester/Lec3/
-https://yu-yang.pro/%E6%9D%82%E8%AE%B0/%E6%9D%82%E8%AE%B0/
 https://yu-yang.pro/Data-Warehouse/Data_Warehouse/Data_Warehouse_Concepts/
 https://yu-yang.pro/Data-Warehouse/Data_Warehouse/Conceptual_Data_Warehouse/
 https://yu-yang.pro/uncategorized/Java/Springboot/
@@ -17,7 +21,6 @@ https://yu-yang.pro/uncategorized/missing-semester/Lec9/
 https://yu-yang.pro/uncategorized/missing-semester/Lec8/
 https://yu-yang.pro/uncategorized/missing-semester/Lec7/
 https://yu-yang.pro/uncategorized/missing-semester/Lec6/
-https://yu-yang.pro/uncategorized/missing-semester/Lec5/
 https://yu-yang.pro/Distributed-Systems/Distributed_Sytem/Designing-data-intensive-applications/Chapter5/
 https://yu-yang.pro/Distributed-Systems/Distributed_Sytem/Golang/
 https://yu-yang.pro/Distributed-Systems/Distributed_Sytem/MIT-6-824-Lab01/
@@ -60,6 +63,7 @@ https://yu-yang.pro/tags/Book/
 https://yu-yang.pro/tags/Database/
 https://yu-yang.pro/tags/vim/
 https://yu-yang.pro/tags/dara-wrangling/
+https://yu-yang.pro/tags/Software-Construction/
 https://yu-yang.pro/categories/Linux/
 https://yu-yang.pro/categories/%E6%9D%82%E8%AE%B0/
 https://yu-yang.pro/categories/MIT-Missing-Semeter/
@@ -68,3 +72,4 @@ https://yu-yang.pro/categories/Distributed-Systems/
 https://yu-yang.pro/categories/Algorithm/Algorithms-4/
 https://yu-yang.pro/categories/papers/
 https://yu-yang.pro/categories/Data-Warehouse/
+https://yu-yang.pro/categories/Software/
