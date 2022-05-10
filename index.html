@@ -188,6 +188,1019 @@
   
   
   <article itemscope itemtype="http://schema.org/Article" class="post-block" lang="en">
+    <link itemprop="mainEntityOfPage" href="https://yu-yang.pro/uncategorized/Flink/Chapter06/">
+
+    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
+      <meta itemprop="image" content="/images/profile_img.jpg">
+      <meta itemprop="name" content="Yuyang Zhang">
+      <meta itemprop="description" content="stay hungry stay foolish">
+    </span>
+
+    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
+      <meta itemprop="name" content="Yuyang's 博客">
+    </span>
+      <header class="post-header">
+        <h2 class="post-title" itemprop="name headline">
+          
+            <a href="/uncategorized/Flink/Chapter06/" class="post-title-link" itemprop="url">post</a>
+        </h2>
+
+        <div class="post-meta">
+            <span class="post-meta-item">
+              <span class="post-meta-item-icon">
+                <i class="far fa-calendar"></i>
+              </span>
+              <span class="post-meta-item-text">Posted on</span>
+              
+
+              <time title="Created: 2022-05-10 16:00:59 / Modified: 16:01:37" itemprop="dateCreated datePublished" datetime="2022-05-10T16:00:59+08:00">2022-05-10</time>
+            </span>
+
+          <br>
+            <span class="post-meta-item" title="Symbols count in article">
+              <span class="post-meta-item-icon">
+                <i class="far fa-file-word"></i>
+              </span>
+                <span class="post-meta-item-text">Symbols count in article: </span>
+              <span>19</span>
+            </span>
+            <span class="post-meta-item" title="Reading time">
+              <span class="post-meta-item-icon">
+                <i class="far fa-clock"></i>
+              </span>
+                <span class="post-meta-item-text">Reading time &asymp;</span>
+              <span>1 mins.</span>
+            </span>
+
+        </div>
+      </header>
+
+    
+    
+    
+    <div class="post-body" itemprop="articleBody">
+
+      
+        
+          <p>Chapter 6 是关于时间和窗口的</p>
+          <!--noindex-->
+            <div class="post-button">
+              <a class="btn" href="/uncategorized/Flink/Chapter06/#more" rel="contents">
+                Read more &raquo;
+              </a>
+            </div>
+          <!--/noindex-->
+        
+      
+    </div>
+
+    
+    
+    
+    
+      <footer class="post-footer">
+        <div class="post-eof"></div>
+      </footer>
+  </article>
+  
+  
+  
+
+      
+  
+  
+  <article itemscope itemtype="http://schema.org/Article" class="post-block" lang="en">
+    <link itemprop="mainEntityOfPage" href="https://yu-yang.pro/uncategorized/Flink/Chapter05/">
+
+    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
+      <meta itemprop="image" content="/images/profile_img.jpg">
+      <meta itemprop="name" content="Yuyang Zhang">
+      <meta itemprop="description" content="stay hungry stay foolish">
+    </span>
+
+    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
+      <meta itemprop="name" content="Yuyang's 博客">
+    </span>
+      <header class="post-header">
+        <h2 class="post-title" itemprop="name headline">
+          
+            <a href="/uncategorized/Flink/Chapter05/" class="post-title-link" itemprop="url">post</a>
+        </h2>
+
+        <div class="post-meta">
+            <span class="post-meta-item">
+              <span class="post-meta-item-icon">
+                <i class="far fa-calendar"></i>
+              </span>
+              <span class="post-meta-item-text">Posted on</span>
+
+              <time title="Created: 2022-05-09 16:07:17" itemprop="dateCreated datePublished" datetime="2022-05-09T16:07:17+08:00">2022-05-09</time>
+            </span>
+              <span class="post-meta-item">
+                <span class="post-meta-item-icon">
+                  <i class="far fa-calendar-check"></i>
+                </span>
+                <span class="post-meta-item-text">Edited on</span>
+                <time title="Modified: 2022-05-10 16:00:37" itemprop="dateModified" datetime="2022-05-10T16:00:37+08:00">2022-05-10</time>
+              </span>
+
+          <br>
+            <span class="post-meta-item" title="Symbols count in article">
+              <span class="post-meta-item-icon">
+                <i class="far fa-file-word"></i>
+              </span>
+                <span class="post-meta-item-text">Symbols count in article: </span>
+              <span>30k</span>
+            </span>
+            <span class="post-meta-item" title="Reading time">
+              <span class="post-meta-item-icon">
+                <i class="far fa-clock"></i>
+              </span>
+                <span class="post-meta-item-text">Reading time &asymp;</span>
+              <span>27 mins.</span>
+            </span>
+
+        </div>
+      </header>
+
+    
+    
+    
+    <div class="post-body" itemprop="articleBody">
+
+      
+        
+          <span id="more"></span>
+
+<p>[toc]</p>
+<p>Flink 核心层是 DataStream&#x2F;DataSet API， 由于新版实现了 流批统一，DataSet API将被弃用</p>
+<p>DataStream 本身是Flink的一个用来表示数据集合的类， 我们编写的 Flink 代码其实就是基于这种数据类型的处理。</p>
+<p>我们在代码中不关心集合中的具体数据，只是用API 定义出一连串的操作来处理： 数据流的 transformaions</p>
+<blockquote>
+<p>一个 Flink 程序，其实就是对 DataStream 的各种转换</p>
+</blockquote>
+<p>一个Flink 程序由以下几个部分组成：</p>
+<p> ⚫ 获取执行环境(execution environment)<br> ⚫ 读取数据源(source)<br> ⚫ 定义基于数据的转换操作(transformations)<br> ⚫ 定义计算结果的输出位置(sink)<br> ⚫ 触发程序执行(execute)</p>
+<p>![Screenshot 2022-05-09 at 16.29.10](&#x2F;Users&#x2F;zhangyuyang&#x2F;Desktop&#x2F;blog&#x2F;source&#x2F;_posts&#x2F;Flink&#x2F;Chapter05&#x2F;Screenshot 2022-05-09 at 16.29.10.png)</p>
+<blockquote>
+<ol>
+<li>Obtain an <code>execution environment</code>,</li>
+<li>Load&#x2F;create the initial data,</li>
+<li>Specify transformations on this data,</li>
+<li>Specify where to put the results of your computations,</li>
+<li>Trigger the program execution</li>
+</ol>
+</blockquote>
+<h2 id="5-1-Obtain-an-execution-environment"><a href="#5-1-Obtain-an-execution-environment" class="headerlink" title="5.1 Obtain an execution environment,"></a>5.1 Obtain an execution environment,</h2><p>Flink 可以在 </p>
+<ul>
+<li>本地JVM中运行，</li>
+<li>可以在集群上运行</li>
+</ul>
+<p><strong>不同的环境，代码的提交运行的过程会有所不同</strong>。这就要求我们在提交作业执行计算时， 首先必须获取当前 Flink 的运行环境</p>
+<h3 id="5-1-1-创建执行环境"><a href="#5-1-1-创建执行环境" class="headerlink" title="5.1.1 创建执行环境"></a>5.1.1 创建执行环境</h3><p>有三种办法创建执行环境</p>
+<ol>
+<li><strong>getExecutionEnvironment</strong>： 根据当前运行的上下文 直接得到正确的结果<ul>
+<li>程序是独立运行的，就返回一个本地执行环境</li>
+<li>如果是创建了 jar 包，然后从命令行调用它并提交到集群执行，那么就返回集群的执行环境</li>
+</ul>
+</li>
+<li><strong>createLocalEnvironment</strong>： 返回本地环境</li>
+<li><strong>createRemoteEnvironment</strong>： 返回 集群环境<ul>
+<li>createRemoteEnvironment(String host, int port, String… jarFiles)</li>
+</ul>
+</li>
+</ol>
+<figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment">// 1. 创建执行环境</span></span><br><span class="line">        <span class="comment">// 1.1 直接调用 getExecutionEnvironment 方法</span></span><br><span class="line">        <span class="type">StreamExecutionEnvironment</span> <span class="variable">environment</span> <span class="operator">=</span> StreamExecutionEnvironment.getExecutionEnvironment();</span><br><span class="line">        <span class="comment">// 1.2 返回本地方法 createLocalEnvironment</span></span><br><span class="line">        <span class="type">StreamExecutionEnvironment</span> <span class="variable">localEnv</span> <span class="operator">=</span> StreamExecutionEnvironment.createLocalEnvironment();</span><br><span class="line">        <span class="comment">// 1.3 返回集群执行环境 createRemoteEnvironment</span></span><br><span class="line">        <span class="type">StreamExecutionEnvironment</span> <span class="variable">remoteEnv</span> <span class="operator">=</span> StreamExecutionEnvironment</span><br><span class="line">                .createRemoteEnvironment(</span><br><span class="line">                        <span class="string">&quot;host&quot;</span>, <span class="comment">// JobManager 主机名</span></span><br><span class="line">                        <span class="number">1234</span>, <span class="comment">// JobManager 进程端口号</span></span><br><span class="line">                        <span class="string">&quot;path/to/jarFile.jar&quot;</span> <span class="comment">// 提交给 JobManager 的 JAR 包</span></span><br><span class="line">                );</span><br></pre></td></tr></table></figure>
+
+
+
+<h3 id="5-1-2-执行模式"><a href="#5-1-2-执行模式" class="headerlink" title="5.1.2 执行模式"></a>5.1.2 执行模式</h3><p>通过不同的执行模式，来决定是，批处理还是流处理</p>
+<ul>
+<li>Streaming（默认）： 持续实时处理的无界数据流</li>
+<li>BATCH：批处理， 有界数据</li>
+<li>AUTOMATIC：由程序根据输入数据源是否有界，来自动选择执行模式。</li>
+</ul>
+<p>BATCH模式配置方式：</p>
+<ol>
+<li>命令行</li>
+</ol>
+<figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">bin/flink run -D execution.runtime-mode=BATCH ...</span><br></pre></td></tr></table></figure>
+
+<ol start="2">
+<li>通过代码: setRuntimeMode</li>
+</ol>
+<figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><span class="line"><span class="type">StreamExecutionEnvironment</span> <span class="variable">env</span> <span class="operator">=</span> StreamExecutionEnvironment.getExecutionEnvironment();</span><br><span class="line"><span class="comment">// 配置 BATCH模式</span></span><br><span class="line">env.setRuntimeMode(RuntimeExecutionMode.BATCH);</span><br></pre></td></tr></table></figure>
+
+<p>TIP：</p>
+<p>不要在代码中配置，而是使用命令行, 这样更加灵活，而不是使用hard code</p>
+<h2 id="5-2-Load-x2F-create-the-initial-data"><a href="#5-2-Load-x2F-create-the-initial-data" class="headerlink" title="5.2 Load&#x2F;create the initial data,"></a>5.2 Load&#x2F;create the initial data,</h2><p>一般将数据的输入来源称为数据源（data source）， 而读取数据的算子就是 source operator</p>
+<p>Flink 代码中，通用的添加 source 的方式，是调用 addSource() 方式</p>
+<figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">DataStream&lt;String&gt; stream = env.addSource(...);</span><br></pre></td></tr></table></figure>
+
+<h3 id="5-2-1-从文件中读取"><a href="#5-2-1-从文件中读取" class="headerlink" title="5.2.1 从文件中读取"></a>5.2.1 从文件中读取</h3><p>readTextFile(path)</p>
+<figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">DataStream&lt;String&gt; stream = env.readTextFile(<span class="string">&quot;clicks.csv&quot;</span>);</span><br></pre></td></tr></table></figure>
+
+<ul>
+<li><p>⚫ 参数可以是目录，也可以是文件;</p>
+</li>
+<li><p>⚫  路径可以是相对路径，也可以是绝对路径;</p>
+</li>
+<li><p>⚫  相对路径是从系统属性user.dir获取路径: idea下是project的根目录, standalone模式下是集群节点根目录;</p>
+</li>
+<li><p>⚫  也可以从 hdfs 目录下读取, 使用路径 hdfs:&#x2F;&#x2F;…, 由于 Flink 没有提供 hadoop 相关依赖,</p>
+<p>需要 pom 中添加相关依赖:</p>
+<figure class="highlight xml"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br></pre></td><td class="code"><pre><span class="line"><span class="tag">&lt;<span class="name">dependency</span>&gt;</span></span><br><span class="line">   <span class="tag">&lt;<span class="name">groupId</span>&gt;</span>org.apache.hadoop<span class="tag">&lt;/<span class="name">groupId</span>&gt;</span></span><br><span class="line">   <span class="tag">&lt;<span class="name">artifactId</span>&gt;</span>hadoop-client<span class="tag">&lt;/<span class="name">artifactId</span>&gt;</span></span><br><span class="line">   <span class="tag">&lt;<span class="name">version</span>&gt;</span>2.7.5<span class="tag">&lt;/<span class="name">version</span>&gt;</span></span><br><span class="line">   <span class="tag">&lt;<span class="name">scope</span>&gt;</span>provided<span class="tag">&lt;/<span class="name">scope</span>&gt;</span></span><br><span class="line"><span class="tag">&lt;/<span class="name">dependency</span>&gt;</span></span><br></pre></td></tr></table></figure></li>
+</ul>
+<h3 id="5-2-2-Collection-中读取"><a href="#5-2-2-Collection-中读取" class="headerlink" title="5.2.2 Collection 中读取"></a>5.2.2 Collection 中读取</h3><ul>
+<li><p>fromCollection(Collection)</p>
+<figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br></pre></td><td class="code"><pre><span class="line">ArrayList&lt;Event&gt; clicks = <span class="keyword">new</span> <span class="title class_">ArrayList</span>&lt;&gt;();</span><br><span class="line">clicks.add(<span class="keyword">new</span> <span class="title class_">Event</span>(<span class="string">&quot;Mary&quot;</span>,<span class="string">&quot;./home&quot;</span>,<span class="number">1000L</span>));</span><br><span class="line">clicks.add(<span class="keyword">new</span> <span class="title class_">Event</span>(<span class="string">&quot;Bob&quot;</span>,<span class="string">&quot;./cart&quot;</span>,<span class="number">2000L</span>));</span><br><span class="line">DataStream&lt;Event&gt; stream = env.fromCollection(clicks);</span><br></pre></td></tr></table></figure>
+
+
+</li>
+<li><p>fromCollection(Iterator, Class)</p>
+</li>
+<li><p>fromElements(T …)</p>
+<figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br></pre></td><td class="code"><pre><span class="line">DataStreamSource&lt;Event&gt; stream2 = env.fromElements(</span><br><span class="line">    <span class="keyword">new</span> <span class="title class_">Event</span>(<span class="string">&quot;Mary&quot;</span>, <span class="string">&quot;./home&quot;</span>, <span class="number">1000L</span>),</span><br><span class="line">    <span class="keyword">new</span> <span class="title class_">Event</span>(<span class="string">&quot;Bob&quot;</span>, <span class="string">&quot;./cart&quot;</span>, <span class="number">2000L</span>)</span><br><span class="line">);</span><br></pre></td></tr></table></figure></li>
+</ul>
+<h3 id="5-2-3-从Socket-中读取"><a href="#5-2-3-从Socket-中读取" class="headerlink" title="5.2.3 从Socket 中读取"></a>5.2.3 从Socket 中读取</h3><p>socketTextStream</p>
+<figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">DataStream&lt;String&gt; stream = env.socketTextStream(<span class="string">&quot;localhost&quot;</span>, <span class="number">7777</span>);</span><br></pre></td></tr></table></figure>
+
+<p>这种方式由于吞吐量小、稳 定性较差，一般也是用于测试。</p>
+<h3 id="5-2-4-自定义addSource：-例-–-gt-从Kafka读取"><a href="#5-2-4-自定义addSource：-例-–-gt-从Kafka读取" class="headerlink" title="5.2.4 自定义addSource： 例 –&gt; 从Kafka读取"></a>5.2.4 自定义addSource： 例 –&gt; 从Kafka读取</h3><p>![Screenshot 2022-05-09 at 16.38.57](&#x2F;Users&#x2F;zhangyuyang&#x2F;Desktop&#x2F;blog&#x2F;source&#x2F;_posts&#x2F;Flink&#x2F;Chapter05&#x2F;Screenshot 2022-05-09 at 16.38.57.png)</p>
+<p>Flink 内部并没有提供预实现的方法。所以我 们只能采用通用的 addSource 方式、实现一个 SourceFunction.</p>
+<ol>
+<li><p>Flink 官方提供了连接工具 flink-connector-kafka， 直接帮我们实现了一个消费者 FlinkKafkaConsumer，它就是用来读取 Kafka 数据的 SourceFunction.</p>
+<p>导入依赖</p>
+<figure class="highlight xml"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br></pre></td><td class="code"><pre><span class="line"><span class="tag">&lt;<span class="name">dependency</span>&gt;</span></span><br><span class="line">   <span class="tag">&lt;<span class="name">groupId</span>&gt;</span>org.apache.flink<span class="tag">&lt;/<span class="name">groupId</span>&gt;</span></span><br><span class="line">   <span class="tag">&lt;<span class="name">artifactId</span>&gt;</span>flink-connector-kafka_$&#123;scala.binary.version&#125;<span class="tag">&lt;/<span class="name">artifactId</span>&gt;</span></span><br><span class="line">   <span class="tag">&lt;<span class="name">version</span>&gt;</span>$&#123;flink.version&#125;<span class="tag">&lt;/<span class="name">version</span>&gt;</span></span><br><span class="line"><span class="tag">&lt;/<span class="name">dependency</span>&gt;</span></span><br></pre></td></tr></table></figure>
+</li>
+<li><p>addSource</p>
+<figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br></pre></td><td class="code"><pre><span class="line"><span class="type">Properties</span> <span class="variable">properties</span> <span class="operator">=</span> <span class="keyword">new</span> <span class="title class_">Properties</span>();</span><br><span class="line">properties.setProperty(<span class="string">&quot;bootstrap.servers&quot;</span>, <span class="string">&quot;hadoop102:9092&quot;</span>);</span><br><span class="line">properties.setProperty(<span class="string">&quot;group.id&quot;</span>, <span class="string">&quot;consumer-group&quot;</span>);</span><br><span class="line">properties.setProperty(<span class="string">&quot;key.deserializer&quot;</span>,</span><br><span class="line">                       <span class="string">&quot;org.apache.kafka.common.serialization.StringDeserializer&quot;</span>);</span><br><span class="line">properties.setProperty(<span class="string">&quot;value.deserializer&quot;</span>,</span><br><span class="line">                       <span class="string">&quot;org.apache.kafka.common.serialization.StringDeserializer&quot;</span>);</span><br><span class="line">properties.setProperty(<span class="string">&quot;auto.offset.reset&quot;</span>, <span class="string">&quot;latest&quot;</span>);</span><br><span class="line"></span><br><span class="line">DataStreamSource&lt;String&gt; stream = environment.addSource(</span><br><span class="line">  <span class="keyword">new</span> <span class="title class_">FlinkKafkaConsumer</span>&lt;String&gt;(</span><br><span class="line">    <span class="string">&quot;clicks&quot;</span>,</span><br><span class="line">    <span class="keyword">new</span> <span class="title class_">SimpleStringSchema</span>(),</span><br><span class="line">    properties</span><br><span class="line">  ));</span><br></pre></td></tr></table></figure>
+
+<p>addSource 方法传入一个对象参数，需要实现 SourceFunction 接口， 这里， FlinkKafkaConsumer 是一个 source function ，实现了 SourceFunction 接口</p>
+</li>
+</ol>
+<p>![Screenshot 2022-05-09 at 16.50.07](&#x2F;Users&#x2F;zhangyuyang&#x2F;Desktop&#x2F;blog&#x2F;source&#x2F;_posts&#x2F;Flink&#x2F;Chapter05&#x2F;Screenshot 2022-05-09 at 16.50.07.png)</p>
+<h3 id="5-2-5-自定义-Source"><a href="#5-2-5-自定义-Source" class="headerlink" title="5.2.5 自定义 Source"></a>5.2.5 自定义 Source</h3><p>自定义 Data Source，主要重写两个方法： run()  and cancel() </p>
+<ul>
+<li>run()方法:使用运行时上下文对象(SourceContext)向下游发送数据;</li>
+<li>cancel()方法:通过标识位控制退出循环，来达到中断数据源的效果。</li>
+</ul>
+<figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">public</span> <span class="keyword">class</span> <span class="title class_">ClickSource</span> <span class="keyword">implements</span> <span class="title class_">SourceFunction</span>&lt;Event&gt; &#123;</span><br><span class="line">    <span class="comment">// 声明一个布尔变量，作为控制数据生成的标识位</span></span><br><span class="line">    <span class="keyword">private</span> <span class="type">Boolean</span> <span class="variable">running</span> <span class="operator">=</span> <span class="literal">true</span>;</span><br><span class="line"></span><br><span class="line">    <span class="meta">@Override</span></span><br><span class="line">    <span class="keyword">public</span> <span class="keyword">void</span> <span class="title function_">run</span><span class="params">(SourceContext&lt;Event&gt; sourceContext)</span> <span class="keyword">throws</span> Exception &#123;</span><br><span class="line">        <span class="type">Random</span> <span class="variable">random</span> <span class="operator">=</span> <span class="keyword">new</span> <span class="title class_">Random</span>();</span><br><span class="line">        String[] users = &#123;<span class="string">&quot;Mary&quot;</span>, <span class="string">&quot;Alice&quot;</span>, <span class="string">&quot;Bob&quot;</span>, <span class="string">&quot;Cary&quot;</span>&#125;;</span><br><span class="line">        String[] urls = &#123;<span class="string">&quot;./home&quot;</span>, <span class="string">&quot;./cart&quot;</span>, <span class="string">&quot;./fav&quot;</span>, <span class="string">&quot;./prod?id=1&quot;</span>, <span class="string">&quot;./prod?id=2&quot;</span>&#125;;</span><br><span class="line">        <span class="keyword">while</span> (running) &#123;</span><br><span class="line">            sourceContext.collect(<span class="keyword">new</span> <span class="title class_">Event</span>(</span><br><span class="line">                    users[random.nextInt(users.length)],</span><br><span class="line">                    urls[random.nextInt(urls.length)],</span><br><span class="line">                    Calendar.getInstance().getTimeInMillis()</span><br><span class="line">            ));</span><br><span class="line"><span class="comment">// 隔 1 秒生成一个点击事件，方便观测</span></span><br><span class="line">            Thread.sleep(<span class="number">1000</span>);</span><br><span class="line">        &#125;</span><br><span class="line">    &#125;</span><br><span class="line"></span><br><span class="line">    <span class="meta">@Override</span></span><br><span class="line">    <span class="keyword">public</span> <span class="keyword">void</span> <span class="title function_">cancel</span><span class="params">()</span> &#123;</span><br><span class="line">        running = <span class="literal">false</span>;</span><br><span class="line">    &#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+<p>调用：</p>
+<figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">env.addSource(<span class="keyword">new</span> <span class="title class_">ClickSource</span>())</span><br></pre></td></tr></table></figure>
+
+<h4 id="5-2-5-1-完整的一个Flink程序"><a href="#5-2-5-1-完整的一个Flink程序" class="headerlink" title="5.2.5.1 完整的一个Flink程序"></a>5.2.5.1 完整的一个Flink程序</h4><figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">public</span> <span class="keyword">class</span> <span class="title class_">Test02</span> &#123;</span><br><span class="line">    <span class="keyword">public</span> <span class="keyword">static</span> <span class="keyword">void</span> <span class="title function_">main</span><span class="params">(String[] args)</span> <span class="keyword">throws</span> Exception &#123;</span><br><span class="line">        <span class="type">StreamExecutionEnvironment</span> <span class="variable">executionEnvironment</span> <span class="operator">=</span> StreamExecutionEnvironment.getExecutionEnvironment();</span><br><span class="line">        executionEnvironment.setParallelism(<span class="number">1</span>);</span><br><span class="line">        executionEnvironment.addSource(<span class="keyword">new</span> <span class="title class_">ClickSource</span>()).print(<span class="string">&quot;Test&quot;</span>);</span><br><span class="line">        executionEnvironment.execute();</span><br><span class="line">    &#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+
+
+<h2 id="5-3-Flink-支持的数据类型"><a href="#5-3-Flink-支持的数据类型" class="headerlink" title="5.3 Flink 支持的数据类型"></a>5.3 Flink 支持的数据类型</h2><h3 id="5-3-1-TypeInfomation"><a href="#5-3-1-TypeInfomation" class="headerlink" title="5.3.1 TypeInfomation"></a>5.3.1 TypeInfomation</h3><p>用水流来类比，那么我们要处理的数据元素就是随着水流漂动 的物体。在这条流动的河里，可能漂浮着小木块，也可能行驶着内部错综复杂的大船。要分布 式地处理这些数据，就不可避免地要面对数据的网络传输、状态的落盘和故障恢复等问题，这 就需要对数据进行序列化和反序列化。小木块是容易序列化的;而大船想要序列化之后传输， 就需要将它拆解、清晰地知道其中每一个零件的类型。</p>
+<p>为了方便处理数据， Flink 用 TypeInfomation 来统一表示数据类型</p>
+<blockquote>
+<p>TypeInformation 类是 Flink 中所有类型描述符的基类。 它涵盖了类型的一些基本属性，并为每个数据类型生成特定的序列化器、反序列化器和比较器。</p>
+</blockquote>
+<h3 id="5-3-2-Flink-支持的数据类型："><a href="#5-3-2-Flink-支持的数据类型：" class="headerlink" title="5.3.2 Flink 支持的数据类型："></a>5.3.2 Flink 支持的数据类型：</h3><ol>
+<li><p>基本类</p>
+<ol>
+<li>所有 Java 基本类型及其包装类，再加上 Void、String、Date、BigDecimal 和 BigInteger。</li>
+</ol>
+</li>
+<li><p>数据类</p>
+<ol>
+<li>基本类型数组(PRIMITIVE_ARRAY)和对象数组(OBJECT_ARRAY)</li>
+</ol>
+</li>
+<li><p>复合数据类型</p>
+<ol>
+<li><p>Java 元组类型(TUPLE):这是 Flink 内置的元组类型，是 Java API 的一部分。最多</p>
+<p>25 个字段，也就是从 Tuple0~Tuple25，不支持空字段</p>
+</li>
+<li><p>Scala 样例类及 Scala 元组:不支持空字段</p>
+</li>
+<li><p>行类型(ROW):可以认为是具有任意个字段的元组,并支持空字段</p>
+</li>
+<li><p>POJO:Flink 自定义的类似于 Java bean 模式的类（ 在项目实践中，往往会将流处理程序中的元素类型定为 Flink 的 POJO 类型。） </p>
+<p>Flink 对 POJO 类型的要求：</p>
+<ul>
+<li><p>类是公共的(public)和独立的(standalone，也就是说没有非静态的内部类);</p>
+</li>
+<li><p>类有一个公共的无参构造方法;</p>
+</li>
+<li><p>类中的所有字段是public且非final的;或者有一个公共的getter和setter方法，这些</p>
+<p>方法需要符合 Java bean 的命名规范。</p>
+</li>
+</ul>
+<figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">public</span> <span class="keyword">class</span> <span class="title class_">Event</span> &#123;</span><br><span class="line">    <span class="keyword">public</span> String user;</span><br><span class="line">    <span class="keyword">public</span> String url;</span><br><span class="line">    <span class="keyword">public</span> Long timestamp;</span><br><span class="line"></span><br><span class="line">    <span class="keyword">public</span> <span class="title function_">Event</span><span class="params">()</span> &#123;</span><br><span class="line"></span><br><span class="line">    &#125;</span><br><span class="line"></span><br><span class="line">    <span class="keyword">public</span> <span class="title function_">Event</span><span class="params">(String user, String url, Long timestamp)</span> &#123;</span><br><span class="line">        <span class="built_in">this</span>.user = user;</span><br><span class="line">        <span class="built_in">this</span>.url = url;</span><br><span class="line">        <span class="built_in">this</span>.timestamp = timestamp;</span><br><span class="line">    &#125;</span><br><span class="line"></span><br><span class="line">    <span class="meta">@Override</span></span><br><span class="line">    <span class="keyword">public</span> String <span class="title function_">toString</span><span class="params">()</span> &#123;</span><br><span class="line">        <span class="keyword">return</span> <span class="string">&quot;Event&#123;&quot;</span> +</span><br><span class="line">                <span class="string">&quot;user=&#x27;&quot;</span> + user + <span class="string">&#x27;\&#x27;&#x27;</span> +</span><br><span class="line">                <span class="string">&quot;, url=&#x27;&quot;</span> + url + <span class="string">&#x27;\&#x27;&#x27;</span> +</span><br><span class="line">                <span class="string">&quot;, timestamp=&quot;</span> + <span class="keyword">new</span> <span class="title class_">Timestamp</span>(timestamp) +</span><br><span class="line">                <span class="string">&#x27;&#125;&#x27;</span>;</span><br><span class="line">    &#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure></li>
+</ol>
+</li>
+<li><p>辅助类型</p>
+<ol>
+<li>Option、Either、List、Map 等</li>
+</ol>
+</li>
+<li><p>泛型类型(GENERIC)</p>
+<ol>
+<li>Flink 会把泛型类型当作黑盒，无法获取它们内部的属性;它 们也不是由 Flink 本身序列化的，而是由 Kryo 序列化的。</li>
+</ol>
+</li>
+</ol>
+<h3 id="5-3-3-Type-Hints"><a href="#5-3-3-Type-Hints" class="headerlink" title="5.3.3 Type Hints"></a>5.3.3 Type Hints</h3><p>存在问题： 分析函数的输入和返回类型，自动获取类型信息，从而获得对应的序列化器和反序列化器。但是，由于 Java 中泛型擦除的存在，在某些特殊情 况下(比如Lambda表达式中)，自动提取的信息是不够精细的——只告诉Flink当前的元素由 “船头、船身、船尾”构成，根本无法重建出“大船”的模样;这时就需要显式地提供类型信 息，才能使应用程序正常工作或提高其性能。</p>
+<p>为了解决这类问题，Java API 提供了专门的“类型提示”(<strong>type hints</strong>)。</p>
+<p>例子</p>
+<figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">returns(<span class="keyword">new</span> <span class="title class_">TypeHint</span>&lt;Tuple2&lt;Integer, SomeType&gt;&gt;()&#123;&#125;)</span><br></pre></td></tr></table></figure>
+
+
+
+<h2 id="5-4-定义基于数据的转换操作-transformations"><a href="#5-4-定义基于数据的转换操作-transformations" class="headerlink" title="5.4 定义基于数据的转换操作(transformations)"></a>5.4 定义基于数据的转换操作(transformations)</h2><p>将一个或多个DataStream 转换为新的DataStream</p>
+<h3 id="5-4-1-基本转换算子"><a href="#5-4-1-基本转换算子" class="headerlink" title="5.4.1 基本转换算子"></a>5.4.1 基本转换算子</h3><h4 id="5-4-1-1-map"><a href="#5-4-1-1-map" class="headerlink" title="5.4.1.1 map"></a>5.4.1.1 map</h4><p>![Screenshot 2022-05-09 at 17.12.12](&#x2F;Users&#x2F;zhangyuyang&#x2F;Desktop&#x2F;blog&#x2F;source&#x2F;_posts&#x2F;Flink&#x2F;Chapter05&#x2F;Screenshot 2022-05-09 at 17.12.12.png)</p>
+<p>使用方法：基于 DataStrema 调用 map()方法就可以进行转换处理。 方法需要传入的参数是接口 MapFunction 的实现;返回值类型还是 DataStream，不过泛型(流中的元素类型)可能改变。</p>
+<ol>
+<li><p>MapFunction的实现类</p>
+<figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">public</span> <span class="keyword">class</span> <span class="title class_">Test02</span> &#123;</span><br><span class="line">    <span class="keyword">public</span> <span class="keyword">static</span> <span class="keyword">void</span> <span class="title function_">main</span><span class="params">(String[] args)</span> <span class="keyword">throws</span> Exception &#123;</span><br><span class="line">        <span class="type">StreamExecutionEnvironment</span> <span class="variable">executionEnvironment</span> <span class="operator">=</span> StreamExecutionEnvironment.getExecutionEnvironment();</span><br><span class="line">        executionEnvironment.setParallelism(<span class="number">1</span>);</span><br><span class="line">        DataStreamSource&lt;Event&gt; dataStreamSource = executionEnvironment.addSource(<span class="keyword">new</span> <span class="title class_">ClickSource</span>());</span><br><span class="line">        <span class="comment">// MapFunction的实现类</span></span><br><span class="line">        dataStreamSource.map(<span class="keyword">new</span> <span class="title class_">UserExtractor</span>()).print();</span><br><span class="line">        </span><br><span class="line">        executionEnvironment.execute();</span><br><span class="line">    &#125;</span><br><span class="line">		</span><br><span class="line">   <span class="comment">// MapFunction的实现类</span></span><br><span class="line">    <span class="keyword">public</span> <span class="keyword">static</span> <span class="keyword">class</span> <span class="title class_">UserExtractor</span> <span class="keyword">implements</span> <span class="title class_">MapFunction</span>&lt;Event, String&gt; &#123;</span><br><span class="line">        <span class="meta">@Override</span></span><br><span class="line">        <span class="keyword">public</span> String <span class="title function_">map</span><span class="params">(Event e)</span> <span class="keyword">throws</span> Exception &#123;</span><br><span class="line">            <span class="keyword">return</span> e.user;</span><br><span class="line">        &#125;</span><br><span class="line">    &#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+</li>
+<li><p>传入匿名类</p>
+</li>
+</ol>
+   <figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br></pre></td><td class="code"><pre><span class="line">dataStreamSource.map(<span class="keyword">new</span> <span class="title class_">MapFunction</span>&lt;Event, Object&gt;() &#123;</span><br><span class="line">            <span class="meta">@Override</span></span><br><span class="line">            <span class="keyword">public</span> Object <span class="title function_">map</span><span class="params">(Event event)</span> <span class="keyword">throws</span> Exception &#123;</span><br><span class="line">                <span class="keyword">return</span> event.user;</span><br><span class="line">            &#125;</span><br><span class="line">        &#125;).print();</span><br></pre></td></tr></table></figure>
+
+<ol start="3">
+<li><p>Lambda 函数</p>
+<figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">dataStreamSource.map(data-&gt;data.user).print();</span><br></pre></td></tr></table></figure></li>
+</ol>
+<p>第 1 2 种方法，需要重写 map() 方法，定义从一个输入事件转换为另一个输出事件的具体逻辑。 需要指定两个类型，分别是 输入输出事件的类型 new MapFunction&lt;Event, Object&gt;() 。</p>
+<blockquote>
+<p>源码部分： </p>
+<p>基于 DataStream 调用 map 方法，返回 的其实是一个 SingleOutputStreamOperator</p>
+<p>![Screenshot 2022-05-09 at 17.24.59](&#x2F;Users&#x2F;zhangyuyang&#x2F;Desktop&#x2F;blog&#x2F;source&#x2F;_posts&#x2F;Flink&#x2F;Chapter05&#x2F;Screenshot 2022-05-09 at 17.24.59.png)</p>
+<p>SingleOutputStreamOperator 类本身也继承 自 DataStream 类, 所以说 map 是将一个 DataStream 转换成另一个 DataStream</p>
+</blockquote>
+<h4 id="5-4-1-2-filter"><a href="#5-4-1-2-filter" class="headerlink" title="5.4.1.2 filter"></a>5.4.1.2 filter</h4><p>![Screenshot 2022-05-09 at 17.26.13](&#x2F;Users&#x2F;zhangyuyang&#x2F;Desktop&#x2F;blog&#x2F;source&#x2F;_posts&#x2F;Flink&#x2F;Chapter05&#x2F;Screenshot 2022-05-09 at 17.26.13.png)</p>
+<p>对数据流执行一个过滤，通过一个布尔条件表达式设置过滤 条件，对于每一个流内元素进行判断，若为 true 则元素正常输出，若为 false 则元素被过滤掉</p>
+<p>filter 转化需要参数，实现FilterFunction 接口</p>
+<ol>
+<li>FilterFunction 实现类</li>
+</ol>
+<figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">public</span> <span class="keyword">static</span> <span class="keyword">void</span> <span class="title function_">main</span><span class="params">(String[] args)</span> <span class="keyword">throws</span> Exception &#123;</span><br><span class="line">        <span class="type">StreamExecutionEnvironment</span> <span class="variable">executionEnvironment</span> <span class="operator">=</span> StreamExecutionEnvironment.getExecutionEnvironment();</span><br><span class="line">        executionEnvironment.setParallelism(<span class="number">1</span>);</span><br><span class="line">        DataStreamSource&lt;Event&gt; dataStreamSource = executionEnvironment.fromElements(</span><br><span class="line">                <span class="keyword">new</span> <span class="title class_">Event</span>(<span class="string">&quot;Mary&quot;</span>, <span class="string">&quot;./home&quot;</span>, <span class="number">1000L</span>),</span><br><span class="line">                <span class="keyword">new</span> <span class="title class_">Event</span>(<span class="string">&quot;Alice&quot;</span>, <span class="string">&quot;./cart&quot;</span>, <span class="number">2000L</span>),</span><br><span class="line">                <span class="keyword">new</span> <span class="title class_">Event</span>(<span class="string">&quot;Bob&quot;</span>, <span class="string">&quot;./pro&quot;</span>, <span class="number">3000L</span>)</span><br><span class="line">        );</span><br><span class="line">        dataStreamSource.filter(<span class="keyword">new</span> <span class="title class_">UserFilter</span>()).print();</span><br><span class="line">        executionEnvironment.execute();</span><br><span class="line">    &#125;</span><br><span class="line"></span><br><span class="line">    <span class="keyword">public</span> <span class="keyword">static</span> <span class="keyword">class</span> <span class="title class_">UserFilter</span> <span class="keyword">implements</span> <span class="title class_">FilterFunction</span>&lt;Event&gt;&#123;</span><br><span class="line">        <span class="meta">@Override</span></span><br><span class="line">        <span class="keyword">public</span> <span class="type">boolean</span> <span class="title function_">filter</span><span class="params">(Event event)</span> <span class="keyword">throws</span> Exception &#123;</span><br><span class="line">            <span class="keyword">return</span> event.user.equals(<span class="string">&quot;Mary&quot;</span>);</span><br><span class="line">        &#125;</span><br><span class="line">    &#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+<ol start="2">
+<li>匿名内部类</li>
+</ol>
+<figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br></pre></td><td class="code"><pre><span class="line">dataStreamSource.filter(<span class="keyword">new</span> <span class="title class_">FilterFunction</span>&lt;Event&gt;() &#123;</span><br><span class="line">           <span class="meta">@Override</span></span><br><span class="line">           <span class="keyword">public</span> <span class="type">boolean</span> <span class="title function_">filter</span><span class="params">(Event event)</span> <span class="keyword">throws</span> Exception &#123;</span><br><span class="line">               <span class="keyword">return</span> event.user.equals(<span class="string">&quot;Mary&quot;</span>);</span><br><span class="line">           &#125;</span><br><span class="line">       &#125;).print();</span><br></pre></td></tr></table></figure>
+
+<ol start="3">
+<li>lambda 表达式</li>
+</ol>
+<figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">dataStreamSource.filter(data-&gt;data.user.equals(<span class="string">&quot;Mary&quot;</span>)).print();</span><br></pre></td></tr></table></figure>
+
+<h4 id="5-4-1-3-flatmap"><a href="#5-4-1-3-flatmap" class="headerlink" title="5.4.1.3 flatmap"></a>5.4.1.3 flatmap</h4><p>![Screenshot 2022-05-09 at 17.31.44](&#x2F;Users&#x2F;zhangyuyang&#x2F;Desktop&#x2F;blog&#x2F;source&#x2F;_posts&#x2F;Flink&#x2F;Chapter05&#x2F;Screenshot 2022-05-09 at 17.31.44.png)</p>
+<p>将数据流中的整体(一般是集合类型)拆分成一个 一个的个体使用。消费一个元素，可以产生 0 到多个元素。flatMap 可以认为是“扁平化(”flatten) 和“映射”(map)两步操作的结合，也就是先按照某种规则对数据进行打散拆分，再对拆分 后的元素做转换处理</p>
+<ol>
+<li>FlatMap接口实现类</li>
+</ol>
+<figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">public</span> <span class="keyword">static</span> <span class="keyword">void</span> <span class="title function_">main</span><span class="params">(String[] args)</span> <span class="keyword">throws</span> Exception &#123;</span><br><span class="line">        <span class="type">StreamExecutionEnvironment</span> <span class="variable">executionEnvironment</span> <span class="operator">=</span> StreamExecutionEnvironment.getExecutionEnvironment();</span><br><span class="line">        executionEnvironment.setParallelism(<span class="number">1</span>);</span><br><span class="line">        DataStreamSource&lt;Event&gt; dataStreamSource = executionEnvironment.fromElements(</span><br><span class="line">                <span class="keyword">new</span> <span class="title class_">Event</span>(<span class="string">&quot;Mary&quot;</span>, <span class="string">&quot;./home&quot;</span>, <span class="number">1000L</span>),</span><br><span class="line">                <span class="keyword">new</span> <span class="title class_">Event</span>(<span class="string">&quot;Alice&quot;</span>, <span class="string">&quot;./cart&quot;</span>, <span class="number">2000L</span>),</span><br><span class="line">                <span class="keyword">new</span> <span class="title class_">Event</span>(<span class="string">&quot;Bob&quot;</span>, <span class="string">&quot;./pro&quot;</span>, <span class="number">3000L</span>)</span><br><span class="line">        );</span><br><span class="line">        dataStreamSource.flatMap(<span class="keyword">new</span> <span class="title class_">UserFlatMap</span>()).print();</span><br><span class="line">        executionEnvironment.execute();</span><br><span class="line">    &#125;</span><br><span class="line"></span><br><span class="line">    <span class="keyword">public</span> <span class="keyword">static</span> <span class="keyword">class</span> <span class="title class_">UserFlatMap</span> <span class="keyword">implements</span> <span class="title class_">FlatMapFunction</span>&lt;Event, String&gt;&#123;</span><br><span class="line">        <span class="meta">@Override</span></span><br><span class="line">        <span class="keyword">public</span> <span class="keyword">void</span> <span class="title function_">flatMap</span><span class="params">(Event event, Collector&lt;String&gt; collector)</span> <span class="keyword">throws</span> Exception &#123;</span><br><span class="line">            <span class="keyword">if</span>(event.user.equals(<span class="string">&quot;Mary&quot;</span>))&#123;</span><br><span class="line">                collector.collect(event.user);</span><br><span class="line">            &#125;<span class="keyword">else</span> <span class="keyword">if</span>(event.user.equals(<span class="string">&quot;Bob&quot;</span>))&#123;</span><br><span class="line">                collector.collect(event.url);</span><br><span class="line">                collector.collect(event.user);</span><br><span class="line">            &#125;</span><br><span class="line">        &#125;</span><br><span class="line">    &#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+<ol start="2">
+<li>匿名内部类</li>
+</ol>
+<figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br></pre></td><td class="code"><pre><span class="line">dataStreamSource.flatMap(<span class="keyword">new</span> <span class="title class_">FlatMapFunction</span>&lt;Event, String&gt;() &#123;</span><br><span class="line">            <span class="meta">@Override</span></span><br><span class="line">            <span class="keyword">public</span> <span class="keyword">void</span> <span class="title function_">flatMap</span><span class="params">(Event event, Collector&lt;String&gt; collector)</span> <span class="keyword">throws</span> Exception &#123;</span><br><span class="line">                <span class="keyword">if</span>(event.user.equals(<span class="string">&quot;Mary&quot;</span>))&#123;</span><br><span class="line">                    collector.collect(event.user);</span><br><span class="line">                &#125;<span class="keyword">else</span> <span class="keyword">if</span>(event.user.equals(<span class="string">&quot;Bob&quot;</span>))&#123;</span><br><span class="line">                    collector.collect(event.url);</span><br><span class="line">                    collector.collect(event.user);</span><br><span class="line">                &#125;</span><br><span class="line">            &#125;</span><br><span class="line">        &#125;).print();</span><br></pre></td></tr></table></figure>
+
+<ol start="3">
+<li><p>lambda  表达式</p>
+<figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br></pre></td><td class="code"><pre><span class="line">dataStreamSource.flatMap(</span><br><span class="line">                (Event event, Collector&lt;String&gt; collector) -&gt; &#123;</span><br><span class="line">                    <span class="keyword">if</span> (event.user.equals(<span class="string">&quot;Mary&quot;</span>)) &#123;</span><br><span class="line">                        collector.collect(event.user);</span><br><span class="line">                    &#125; <span class="keyword">else</span> <span class="keyword">if</span> (event.user.equals(<span class="string">&quot;Bob&quot;</span>)) &#123;</span><br><span class="line">                        collector.collect(event.url);</span><br><span class="line">                        collector.collect(event.user);</span><br><span class="line">                    &#125;</span><br><span class="line">                &#125;)</span><br><span class="line">                .returns(<span class="keyword">new</span> <span class="title class_">TypeHint</span>&lt;String&gt;() &#123;&#125;)</span><br><span class="line">                .print();</span><br><span class="line"></span><br><span class="line"><span class="comment">// 要加 TypeHint 因为 Collector的类型，会被擦除</span></span><br></pre></td></tr></table></figure></li>
+</ol>
+<p>flatMap 会返回0 个、1 个或多个 结果数据， 因此flatMap 并没有直接定义返回值类型，而是通过一个“收集器”(Collector)来 指定输出。</p>
+<h3 id="5-4-2-聚合算子（Aggregation）"><a href="#5-4-2-聚合算子（Aggregation）" class="headerlink" title="5.4.2 聚合算子（Aggregation）"></a>5.4.2 聚合算子（Aggregation）</h3><p>结果不仅依赖当前数据，还跟之前的数据有关，相当于要把所有数据聚在一起进行汇总合并 ——这就是所谓的“聚合”(Aggregation)，也对应着 MapReduce 中的 reduce 操作</p>
+<h4 id="5-4-2-1-keyBy"><a href="#5-4-2-1-keyBy" class="headerlink" title="5.4.2.1 keyBy"></a>5.4.2.1 keyBy</h4><p>在 Flink 中，要做聚合，需要先进行分区，这个操作就是通过 keyBy 来完成的。</p>
+<p>![Screenshot 2022-05-09 at 17.49.47](&#x2F;Users&#x2F;zhangyuyang&#x2F;Desktop&#x2F;blog&#x2F;source&#x2F;_posts&#x2F;Flink&#x2F;Chapter05&#x2F;Screenshot 2022-05-09 at 17.49.47.png)</p>
+<p>keyBy 是聚合前必须要用到的一个算子。keyBy 通过指定键(key)，可以将一条流从逻辑 上划分成不同的分区(partitions)。这里所说的分区，其实就是并行处理的子任务，也就对应 着任务槽(task slot)。</p>
+<p>在内部，是通过计算key的hash code 来分区的，如果是pojo 则需重写 hashCode方法。</p>
+<figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment">// 实现键的选择器，与之前一样，可以匿名也可以实现</span></span><br><span class="line">KeyedStream&lt;Event, String&gt; keyedStream1= dataStreamSource.keyBy(data -&gt; data.user);</span><br><span class="line"><span class="comment">// Lambda 表达式</span></span><br><span class="line">KeyedStream&lt;Event, Object&gt; keyedStream2 = dataStreamSource.keyBy(<span class="keyword">new</span> <span class="title class_">KeySelector</span>&lt;Event, Object&gt;() &#123;</span><br><span class="line">            <span class="meta">@Override</span></span><br><span class="line">            <span class="keyword">public</span> Object <span class="title function_">getKey</span><span class="params">(Event event)</span> <span class="keyword">throws</span> Exception &#123;</span><br><span class="line">                <span class="keyword">return</span> event.user;</span><br><span class="line">            &#125;</span><br><span class="line">        &#125;);</span><br><span class="line"><span class="comment">// 指定字段的名称(String)</span></span><br><span class="line">dataStreamSource.keyBy(<span class="string">&quot;user&quot;</span>);</span><br></pre></td></tr></table></figure>
+
+<p>keyBy 参数：</p>
+<ol>
+<li>对于 Tuple 数据类型，可以指定字段的位置或者多个位置的组合</li>
+<li>对于 POJO 类 型，可以指定字段的名称(String)</li>
+<li>可以传入 Lambda 表达式</li>
+<li>实现一个键选择器(KeySelector)</li>
+</ol>
+<p>返回的不是 DataStream，是KeyStream，但是继承DataStream</p>
+<p>![Screenshot 2022-05-09 at 18.02.57](&#x2F;Users&#x2F;zhangyuyang&#x2F;Desktop&#x2F;blog&#x2F;source&#x2F;_posts&#x2F;Flink&#x2F;Chapter05&#x2F;Screenshot 2022-05-09 at 18.02.57.png)</p>
+<p>只有基于 KeyStream 才可以做后续的聚合操 作(比如 sum，reduce); 而且它可以将当前算子任务的状态(state)也按照 key 进行划分、限 定为仅对当前 key 有效。</p>
+<h4 id="5-4-2-2-简单聚合"><a href="#5-4-2-2-简单聚合" class="headerlink" title="5.4.2.2 简单聚合"></a>5.4.2.2 简单聚合</h4><ul>
+<li><p>⚫ sum():在输入流上，对指定的字段做叠加求和的操作。</p>
+</li>
+<li><p>⚫  min():在输入流上，对指定的字段求最小值。</p>
+</li>
+<li><p>⚫  max():在输入流上，对指定的字段求最大值。</p>
+</li>
+<li><p>⚫  minBy():与 min()类似，在输入流上针对指定字段求最小值。不同的是，min()只计</p>
+<p>算指定字段的最小值，其他字段会保留最初第一个数据的值;而 minBy()则会返回包含字段最小值的整条数据。</p>
+</li>
+<li><p>⚫  maxBy():与 max()类似，在输入流上针对指定字段求最大值。两者区别与min()&#x2F;minBy()完全一致。</p>
+</li>
+</ul>
+<figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">public</span> <span class="keyword">static</span> <span class="keyword">void</span> <span class="title function_">main</span><span class="params">(String[] args)</span> <span class="keyword">throws</span> Exception &#123;</span><br><span class="line">        <span class="type">StreamExecutionEnvironment</span> <span class="variable">executionEnvironment</span> <span class="operator">=</span> StreamExecutionEnvironment.getExecutionEnvironment();</span><br><span class="line">        DataStreamSource&lt;Tuple2&lt;String, Integer&gt;&gt; tuple2DataStreamSource = executionEnvironment.fromElements(</span><br><span class="line">                Tuple2.of(<span class="string">&quot;a&quot;</span>, <span class="number">1</span>),</span><br><span class="line">                Tuple2.of(<span class="string">&quot;a&quot;</span>, <span class="number">3</span>),</span><br><span class="line">                Tuple2.of(<span class="string">&quot;b&quot;</span>, <span class="number">3</span>),</span><br><span class="line">                Tuple2.of(<span class="string">&quot;b&quot;</span>, <span class="number">4</span>)</span><br><span class="line">        );</span><br><span class="line"></span><br><span class="line">        tuple2DataStreamSource.keyBy(r-&gt;<span class="number">0</span>).sum(<span class="number">1</span>).print(<span class="string">&quot;0-&gt;&quot;</span>);</span><br><span class="line">        tuple2DataStreamSource.keyBy(r-&gt;<span class="number">1</span>).sum(<span class="number">1</span>).print(<span class="string">&quot;1-&gt;&quot;</span>);</span><br><span class="line"></span><br><span class="line">        executionEnvironment.execute();</span><br><span class="line">    &#125;</span><br></pre></td></tr></table></figure>
+
+<p>简单聚合算子返回的，同样是一个 SingleOutputStreamOperator，也就是从 KeyedStream 又 转换成了常规的 DataStream。</p>
+<figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">SingleOutputStreamOperator&lt;Tuple2&lt;String, Integer&gt;&gt; sum = tuple2DataStreamSource.keyBy(r -&gt; <span class="number">0</span>).sum(<span class="number">1</span>);</span><br></pre></td></tr></table></figure>
+
+<p>一个聚合算子，会为每一个 key 保存一个聚合的值，在 Flink 中我们把它叫作“状态”(state)。 所以每当有一个新的数据输入，算子就会更新保存的聚合结果，并发送一个带有更新后聚合值 的事件到下游算子</p>
+<h4 id="5-4-2-3-归约聚合（reduce）"><a href="#5-4-2-3-归约聚合（reduce）" class="headerlink" title="5.4.2.3 归约聚合（reduce）"></a>5.4.2.3 归约聚合（reduce）</h4><p>调用 KeyedStream 的 reduce 方法时，需要传入一个参数，实现 ReduceFunction 接口</p>
+<p>例子</p>
+<figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">public</span> <span class="keyword">class</span> <span class="title class_">ReduceFuction</span> &#123;</span><br><span class="line">    <span class="keyword">public</span> <span class="keyword">static</span> <span class="keyword">void</span> <span class="title function_">main</span><span class="params">(String[] args)</span> <span class="keyword">throws</span> Exception &#123;</span><br><span class="line">        <span class="type">StreamExecutionEnvironment</span> <span class="variable">executionEnvironment</span> <span class="operator">=</span> StreamExecutionEnvironment.getExecutionEnvironment();</span><br><span class="line">        DataStreamSource&lt;Event&gt; eventDataStreamSource = executionEnvironment.addSource(<span class="keyword">new</span> <span class="title class_">ClickSource</span>());</span><br><span class="line"></span><br><span class="line">        eventDataStreamSource.map(<span class="keyword">new</span> <span class="title class_">MapFunction</span>&lt;Event, Tuple2&lt;String, Long&gt;&gt;() &#123;</span><br><span class="line">            <span class="meta">@Override</span></span><br><span class="line">            <span class="keyword">public</span> Tuple2&lt;String, Long&gt; <span class="title function_">map</span><span class="params">(Event event)</span> <span class="keyword">throws</span> Exception &#123;</span><br><span class="line">                <span class="keyword">return</span> Tuple2.of(event.user, <span class="number">1L</span>);</span><br><span class="line">            &#125;</span><br><span class="line">        &#125;)</span><br><span class="line">                .keyBy(r -&gt; r.f0)</span><br><span class="line">                .reduce(<span class="keyword">new</span> <span class="title class_">ReduceFunction</span>&lt;Tuple2&lt;String, Long&gt;&gt;() &#123;</span><br><span class="line">                    <span class="meta">@Override</span></span><br><span class="line">                    <span class="keyword">public</span> Tuple2&lt;String, Long&gt; <span class="title function_">reduce</span><span class="params">(Tuple2&lt;String, Long&gt; stringLongTuple2, Tuple2&lt;String, Long&gt; t1)</span> <span class="keyword">throws</span> Exception &#123;</span><br><span class="line">                        <span class="keyword">return</span> Tuple2.of(stringLongTuple2.f0, stringLongTuple2.f1 + t1.f1);</span><br><span class="line">                    &#125;</span><br><span class="line">                &#125;)</span><br><span class="line">                .keyBy(r -&gt; <span class="literal">true</span>)</span><br><span class="line">                .reduce(<span class="keyword">new</span> <span class="title class_">ReduceFunction</span>&lt;Tuple2&lt;String, Long&gt;&gt;() &#123;</span><br><span class="line">                    <span class="meta">@Override</span></span><br><span class="line">                    <span class="keyword">public</span> Tuple2&lt;String, Long&gt; <span class="title function_">reduce</span><span class="params">(Tuple2&lt;String, Long&gt; stringLongTuple2, Tuple2&lt;String, Long&gt; t1)</span> <span class="keyword">throws</span> Exception &#123;</span><br><span class="line">                        <span class="keyword">return</span> stringLongTuple2.f1 &gt; t1.f1 ? stringLongTuple2 : t1;</span><br><span class="line">                    &#125;</span><br><span class="line">                &#125;)</span><br><span class="line">                .print();</span><br><span class="line"></span><br><span class="line">        executionEnvironment.execute();</span><br><span class="line">    &#125;</span><br><span class="line">&#125;</span><br><span class="line"></span><br></pre></td></tr></table></figure>
+
+<ol>
+<li>可以使用 实现类</li>
+<li>匿名内部类</li>
+<li>Lambd 函数</li>
+</ol>
+<h3 id="5-4-3-用户自定义函数（UDF）"><a href="#5-4-3-用户自定义函数（UDF）" class="headerlink" title="5.4.3 用户自定义函数（UDF）"></a>5.4.3 用户自定义函数（UDF）</h3><ol>
+<li>以算子操作名称+Function 命名</li>
+<li>都继承自 Function 接口</li>
+</ol>
+<h4 id="5-4-3-1-函数类（Function-Classes）"><a href="#5-4-3-1-函数类（Function-Classes）" class="headerlink" title="5.4.3.1 函数类（Function Classes）"></a>5.4.3.1 函数类（Function Classes）</h4><p>自定义一个函数，实现对应的接口</p>
+<figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br><span class="line">36</span><br><span class="line">37</span><br><span class="line">38</span><br><span class="line">39</span><br><span class="line">40</span><br><span class="line">41</span><br><span class="line">42</span><br><span class="line">43</span><br><span class="line">44</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">public</span> <span class="keyword">static</span> <span class="keyword">void</span> <span class="title function_">main</span><span class="params">(String[] args)</span> <span class="keyword">throws</span> Exception &#123;</span><br><span class="line">        <span class="type">StreamExecutionEnvironment</span> <span class="variable">executionEnvironment</span> <span class="operator">=</span> StreamExecutionEnvironment.getExecutionEnvironment();</span><br><span class="line">        executionEnvironment.setParallelism(<span class="number">1</span>);</span><br><span class="line">        DataStreamSource&lt;Event&gt; dataStreamSource = executionEnvironment.fromElements(</span><br><span class="line">                <span class="keyword">new</span> <span class="title class_">Event</span>(<span class="string">&quot;Mary&quot;</span>, <span class="string">&quot;./home&quot;</span>, <span class="number">1000L</span>),</span><br><span class="line">                <span class="keyword">new</span> <span class="title class_">Event</span>(<span class="string">&quot;Alice&quot;</span>, <span class="string">&quot;./cart&quot;</span>, <span class="number">2000L</span>),</span><br><span class="line">                <span class="keyword">new</span> <span class="title class_">Event</span>(<span class="string">&quot;Bob&quot;</span>, <span class="string">&quot;./pro&quot;</span>, <span class="number">3000L</span>)</span><br><span class="line">        );</span><br><span class="line">        dataStreamSource.flatMap(<span class="keyword">new</span> <span class="title class_">UserFlatMap</span>()).print();</span><br><span class="line">        executionEnvironment.execute();</span><br><span class="line">    &#125;</span><br><span class="line"><span class="comment">// 自定义Function，实现接口</span></span><br><span class="line">    <span class="keyword">public</span> <span class="keyword">static</span> <span class="keyword">class</span> <span class="title class_">UserFlatMap</span> <span class="keyword">implements</span> <span class="title class_">FlatMapFunction</span>&lt;Event, String&gt;&#123;</span><br><span class="line">        <span class="meta">@Override</span></span><br><span class="line">        <span class="keyword">public</span> <span class="keyword">void</span> <span class="title function_">flatMap</span><span class="params">(Event event, Collector&lt;String&gt; collector)</span> <span class="keyword">throws</span> Exception &#123;</span><br><span class="line">            <span class="keyword">if</span>(event.user.equals(<span class="string">&quot;Mary&quot;</span>))&#123;</span><br><span class="line">                collector.collect(event.user);</span><br><span class="line">            &#125;<span class="keyword">else</span> <span class="keyword">if</span>(event.user.equals(<span class="string">&quot;Bob&quot;</span>))&#123;</span><br><span class="line">                collector.collect(event.url);</span><br><span class="line">                collector.collect(event.user);</span><br><span class="line">            &#125;</span><br><span class="line">        &#125;</span><br><span class="line">    &#125;</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line"></span><br><span class="line"><span class="comment">// 也可以使用匿名内部类的方法，和之前一样</span></span><br><span class="line">DataStream&lt;String&gt; stream = clicks.filter(<span class="keyword">new</span> <span class="title class_">FilterFunction</span>&lt;Event&gt;() &#123;</span><br><span class="line">   <span class="meta">@Override</span></span><br><span class="line">   <span class="keyword">public</span> <span class="type">boolean</span> <span class="title function_">filter</span><span class="params">(Event value)</span> <span class="keyword">throws</span> Exception &#123;</span><br><span class="line">       <span class="keyword">return</span> value.url.contains(<span class="string">&quot;home&quot;</span>);</span><br><span class="line">&#125; &#125;);</span><br><span class="line"></span><br><span class="line"></span><br><span class="line"><span class="comment">// 小技巧： 为了使其更加通用，可以将关键字抽取出来</span></span><br><span class="line">DataStream&lt;Event&gt; stream = clicks.filter(<span class="keyword">new</span> <span class="title class_">KeyWordFilter</span>(<span class="string">&quot;home&quot;</span>));</span><br><span class="line"><span class="keyword">public</span> <span class="keyword">static</span> <span class="keyword">class</span> <span class="title class_">KeyWordFilter</span> <span class="keyword">implements</span> <span class="title class_">FilterFunction</span>&lt;Event&gt; &#123;</span><br><span class="line">   <span class="keyword">private</span> String keyWord;</span><br><span class="line">KeyWordFilter(String keyWord) &#123; <span class="built_in">this</span>.keyWord = keyWord; &#125;</span><br><span class="line">   <span class="meta">@Override</span></span><br><span class="line">   <span class="keyword">public</span> <span class="type">boolean</span> <span class="title function_">filter</span><span class="params">(Event value)</span> <span class="keyword">throws</span> Exception &#123;</span><br><span class="line">       <span class="keyword">return</span> value.url.contains(<span class="built_in">this</span>.keyWord);</span><br><span class="line">   &#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+
+
+<h4 id="5-4-3-2-匿名函数（Lambda）"><a href="#5-4-3-2-匿名函数（Lambda）" class="headerlink" title="5.4.3.2 匿名函数（Lambda）"></a>5.4.3.2 匿名函数（Lambda）</h4><figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">DataStream&lt;String&gt; stream1 = clicks.map(event -&gt; event.url);</span><br></pre></td></tr></table></figure>
+
+<p>遇到的问题：</p>
+<p>范型信息擦出</p>
+<figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br></pre></td><td class="code"><pre><span class="line">dataStreamSource.flatMap(</span><br><span class="line">                (Event event, Collector&lt;String&gt; collector) -&gt; &#123;</span><br><span class="line">                    <span class="keyword">if</span> (event.user.equals(<span class="string">&quot;Mary&quot;</span>)) &#123;</span><br><span class="line">                        collector.collect(event.user);</span><br><span class="line">                    &#125; <span class="keyword">else</span> <span class="keyword">if</span> (event.user.equals(<span class="string">&quot;Bob&quot;</span>)) &#123;</span><br><span class="line">                        collector.collect(event.url);</span><br><span class="line">                        collector.collect(event.user);</span><br><span class="line">                    &#125;</span><br><span class="line">                &#125;)</span><br><span class="line">                .print();</span><br><span class="line"><span class="comment">// 会报错，因为不知道Collector的类型：</span></span><br><span class="line"><span class="comment">// org.apache.flink.api.common.functions.InvalidTypesException: The generic type parameters of &#x27;Collector&#x27; are missing.</span></span><br><span class="line">             .returns(<span class="keyword">new</span> <span class="title class_">TypeHint</span>&lt;String&gt;() &#123;&#125;)</span><br></pre></td></tr></table></figure>
+
+<p>在这种情况下，要显示的指定类型：</p>
+<figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br></pre></td><td class="code"><pre><span class="line">dataStreamSource.flatMap(</span><br><span class="line">                (Event event, Collector&lt;String&gt; collector) -&gt; &#123;</span><br><span class="line">                    <span class="keyword">if</span> (event.user.equals(<span class="string">&quot;Mary&quot;</span>)) &#123;</span><br><span class="line">                        collector.collect(event.user);</span><br><span class="line">                    &#125; <span class="keyword">else</span> <span class="keyword">if</span> (event.user.equals(<span class="string">&quot;Bob&quot;</span>)) &#123;</span><br><span class="line">                        collector.collect(event.url);</span><br><span class="line">                        collector.collect(event.user);</span><br><span class="line">                    &#125;</span><br><span class="line">                &#125;)            </span><br><span class="line">  							.returns(<span class="keyword">new</span> <span class="title class_">TypeHint</span>&lt;String&gt;() &#123;&#125;)</span><br><span class="line">                .print();</span><br></pre></td></tr></table></figure>
+
+<p>当然，解决Lambda范型擦出的方法，还有：</p>
+<ol>
+<li>使用匿名内部类</li>
+<li>实现函数</li>
+</ol>
+<h4 id="5-4-3-3-富函数（Rich-Fucntion-Classes）"><a href="#5-4-3-3-富函数（Rich-Fucntion-Classes）" class="headerlink" title="5.4.3.3 富函数（Rich Fucntion Classes）"></a>5.4.3.3 富函数（Rich Fucntion Classes）</h4><p>所有的Flink函数都有其Rich的版本。比常规的函数类提供更多、更丰富的功能。</p>
+<p>富函数特点：可以获取运行环境的上下文，并拥有一些生命周期方法，所以可以实现 更复杂的功能</p>
+<p>Rich Function有生命周期的概念：</p>
+<ul>
+<li>open（）： 初始化时被调用</li>
+<li>close（）： 最后被调用</li>
+</ul>
+<p>对于一个并行子任务来说只会调用一次：例如 RichMapFunction 中的 map()，在每条数据到来后都会触发一次调用。</p>
+<figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">public</span> <span class="keyword">class</span> <span class="title class_">RichFunction</span> &#123;</span><br><span class="line">    <span class="keyword">public</span> <span class="keyword">static</span> <span class="keyword">void</span> <span class="title function_">main</span><span class="params">(String[] args)</span> <span class="keyword">throws</span> Exception &#123;</span><br><span class="line">        <span class="type">StreamExecutionEnvironment</span> <span class="variable">executionEnvironment</span> <span class="operator">=</span> StreamExecutionEnvironment.getExecutionEnvironment().setParallelism(<span class="number">2</span>);</span><br><span class="line">        DataStreamSource&lt;Event&gt; eventDataStreamSource = executionEnvironment.fromElements(</span><br><span class="line">                <span class="keyword">new</span> <span class="title class_">Event</span>(<span class="string">&quot;Mary&quot;</span>, <span class="string">&quot;./home&quot;</span>, <span class="number">1000L</span>),</span><br><span class="line">                <span class="keyword">new</span> <span class="title class_">Event</span>(<span class="string">&quot;Bob&quot;</span>, <span class="string">&quot;./cart&quot;</span>, <span class="number">2000L</span>),</span><br><span class="line">                <span class="keyword">new</span> <span class="title class_">Event</span>(<span class="string">&quot;Alice&quot;</span>, <span class="string">&quot;./prod?id=1&quot;</span>, <span class="number">5</span> * <span class="number">1000L</span>),</span><br><span class="line">                <span class="keyword">new</span> <span class="title class_">Event</span>(<span class="string">&quot;Cary&quot;</span>, <span class="string">&quot;./home&quot;</span>, <span class="number">60</span> * <span class="number">1000L</span>)</span><br><span class="line">        );</span><br><span class="line"></span><br><span class="line">        <span class="comment">// 将点击事件转换成长整型的时间戳输出</span></span><br><span class="line">        eventDataStreamSource.map(<span class="keyword">new</span> <span class="title class_">RichMapFunction</span>&lt;Event, Long&gt;() &#123;</span><br><span class="line">            <span class="meta">@Override</span></span><br><span class="line">            <span class="keyword">public</span> <span class="keyword">void</span> <span class="title function_">open</span><span class="params">(Configuration parameters)</span> <span class="keyword">throws</span> Exception &#123;</span><br><span class="line">                <span class="built_in">super</span>.open(parameters);</span><br><span class="line">                System.out.println(<span class="string">&quot;Index is &quot;</span>+getRuntimeContext().getIndexOfThisSubtask()+<span class="string">&quot; Task Begin!!&quot;</span>);</span><br><span class="line">            &#125;</span><br><span class="line"></span><br><span class="line">            <span class="meta">@Override</span></span><br><span class="line">            <span class="keyword">public</span> Long <span class="title function_">map</span><span class="params">(Event event)</span> <span class="keyword">throws</span> Exception &#123;</span><br><span class="line">                <span class="keyword">return</span> event.timestamp;</span><br><span class="line">            &#125;</span><br><span class="line"></span><br><span class="line">            <span class="meta">@Override</span></span><br><span class="line">            <span class="keyword">public</span> <span class="keyword">void</span> <span class="title function_">close</span><span class="params">()</span> <span class="keyword">throws</span> Exception &#123;</span><br><span class="line">                <span class="built_in">super</span>.close();</span><br><span class="line">                System.out.println(<span class="string">&quot;Index is &quot;</span>+getRuntimeContext().getIndexOfThisSubtask()+<span class="string">&quot; Task End ==&quot;</span>);</span><br><span class="line">            &#125;</span><br><span class="line">        &#125;).print();</span><br><span class="line"></span><br><span class="line">        executionEnvironment.execute();</span><br><span class="line"></span><br><span class="line">    &#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+<p>常见的场景：</p>
+<p>在 open（） 中连接数据库，在map（）中读写数据，在close（）中关闭连接</p>
+<figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">public</span> <span class="keyword">class</span> <span class="title class_">MyFlatMap</span> <span class="keyword">extends</span> <span class="title class_">RichFlatMapFunction</span>&lt;IN, OUT&gt;&gt; &#123;</span><br><span class="line">   <span class="meta">@Override</span></span><br><span class="line">   <span class="keyword">public</span> <span class="keyword">void</span> <span class="title function_">open</span><span class="params">(Configuration configuration)</span> &#123;</span><br><span class="line">  <span class="comment">// 做一些初始化工作</span></span><br><span class="line">  <span class="comment">// 例如建立一个和 MySQL 的连接 &#125;</span></span><br><span class="line">  <span class="meta">@Override</span></span><br><span class="line">  <span class="keyword">public</span> <span class="keyword">void</span> <span class="title function_">flatMap</span><span class="params">(IN in, Collector&lt;OUT out)</span> &#123;</span><br><span class="line">  <span class="comment">// 对数据库进行读写 &#125;</span></span><br><span class="line">  <span class="meta">@Override</span></span><br><span class="line">  <span class="keyword">public</span> <span class="keyword">void</span> <span class="title function_">close</span><span class="params">()</span> &#123;</span><br><span class="line">  <span class="comment">// 清理工作，关闭和 MySQL 数据库的连接。</span></span><br><span class="line">  &#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+<p>富函数提供了：</p>
+<p>getRuntimeContext()方法， 可以获取到运行时上下文的一些信息，例如</p>
+<ul>
+<li>程序执行的并行度，</li>
+<li>任务名</li>
+<li>状态 (state)。</li>
+</ul>
+<h3 id="5-4-4-物理分区（Physical-Partitioning）"><a href="#5-4-4-物理分区（Physical-Partitioning）" class="headerlink" title="5.4.4 物理分区（Physical Partitioning）"></a>5.4.4 物理分区（Physical Partitioning）</h3><p>keyBy是一种逻辑分区（软分区）： 保证把数据按 key“分开”，至于分得均不均匀、每个 key 的数据具体会分到哪一区去，这些是完全无从控制 的</p>
+<p>物理分区：精准地调配数据，告诉每个数据到底去哪里</p>
+<p>分区算子 并不对数据进行转换处理，只是定义了数据的传输方式</p>
+<h4 id="5-4-4-1-随机分区（shuffle）"><a href="#5-4-4-1-随机分区（shuffle）" class="headerlink" title="5.4.4.1 随机分区（shuffle）"></a>5.4.4.1 随机分区（shuffle）</h4><p>![Screenshot 2022-05-10 at 15.24.32](&#x2F;Users&#x2F;zhangyuyang&#x2F;Desktop&#x2F;blog&#x2F;source&#x2F;_posts&#x2F;Flink&#x2F;Chapter05&#x2F;Screenshot 2022-05-10 at 15.24.32.png)</p>
+<figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">stream.shuffle().print(<span class="string">&quot;shuffle&quot;</span>).setParallelism(<span class="number">4</span>);</span><br></pre></td></tr></table></figure>
+
+<p>随机分区服从 （uniform distribution）</p>
+<h4 id="5-4-4-2-轮询分区（Round-Robin）"><a href="#5-4-4-2-轮询分区（Round-Robin）" class="headerlink" title="5.4.4.2 轮询分区（Round-Robin）"></a>5.4.4.2 轮询分区（Round-Robin）</h4><p>![Screenshot 2022-05-10 at 15.26.02](&#x2F;Users&#x2F;zhangyuyang&#x2F;Desktop&#x2F;blog&#x2F;source&#x2F;_posts&#x2F;Flink&#x2F;Chapter05&#x2F;Screenshot 2022-05-10 at 15.26.02.png)</p>
+<p>按照先后顺序将数据做依次分发，使用的是 Round-Robin 算法（该算法还用在 Kafka，Nginx中）</p>
+<figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">stream.rebalance().print(<span class="string">&quot;rebalance&quot;</span>).setParallelism(<span class="number">4</span>);</span><br></pre></td></tr></table></figure>
+
+<h4 id="5-4-4-3-重缩放分区（rescale）"><a href="#5-4-4-3-重缩放分区（rescale）" class="headerlink" title="5.4.4.3 重缩放分区（rescale）"></a>5.4.4.3 重缩放分区（rescale）</h4><p>与 轮询分区相似，只是将 数据轮询发送到下游并行任务的<strong>一部分</strong>中。</p>
+<p>当下游任务(数据接收方)的数量是上游任务(数据发送方)数量的整数倍时，rescale 的效率明显会更高。比如当上游任务数量是 2，下游任务数量是 6 时，上游任务其中一个分区 的数据就将会平均分配到下游任务的 3 个分区中。</p>
+<figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">stream.rescale().print(<span class="string">&quot;rebalance&quot;</span>).setParallelism(<span class="number">4</span>);</span><br></pre></td></tr></table></figure>
+
+<h4 id="5-4-4-4-广播（broadcast）"><a href="#5-4-4-4-广播（broadcast）" class="headerlink" title="5.4.4.4 广播（broadcast）"></a>5.4.4.4 广播（broadcast）</h4><p>，数据会在不同的分区都保留一 份，可能进行重复处理</p>
+<figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">stream.broadcast().print(<span class="string">&quot;broadcast&quot;</span>).setParallelism(<span class="number">4</span>);</span><br></pre></td></tr></table></figure>
+
+<h4 id="5-4-4-5-全局分区（global）"><a href="#5-4-4-5-全局分区（global）" class="headerlink" title="5.4.4.5 全局分区（global）"></a>5.4.4.5 全局分区（global）</h4><figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">stream.global.print(<span class="string">&quot;broadcast&quot;</span>).setParallelism(<span class="number">4</span>);</span><br></pre></td></tr></table></figure>
+
+
+
+<p>将所有的输入流数据都发送到下游算子的第一个并行子任务中去。强行让下游的并行度变成了1</p>
+<h4 id="5-4-4-6-自定义分区（Custom）"><a href="#5-4-4-6-自定义分区（Custom）" class="headerlink" title="5.4.4.6 自定义分区（Custom）"></a>5.4.4.6 自定义分区（Custom）</h4><figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br></pre></td><td class="code"><pre><span class="line">DataStreamSource&lt;Integer&gt; integerDataStreamSource = executionEnvironment.fromElements(<span class="number">1</span>, <span class="number">2</span>, <span class="number">3</span>, <span class="number">4</span>, <span class="number">5</span>, <span class="number">6</span>, <span class="number">7</span>, <span class="number">8</span>);</span><br><span class="line">integerDataStreamSource.partitionCustom(</span><br><span class="line">                <span class="keyword">new</span> <span class="title class_">Partitioner</span>&lt;Integer&gt;() &#123;</span><br><span class="line">                    <span class="meta">@Override</span></span><br><span class="line">                    <span class="keyword">public</span> <span class="type">int</span> <span class="title function_">partition</span><span class="params">(Integer integer, <span class="type">int</span> i)</span> &#123;</span><br><span class="line">                        <span class="keyword">return</span> integer % <span class="number">2</span>;</span><br><span class="line">                    &#125;</span><br><span class="line">                &#125;, <span class="keyword">new</span> <span class="title class_">KeySelector</span>&lt;Integer, Integer&gt;() &#123;</span><br><span class="line">                    <span class="meta">@Override</span></span><br><span class="line">                    <span class="keyword">public</span> Integer <span class="title function_">getKey</span><span class="params">(Integer integer)</span> <span class="keyword">throws</span> Exception &#123;</span><br><span class="line">                        <span class="keyword">return</span> integer;</span><br><span class="line">                    &#125;</span><br><span class="line">                &#125;</span><br><span class="line">        ).print();</span><br></pre></td></tr></table></figure>
+
+<p>调用时，要传入两个参数：</p>
+<ol>
+<li>自定义分区器(Partitioner)对象</li>
+</ol>
+<figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">new</span> <span class="title class_">Partitioner</span>&lt;Integer&gt;() &#123;</span><br><span class="line">	<span class="meta">@Override</span></span><br><span class="line">  <span class="keyword">public</span> <span class="type">int</span> <span class="title function_">partition</span><span class="params">(Integer integer, <span class="type">int</span> i)</span> &#123;<span class="keyword">return</span> integer % <span class="number">2</span>;&#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+<ol start="2">
+<li>应用分区器的字段,它的指定方式与 keyBy 指定 key 基本一样<ul>
+<li>通过字段名称指定</li>
+<li>通过字段位置索引</li>
+<li>实现一个KeySelector</li>
+</ul>
+</li>
+</ol>
+<figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">new</span> <span class="title class_">KeySelector</span>&lt;Integer, Integer&gt;() &#123;</span><br><span class="line">  <span class="meta">@Override</span></span><br><span class="line">  <span class="keyword">public</span> Integer <span class="title function_">getKey</span><span class="params">(Integer integer)</span> <span class="keyword">throws</span> Exception 	&#123;<span class="keyword">return</span> integer;&#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+
+
+
+
+<h2 id="5-5-输出算子（Sink）"><a href="#5-5-输出算子（Sink）" class="headerlink" title="5.5 输出算子（Sink）"></a>5.5 输出算子（Sink）</h2><p>![Screenshot 2022-05-10 at 15.40.26](&#x2F;Users&#x2F;zhangyuyang&#x2F;Desktop&#x2F;blog&#x2F;source&#x2F;_posts&#x2F;Flink&#x2F;Chapter05&#x2F;Screenshot 2022-05-10 at 15.40.26.png)</p>
+<h3 id="5-5-1-连接到外部系统"><a href="#5-5-1-连接到外部系统" class="headerlink" title="5.5.1 连接到外部系统"></a>5.5.1 连接到外部系统</h3><p>Flink对于稳定性和容错性要求极高，一旦出现故障，要有恢复到之前状态的能力。Flink内部提供 checkpoint，保障我们可以回滚到正确的状态。但如果我们在处理过程中任意读写外部系统，发生故障后 就很难回退到从前了。</p>
+<p>为了避免以上的问题，Flink 提供了addSink： 用来实现与外 部系统连接、并将数据提交写入</p>
+<p>print就是一种输出算子</p>
+<p>![Screenshot 2022-05-10 at 15.43.38](&#x2F;Users&#x2F;zhangyuyang&#x2F;Desktop&#x2F;blog&#x2F;source&#x2F;_posts&#x2F;Flink&#x2F;Chapter05&#x2F;Screenshot 2022-05-10 at 15.43.38.png)</p>
+<p>与Source算子很像。除去一些Flink预实现的Sink，一般情况下的Sink算创建是调用 addSink（）</p>
+<figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">stream.addSink(<span class="keyword">new</span> <span class="title class_">SinkFunction</span>(...));</span><br></pre></td></tr></table></figure>
+
+<p>addSink 要重写一些 invoke （）方法</p>
+<p>Flink提供：</p>
+<p>![Screenshot 2022-05-10 at 15.45.53](&#x2F;Users&#x2F;zhangyuyang&#x2F;Desktop&#x2F;blog&#x2F;source&#x2F;_posts&#x2F;Flink&#x2F;Chapter05&#x2F;Screenshot 2022-05-10 at 15.45.53.png)</p>
+<p>![Screenshot 2022-05-10 at 15.46.11](&#x2F;Users&#x2F;zhangyuyang&#x2F;Desktop&#x2F;blog&#x2F;source&#x2F;_posts&#x2F;Flink&#x2F;Chapter05&#x2F;Screenshot 2022-05-10 at 15.46.11.png)</p>
+<h3 id="5-5-2-输出到文件"><a href="#5-5-2-输出到文件" class="headerlink" title="5.5.2 输出到文件"></a>5.5.2 输出到文件</h3><p>简单粗暴的预实现方式 ：writeAsText()、writeAsCsv()， 但是这些方法不支持同时写入。</p>
+<p>因此Flink专门提供了一个流文件系统的 连接器：StreamingFileSink</p>
+<figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br></pre></td><td class="code"><pre><span class="line">StreamingFileSink&lt;String&gt; fileSink = StreamingFileSink.&lt;String&gt;forRowFormat(</span><br><span class="line">                <span class="keyword">new</span> <span class="title class_">Path</span>(<span class="string">&quot;./output&quot;</span>),</span><br><span class="line">                <span class="keyword">new</span> <span class="title class_">SimpleStringEncoder</span>&lt;&gt;(<span class="string">&quot;UTF-8&quot;</span>)</span><br><span class="line">        )</span><br><span class="line">                .withRollingPolicy(</span><br><span class="line">                        DefaultRollingPolicy</span><br><span class="line">                                .builder()</span><br><span class="line">                                .withRolloverInterval(TimeUnit.MINUTES.toMillis(<span class="number">15</span>)) <span class="comment">// 至少包含15分钟的数据</span></span><br><span class="line">                                .withInactivityInterval(TimeUnit.MINUTES.toMillis(<span class="number">5</span>)) <span class="comment">// 最近5分钟没有收到新的数据</span></span><br><span class="line">                                .withMaxPartSize(<span class="number">1024</span> * <span class="number">1024</span> * <span class="number">1024</span>) <span class="comment">//文件大小已达到 1 GB</span></span><br><span class="line">                                .build()</span><br><span class="line">                )</span><br><span class="line">                .build();</span><br></pre></td></tr></table></figure>
+
+<p>通过.withRollingPolicy()方法指定了一个“滚动策略”:什么时候就开启新的文件，将之前的内容归档保存。</p>
+<p>⚫ 至少包含15分钟的数据</p>
+<p>⚫ 最近5分钟没有收到新的数据</p>
+<p>⚫ 文件大小已达到 1 GB</p>
+<h3 id="5-5-3-输出到Kafka"><a href="#5-5-3-输出到Kafka" class="headerlink" title="5.5.3 输出到Kafka"></a>5.5.3 输出到Kafka</h3><h3 id="5-5-4-输出到Redis"><a href="#5-5-4-输出到Redis" class="headerlink" title="5.5.4 输出到Redis"></a>5.5.4 输出到Redis</h3><h3 id="5-5-5-输出到Elasticsearch"><a href="#5-5-5-输出到Elasticsearch" class="headerlink" title="5.5.5 输出到Elasticsearch"></a>5.5.5 输出到Elasticsearch</h3><h3 id="5-5-6-输出到MySQL（JDBC）"><a href="#5-5-6-输出到MySQL（JDBC）" class="headerlink" title="5.5.6 输出到MySQL（JDBC）"></a>5.5.6 输出到MySQL（JDBC）</h3>
+      
+    </div>
+
+    
+    
+    
+    
+      <footer class="post-footer">
+        <div class="post-eof"></div>
+      </footer>
+  </article>
+  
+  
+  
+
+      
+  
+  
+  <article itemscope itemtype="http://schema.org/Article" class="post-block" lang="en">
+    <link itemprop="mainEntityOfPage" href="https://yu-yang.pro/uncategorized/CS144/Lab0/">
+
+    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
+      <meta itemprop="image" content="/images/profile_img.jpg">
+      <meta itemprop="name" content="Yuyang Zhang">
+      <meta itemprop="description" content="stay hungry stay foolish">
+    </span>
+
+    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
+      <meta itemprop="name" content="Yuyang's 博客">
+    </span>
+      <header class="post-header">
+        <h2 class="post-title" itemprop="name headline">
+          
+            <a href="/uncategorized/CS144/Lab0/" class="post-title-link" itemprop="url">post</a>
+        </h2>
+
+        <div class="post-meta">
+            <span class="post-meta-item">
+              <span class="post-meta-item-icon">
+                <i class="far fa-calendar"></i>
+              </span>
+              <span class="post-meta-item-text">Posted on</span>
+              
+
+              <time title="Created: 2022-05-09 12:00:23 / Modified: 12:11:27" itemprop="dateCreated datePublished" datetime="2022-05-09T12:00:23+08:00">2022-05-09</time>
+            </span>
+
+          <br>
+            <span class="post-meta-item" title="Symbols count in article">
+              <span class="post-meta-item-icon">
+                <i class="far fa-file-word"></i>
+              </span>
+                <span class="post-meta-item-text">Symbols count in article: </span>
+              <span>1.1k</span>
+            </span>
+            <span class="post-meta-item" title="Reading time">
+              <span class="post-meta-item-icon">
+                <i class="far fa-clock"></i>
+              </span>
+                <span class="post-meta-item-text">Reading time &asymp;</span>
+              <span>1 mins.</span>
+            </span>
+
+        </div>
+      </header>
+
+    
+    
+    
+    <div class="post-body" itemprop="articleBody">
+
+      
+        
+          <p>Lab0 是 暖身</p>
+          <!--noindex-->
+            <div class="post-button">
+              <a class="btn" href="/uncategorized/CS144/Lab0/#more" rel="contents">
+                Read more &raquo;
+              </a>
+            </div>
+          <!--/noindex-->
+        
+      
+    </div>
+
+    
+    
+    
+    
+      <footer class="post-footer">
+        <div class="post-eof"></div>
+      </footer>
+  </article>
+  
+  
+  
+
+      
+  
+  
+  <article itemscope itemtype="http://schema.org/Article" class="post-block" lang="en">
+    <link itemprop="mainEntityOfPage" href="https://yu-yang.pro/uncategorized/hello-world/">
+
+    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
+      <meta itemprop="image" content="/images/profile_img.jpg">
+      <meta itemprop="name" content="Yuyang Zhang">
+      <meta itemprop="description" content="stay hungry stay foolish">
+    </span>
+
+    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
+      <meta itemprop="name" content="Yuyang's 博客">
+    </span>
+      <header class="post-header">
+        <h2 class="post-title" itemprop="name headline">
+          
+            <a href="/uncategorized/hello-world/" class="post-title-link" itemprop="url">Hello World</a>
+        </h2>
+
+        <div class="post-meta">
+            <span class="post-meta-item">
+              <span class="post-meta-item-icon">
+                <i class="far fa-calendar"></i>
+              </span>
+              <span class="post-meta-item-text">Posted on</span>
+
+              <time title="Created: 2022-03-28 18:20:41" itemprop="dateCreated datePublished" datetime="2022-03-28T18:20:41+08:00">2022-03-28</time>
+            </span>
+              <span class="post-meta-item">
+                <span class="post-meta-item-icon">
+                  <i class="far fa-calendar-check"></i>
+                </span>
+                <span class="post-meta-item-text">Edited on</span>
+                <time title="Modified: 2022-05-09 01:30:15" itemprop="dateModified" datetime="2022-05-09T01:30:15+08:00">2022-05-09</time>
+              </span>
+
+          <br>
+            <span class="post-meta-item" title="Symbols count in article">
+              <span class="post-meta-item-icon">
+                <i class="far fa-file-word"></i>
+              </span>
+                <span class="post-meta-item-text">Symbols count in article: </span>
+              <span>444</span>
+            </span>
+            <span class="post-meta-item" title="Reading time">
+              <span class="post-meta-item-icon">
+                <i class="far fa-clock"></i>
+              </span>
+                <span class="post-meta-item-text">Reading time &asymp;</span>
+              <span>1 mins.</span>
+            </span>
+
+        </div>
+      </header>
+
+    
+    
+    
+    <div class="post-body" itemprop="articleBody">
+
+      
+        
+          <p>Welcome to <a target="_blank" rel="noopener" href="https://hexo.io/">Hexo</a>! This is your very first post. Check <a target="_blank" rel="noopener" href="https://hexo.io/docs/">documentation</a> for more info. If you get any problems when using Hexo, you can find the answer in <a target="_blank" rel="noopener" href="https://hexo.io/docs/troubleshooting.html">troubleshooting</a> or you can ask me on <a target="_blank" rel="noopener" href="https://github.com/hexojs/hexo/issues">GitHub</a>.</p>
+<h2 id="Quick-Start"><a href="#Quick-Start" class="headerlink" title="Quick Start"></a>Quick Start</h2><h3 id="Create-a-new-post"><a href="#Create-a-new-post" class="headerlink" title="Create a new post"></a>Create a new post</h3><figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">$ hexo new <span class="string">&quot;My New Post&quot;</span></span><br></pre></td></tr></table></figure>
+
+<p>More info: <a target="_blank" rel="noopener" href="https://hexo.io/docs/writing.html">Writing</a></p>
+          <!--noindex-->
+            <div class="post-button">
+              <a class="btn" href="/uncategorized/hello-world/#more" rel="contents">
+                Read more &raquo;
+              </a>
+            </div>
+          <!--/noindex-->
+        
+      
+    </div>
+
+    
+    
+    
+    
+      <footer class="post-footer">
+        <div class="post-eof"></div>
+      </footer>
+  </article>
+  
+  
+  
+
+      
+  
+  
+  <article itemscope itemtype="http://schema.org/Article" class="post-block" lang="en">
+    <link itemprop="mainEntityOfPage" href="https://yu-yang.pro/Algorithm/Algorithms-4/Algorithm/Algorithm4-Chapter1/">
+
+    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
+      <meta itemprop="image" content="/images/profile_img.jpg">
+      <meta itemprop="name" content="Yuyang Zhang">
+      <meta itemprop="description" content="stay hungry stay foolish">
+    </span>
+
+    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
+      <meta itemprop="name" content="Yuyang's 博客">
+    </span>
+      <header class="post-header">
+        <h2 class="post-title" itemprop="name headline">
+          
+            <a href="/Algorithm/Algorithms-4/Algorithm/Algorithm4-Chapter1/" class="post-title-link" itemprop="url">Algorithm4_Chapter1</a>
+        </h2>
+
+        <div class="post-meta">
+            <span class="post-meta-item">
+              <span class="post-meta-item-icon">
+                <i class="far fa-calendar"></i>
+              </span>
+              <span class="post-meta-item-text">Posted on</span>
+
+              <time title="Created: 2022-03-30 12:47:18" itemprop="dateCreated datePublished" datetime="2022-03-30T12:47:18+08:00">2022-03-30</time>
+            </span>
+              <span class="post-meta-item">
+                <span class="post-meta-item-icon">
+                  <i class="far fa-calendar-check"></i>
+                </span>
+                <span class="post-meta-item-text">Edited on</span>
+                <time title="Modified: 2022-05-09 01:29:38" itemprop="dateModified" datetime="2022-05-09T01:29:38+08:00">2022-05-09</time>
+              </span>
+            <span class="post-meta-item">
+              <span class="post-meta-item-icon">
+                <i class="far fa-folder"></i>
+              </span>
+              <span class="post-meta-item-text">In</span>
+                <span itemprop="about" itemscope itemtype="http://schema.org/Thing">
+                  <a href="/categories/Algorithm/" itemprop="url" rel="index"><span itemprop="name">Algorithm</span></a>
+                </span>
+                  , 
+                <span itemprop="about" itemscope itemtype="http://schema.org/Thing">
+                  <a href="/categories/Algorithm/Algorithms-4/" itemprop="url" rel="index"><span itemprop="name">Algorithms 4</span></a>
+                </span>
+            </span>
+
+          <br>
+            <span class="post-meta-item" title="Symbols count in article">
+              <span class="post-meta-item-icon">
+                <i class="far fa-file-word"></i>
+              </span>
+                <span class="post-meta-item-text">Symbols count in article: </span>
+              <span>16k</span>
+            </span>
+            <span class="post-meta-item" title="Reading time">
+              <span class="post-meta-item-icon">
+                <i class="far fa-clock"></i>
+              </span>
+                <span class="post-meta-item-text">Reading time &asymp;</span>
+              <span>15 mins.</span>
+            </span>
+
+        </div>
+      </header>
+
+    
+    
+    
+    <div class="post-body" itemprop="articleBody">
+
+      
+        
+          <div class="out-img-topic">
+            <img src=/images/algorithm4.png class="img-topic" height="500" width="700">
+          </div>
+        
+          <p>[toc]</p>
+<h2 id="前言"><a href="#前言" class="headerlink" title="前言"></a>前言</h2><p>由于是出于复习的目的，且是第二次看 算法4 有些基础的部分笼统的复习一遍，并没有记录下来。</p>
+<p>每篇题目均会与Leecode上的题目联系起来</p>
+          <!--noindex-->
+            <div class="post-button">
+              <a class="btn" href="/Algorithm/Algorithms-4/Algorithm/Algorithm4-Chapter1/#more" rel="contents">
+                Read more &raquo;
+              </a>
+            </div>
+          <!--/noindex-->
+        
+      
+    </div>
+
+    
+    
+    
+    
+      <footer class="post-footer">
+        <div class="post-eof"></div>
+      </footer>
+  </article>
+  
+  
+  
+
+      
+  
+  
+  <article itemscope itemtype="http://schema.org/Article" class="post-block" lang="en">
+    <link itemprop="mainEntityOfPage" href="https://yu-yang.pro/uncategorized/BigData/Spark/">
+
+    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
+      <meta itemprop="image" content="/images/profile_img.jpg">
+      <meta itemprop="name" content="Yuyang Zhang">
+      <meta itemprop="description" content="stay hungry stay foolish">
+    </span>
+
+    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
+      <meta itemprop="name" content="Yuyang's 博客">
+    </span>
+      <header class="post-header">
+        <h2 class="post-title" itemprop="name headline">
+          
+            <a href="/uncategorized/BigData/Spark/" class="post-title-link" itemprop="url">post</a>
+        </h2>
+
+        <div class="post-meta">
+            <span class="post-meta-item">
+              <span class="post-meta-item-icon">
+                <i class="far fa-calendar"></i>
+              </span>
+              <span class="post-meta-item-text">Posted on</span>
+
+              <time title="Created: 2022-05-06 12:05:38" itemprop="dateCreated datePublished" datetime="2022-05-06T12:05:38+08:00">2022-05-06</time>
+            </span>
+              <span class="post-meta-item">
+                <span class="post-meta-item-icon">
+                  <i class="far fa-calendar-check"></i>
+                </span>
+                <span class="post-meta-item-text">Edited on</span>
+                <time title="Modified: 2022-05-09 01:28:41" itemprop="dateModified" datetime="2022-05-09T01:28:41+08:00">2022-05-09</time>
+              </span>
+
+          <br>
+            <span class="post-meta-item" title="Symbols count in article">
+              <span class="post-meta-item-icon">
+                <i class="far fa-file-word"></i>
+              </span>
+                <span class="post-meta-item-text">Symbols count in article: </span>
+              <span>355</span>
+            </span>
+            <span class="post-meta-item" title="Reading time">
+              <span class="post-meta-item-icon">
+                <i class="far fa-clock"></i>
+              </span>
+                <span class="post-meta-item-text">Reading time &asymp;</span>
+              <span>1 mins.</span>
+            </span>
+
+        </div>
+      </header>
+
+    
+    
+    
+    <div class="post-body" itemprop="articleBody">
+
+      
+        
+          <p>Spark 将内容放在memory当中</p>
+<p>![Screenshot 2022-05-06 at 12.08.42](&#x2F;Users&#x2F;zhangyuyang&#x2F;Desktop&#x2F;blog&#x2F;source&#x2F;_posts&#x2F;BigData&#x2F;Spark&#x2F;Screenshot 2022-05-06 at 12.08.42.png)</p>
+<p>Spark 结构</p>
+<p>![Screenshot 2022-05-06 at 12.09.10](Spark&#x2F;Screenshot 2022-05-06 at 12.09.10.png)</p>
+<p>SparkSQL 是Spark用来操作结构化数据的组件</p>
+<p>SparkStreaming</p>
+<p>Spark MLib</p>
+<p>SparkGraphx</p>
+
+      
+    </div>
+
+    
+    
+    
+    
+      <footer class="post-footer">
+        <div class="post-eof"></div>
+      </footer>
+  </article>
+  
+  
+  
+
+      
+  
+  
+  <article itemscope itemtype="http://schema.org/Article" class="post-block" lang="en">
+    <link itemprop="mainEntityOfPage" href="https://yu-yang.pro/uncategorized/itheima/hBase/">
+
+    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
+      <meta itemprop="image" content="/images/profile_img.jpg">
+      <meta itemprop="name" content="Yuyang Zhang">
+      <meta itemprop="description" content="stay hungry stay foolish">
+    </span>
+
+    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
+      <meta itemprop="name" content="Yuyang's 博客">
+    </span>
+      <header class="post-header">
+        <h2 class="post-title" itemprop="name headline">
+          
+            <a href="/uncategorized/itheima/hBase/" class="post-title-link" itemprop="url">post</a>
+        </h2>
+
+        <div class="post-meta">
+            <span class="post-meta-item">
+              <span class="post-meta-item-icon">
+                <i class="far fa-calendar"></i>
+              </span>
+              <span class="post-meta-item-text">Posted on</span>
+              
+
+              <time title="Created: 2022-05-06 10:22:46 / Modified: 11:38:55" itemprop="dateCreated datePublished" datetime="2022-05-06T10:22:46+08:00">2022-05-06</time>
+            </span>
+
+          <br>
+            <span class="post-meta-item" title="Symbols count in article">
+              <span class="post-meta-item-icon">
+                <i class="far fa-file-word"></i>
+              </span>
+                <span class="post-meta-item-text">Symbols count in article: </span>
+              <span>97</span>
+            </span>
+            <span class="post-meta-item" title="Reading time">
+              <span class="post-meta-item-icon">
+                <i class="far fa-clock"></i>
+              </span>
+                <span class="post-meta-item-text">Reading time &asymp;</span>
+              <span>1 mins.</span>
+            </span>
+
+        </div>
+      </header>
+
+    
+    
+    
+    <div class="post-body" itemprop="articleBody">
+
+      
+        
+          <p>HBase：分布式，可扩展，支持海量数据存储的N哦SQL数据库</p>
+<p>HBase DDL</p>
+<ul>
+<li>alter</li>
+<li>create</li>
+<li>drop</li>
+<li>describe</li>
+</ul>
+<p>HBase DML</p>
+<ul>
+<li>delete</li>
+<li>deleteall</li>
+<li>get</li>
+<li>put</li>
+<li>scan</li>
+</ul>
+
+      
+    </div>
+
+    
+    
+    
+    
+      <footer class="post-footer">
+        <div class="post-eof"></div>
+      </footer>
+  </article>
+  
+  
+  
+
+      
+  
+  
+  <article itemscope itemtype="http://schema.org/Article" class="post-block" lang="en">
     <link itemprop="mainEntityOfPage" href="https://yu-yang.pro/uncategorized/itheima/hive/">
 
     <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
@@ -219,7 +1232,7 @@
                   <i class="far fa-calendar-check"></i>
                 </span>
                 <span class="post-meta-item-text">Edited on</span>
-                <time title="Modified: 2022-05-06 10:31:21" itemprop="dateModified" datetime="2022-05-06T10:31:21+08:00">2022-05-06</time>
+                <time title="Modified: 2022-05-06 11:22:27" itemprop="dateModified" datetime="2022-05-06T11:22:27+08:00">2022-05-06</time>
               </span>
 
           <br>
@@ -228,14 +1241,14 @@
                 <i class="far fa-file-word"></i>
               </span>
                 <span class="post-meta-item-text">Symbols count in article: </span>
-              <span>32k</span>
+              <span>36k</span>
             </span>
             <span class="post-meta-item" title="Reading time">
               <span class="post-meta-item-icon">
                 <i class="far fa-clock"></i>
               </span>
                 <span class="post-meta-item-text">Reading time &asymp;</span>
-              <span>29 mins.</span>
+              <span>33 mins.</span>
             </span>
 
         </div>
@@ -656,90 +1669,89 @@
 </ol>
 <p>![Screenshot 2022-05-06 at 10.28.03](&#x2F;Users&#x2F;zhangyuyang&#x2F;Desktop&#x2F;blog&#x2F;source&#x2F;_posts&#x2F;itheima&#x2F;hive&#x2F;Screenshot 2022-05-06 at 10.28.03.png)</p>
 <ol start="2">
-<li>RegexSerDe 正则加载</li>
+<li>RegexSerDe 正则加载(推荐)</li>
 </ol>
 <p>![Screenshot 2022-05-06 at 10.30.13](&#x2F;Users&#x2F;zhangyuyang&#x2F;Desktop&#x2F;blog&#x2F;source&#x2F;_posts&#x2F;itheima&#x2F;hive&#x2F;Screenshot 2022-05-06 at 10.30.13.png)</p>
 <p>3.自定义InputFormat</p>
 <p>URL解析函数</p>
+<p>![Screenshot 2022-05-06 at 10.35.20](&#x2F;Users&#x2F;zhangyuyang&#x2F;Desktop&#x2F;blog&#x2F;source&#x2F;_posts&#x2F;itheima&#x2F;hive&#x2F;Screenshot 2022-05-06 at 10.35.20.png)</p>
+<p>![Screenshot 2022-05-06 at 10.36.47](&#x2F;Users&#x2F;zhangyuyang&#x2F;Desktop&#x2F;blog&#x2F;source&#x2F;_posts&#x2F;itheima&#x2F;hive&#x2F;Screenshot 2022-05-06 at 10.36.47.png)</p>
 <p>行列转换应用与实现</p>
+<p>![Screenshot 2022-05-06 at 10.38.02](&#x2F;Users&#x2F;zhangyuyang&#x2F;Desktop&#x2F;blog&#x2F;source&#x2F;_posts&#x2F;itheima&#x2F;hive&#x2F;Screenshot 2022-05-06 at 10.38.02.png)</p>
 <p>JSON数据处理</p>
+<p>![Screenshot 2022-05-06 at 10.40.20](&#x2F;Users&#x2F;zhangyuyang&#x2F;Desktop&#x2F;blog&#x2F;source&#x2F;_posts&#x2F;itheima&#x2F;hive&#x2F;Screenshot 2022-05-06 at 10.40.20.png)</p>
 <p>窗口函数应用实例</p>
+<p>找出连续登陆的用户</p>
+<ol>
+<li>使用自连接</li>
+<li>使用窗口函数![Screenshot 2022-05-06 at 10.43.56](&#x2F;Users&#x2F;zhangyuyang&#x2F;Desktop&#x2F;blog&#x2F;source&#x2F;_posts&#x2F;itheima&#x2F;hive&#x2F;Screenshot 2022-05-06 at 10.43.56.png)</li>
+</ol>
 <p>拉链表的设计与实现</p>
+<p>数据同步问题： 通过时间标记发生变化的数据的每种状态</p>
+<p>Hive性能优化</p>
+<ul>
+<li>表设计优化</li>
+<li>表数据优化</li>
+<li>Job作业执行优化</li>
+<li>Hive3新特性</li>
+</ul>
+<p>![Screenshot 2022-05-06 at 10.52.27](&#x2F;Users&#x2F;zhangyuyang&#x2F;Desktop&#x2F;blog&#x2F;source&#x2F;_posts&#x2F;itheima&#x2F;hive&#x2F;Screenshot 2022-05-06 at 10.52.27.png)</p>
+<p>![Screenshot 2022-05-06 at 10.52.50](&#x2F;Users&#x2F;zhangyuyang&#x2F;Desktop&#x2F;blog&#x2F;source&#x2F;_posts&#x2F;itheima&#x2F;hive&#x2F;Screenshot 2022-05-06 at 10.52.50.png)</p>
+<p>表优化设计</p>
+<p>Hive查询基本原理</p>
+<ul>
+<li>当执行查询计划时，Hive会使用表的最后一级目录作为底层处理数据的输入</li>
+<li>然后将整个HDFS中表的目录作为底层查询的输入，可以通过explain命令查看执行计划依赖的数据</li>
+</ul>
+<p>Hive表的优化策略：</p>
+<ul>
+<li><p>基于分区表的设计</p>
+</li>
+<li><p>基于分桶表的设计</p>
+</li>
+<li><p>索引设计（Hive 3.0 不再支持）</p>
+</li>
+</ul>
+<p>Hive表数据优化</p>
+<p>文件格式–概述</p>
+<p>![Screenshot 2022-05-06 at 11.00.35](&#x2F;Users&#x2F;zhangyuyang&#x2F;Desktop&#x2F;blog&#x2F;source&#x2F;_posts&#x2F;itheima&#x2F;hive&#x2F;Screenshot 2022-05-06 at 11.00.35.png)</p>
+<p>![Screenshot 2022-05-06 at 11.00.48](&#x2F;Users&#x2F;zhangyuyang&#x2F;Desktop&#x2F;blog&#x2F;source&#x2F;_posts&#x2F;itheima&#x2F;hive&#x2F;Screenshot 2022-05-06 at 11.00.48.png)</p>
+<p>![Screenshot 2022-05-06 at 11.01.05](&#x2F;Users&#x2F;zhangyuyang&#x2F;Desktop&#x2F;blog&#x2F;source&#x2F;_posts&#x2F;itheima&#x2F;hive&#x2F;Screenshot 2022-05-06 at 11.01.05.png)</p>
+<p>![Screenshot 2022-05-06 at 11.03.02](&#x2F;Users&#x2F;zhangyuyang&#x2F;Desktop&#x2F;blog&#x2F;source&#x2F;_posts&#x2F;itheima&#x2F;hive&#x2F;Screenshot 2022-05-06 at 11.03.02.png)</p>
+<p>![Screenshot 2022-05-06 at 11.03.10](&#x2F;Users&#x2F;zhangyuyang&#x2F;Desktop&#x2F;blog&#x2F;source&#x2F;_posts&#x2F;itheima&#x2F;hive&#x2F;Screenshot 2022-05-06 at 11.03.10.png)</p>
+<p>![Screenshot 2022-05-06 at 11.04.02](&#x2F;Users&#x2F;zhangyuyang&#x2F;Desktop&#x2F;blog&#x2F;source&#x2F;_posts&#x2F;itheima&#x2F;hive&#x2F;Screenshot 2022-05-06 at 11.04.02.png)</p>
+<p>![Screenshot 2022-05-06 at 11.04.46](&#x2F;Users&#x2F;zhangyuyang&#x2F;Desktop&#x2F;blog&#x2F;source&#x2F;_posts&#x2F;itheima&#x2F;hive&#x2F;Screenshot 2022-05-06 at 11.04.46.png)</p>
+<p>![Screenshot 2022-05-06 at 11.05.14](&#x2F;Users&#x2F;zhangyuyang&#x2F;Desktop&#x2F;blog&#x2F;source&#x2F;_posts&#x2F;itheima&#x2F;hive&#x2F;Screenshot 2022-05-06 at 11.05.14.png)</p>
+<p>数据压缩</p>
+<p>存储优化</p>
+<ul>
+<li>避免生成小文件，若是小文件，则自动合并</li>
+</ul>
+<p>explain 命令</p>
+<p>![Screenshot 2022-05-06 at 11.10.11](&#x2F;Users&#x2F;zhangyuyang&#x2F;Desktop&#x2F;blog&#x2F;source&#x2F;_posts&#x2F;itheima&#x2F;hive&#x2F;Screenshot 2022-05-06 at 11.10.11.png)</p>
+<p>![Screenshot 2022-05-06 at 11.10.19](&#x2F;Users&#x2F;zhangyuyang&#x2F;Desktop&#x2F;blog&#x2F;source&#x2F;_posts&#x2F;itheima&#x2F;hive&#x2F;Screenshot 2022-05-06 at 11.10.19.png)</p>
+<p>![Screenshot 2022-05-06 at 11.11.07](&#x2F;Users&#x2F;zhangyuyang&#x2F;Desktop&#x2F;blog&#x2F;source&#x2F;_posts&#x2F;itheima&#x2F;hive&#x2F;Screenshot 2022-05-06 at 11.11.07.png)</p>
+<p>![Screenshot 2022-05-06 at 11.11.32](&#x2F;Users&#x2F;zhangyuyang&#x2F;Desktop&#x2F;blog&#x2F;source&#x2F;_posts&#x2F;itheima&#x2F;hive&#x2F;Screenshot 2022-05-06 at 11.11.32.png)</p>
+<p>![Screenshot 2022-05-06 at 11.11.46](&#x2F;Users&#x2F;zhangyuyang&#x2F;Desktop&#x2F;blog&#x2F;source&#x2F;_posts&#x2F;itheima&#x2F;hive&#x2F;Screenshot 2022-05-06 at 11.11.46.png)</p>
+<p>计算Job执行优化</p>
+<ul>
+<li>本地模式，不用提交给yarn</li>
+</ul>
+<p>![Screenshot 2022-05-06 at 11.12.44](&#x2F;Users&#x2F;zhangyuyang&#x2F;Desktop&#x2F;blog&#x2F;source&#x2F;_posts&#x2F;itheima&#x2F;hive&#x2F;Screenshot 2022-05-06 at 11.12.44.png)</p>
+<ul>
+<li>JVM 重用（Hadoop 3 已经不支持）</li>
+<li>并行执行， （没有依赖关系时可以开启）![Screenshot 2022-05-06 at 11.14.23](&#x2F;Users&#x2F;zhangyuyang&#x2F;Desktop&#x2F;blog&#x2F;source&#x2F;_posts&#x2F;itheima&#x2F;hive&#x2F;Screenshot 2022-05-06 at 11.14.23.png)</li>
+</ul>
+<p>Hive执行引擎</p>
+<ul>
+<li><p>MapReduce</p>
+</li>
+<li><p>Tez</p>
+</li>
+<li><p>Spark</p>
+</li>
+</ul>
 
-      
-    </div>
-
-    
-    
-    
-    
-      <footer class="post-footer">
-        <div class="post-eof"></div>
-      </footer>
-  </article>
-  
-  
-  
-
-      
-  
-  
-  <article itemscope itemtype="http://schema.org/Article" class="post-block" lang="en">
-    <link itemprop="mainEntityOfPage" href="https://yu-yang.pro/uncategorized/itheima/hBase/">
-
-    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
-      <meta itemprop="image" content="/images/profile_img.jpg">
-      <meta itemprop="name" content="Yuyang Zhang">
-      <meta itemprop="description" content="stay hungry stay foolish">
-    </span>
-
-    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
-      <meta itemprop="name" content="Yuyang's 博客">
-    </span>
-      <header class="post-header">
-        <h2 class="post-title" itemprop="name headline">
-          
-            <a href="/uncategorized/itheima/hBase/" class="post-title-link" itemprop="url">post</a>
-        </h2>
-
-        <div class="post-meta">
-            <span class="post-meta-item">
-              <span class="post-meta-item-icon">
-                <i class="far fa-calendar"></i>
-              </span>
-              <span class="post-meta-item-text">Posted on</span>
-              
-
-              <time title="Created: 2022-05-06 10:22:46 / Modified: 10:23:24" itemprop="dateCreated datePublished" datetime="2022-05-06T10:22:46+08:00">2022-05-06</time>
-            </span>
-
-          <br>
-            <span class="post-meta-item" title="Symbols count in article">
-              <span class="post-meta-item-icon">
-                <i class="far fa-file-word"></i>
-              </span>
-                <span class="post-meta-item-text">Symbols count in article: </span>
-              <span>0</span>
-            </span>
-            <span class="post-meta-item" title="Reading time">
-              <span class="post-meta-item-icon">
-                <i class="far fa-clock"></i>
-              </span>
-                <span class="post-meta-item-text">Reading time &asymp;</span>
-              <span>1 mins.</span>
-            </span>
-
-        </div>
-      </header>
-
-    
-    
-    
-    <div class="post-body" itemprop="articleBody">
-
-      
-        
-          
       
     </div>
 
@@ -951,714 +1963,10 @@
   
   
 
-      
-  
-  
-  <article itemscope itemtype="http://schema.org/Article" class="post-block" lang="en">
-    <link itemprop="mainEntityOfPage" href="https://yu-yang.pro/%E6%9D%82%E8%AE%B0/%E6%9D%82%E8%AE%B0/">
-
-    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
-      <meta itemprop="image" content="/images/profile_img.jpg">
-      <meta itemprop="name" content="Yuyang Zhang">
-      <meta itemprop="description" content="stay hungry stay foolish">
-    </span>
-
-    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
-      <meta itemprop="name" content="Yuyang's 博客">
-    </span>
-      <header class="post-header">
-        <h2 class="post-title" itemprop="name headline">
-          
-            <a href="/%E6%9D%82%E8%AE%B0/%E6%9D%82%E8%AE%B0/" class="post-title-link" itemprop="url">杂记</a>
-        </h2>
-
-        <div class="post-meta">
-            <span class="post-meta-item">
-              <span class="post-meta-item-icon">
-                <i class="far fa-calendar"></i>
-              </span>
-              <span class="post-meta-item-text">Posted on</span>
-
-              <time title="Created: 2022-04-02 19:23:01" itemprop="dateCreated datePublished" datetime="2022-04-02T19:23:01+08:00">2022-04-02</time>
-            </span>
-              <span class="post-meta-item">
-                <span class="post-meta-item-icon">
-                  <i class="far fa-calendar-check"></i>
-                </span>
-                <span class="post-meta-item-text">Edited on</span>
-                <time title="Modified: 2022-04-22 22:37:25" itemprop="dateModified" datetime="2022-04-22T22:37:25+08:00">2022-04-22</time>
-              </span>
-            <span class="post-meta-item">
-              <span class="post-meta-item-icon">
-                <i class="far fa-folder"></i>
-              </span>
-              <span class="post-meta-item-text">In</span>
-                <span itemprop="about" itemscope itemtype="http://schema.org/Thing">
-                  <a href="/categories/%E6%9D%82%E8%AE%B0/" itemprop="url" rel="index"><span itemprop="name">杂记</span></a>
-                </span>
-            </span>
-
-          <br>
-            <span class="post-meta-item" title="Symbols count in article">
-              <span class="post-meta-item-icon">
-                <i class="far fa-file-word"></i>
-              </span>
-                <span class="post-meta-item-text">Symbols count in article: </span>
-              <span>2.3k</span>
-            </span>
-            <span class="post-meta-item" title="Reading time">
-              <span class="post-meta-item-icon">
-                <i class="far fa-clock"></i>
-              </span>
-                <span class="post-meta-item-text">Reading time &asymp;</span>
-              <span>2 mins.</span>
-            </span>
-
-        </div>
-      </header>
-
-    
-    
-    
-    <div class="post-body" itemprop="articleBody">
-
-      
-        
-          <div class="out-img-topic">
-            <img src=/images/za.png class="img-topic" height="500" width="700">
-          </div>
-        
-          <p>[toc]</p>
-<h1 id="Hadoop-安装"><a href="#Hadoop-安装" class="headerlink" title="Hadoop 安装"></a>Hadoop 安装</h1><h2 id="单机"><a href="#单机" class="headerlink" title="单机"></a>单机</h2><h3 id="Java-安装"><a href="#Java-安装" class="headerlink" title="Java 安装"></a>Java 安装</h3><figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><span class="line">yum search java|grep jdk  <span class="comment">#查看版本</span></span><br><span class="line">yum install -y java-11-openjdk <span class="comment"># 安装所需要的版本</span></span><br><span class="line">java -version 	<span class="comment"># 是否安装成功</span></span><br></pre></td></tr></table></figure>
-
-<h3 id="Hadoop-下载"><a href="#Hadoop-下载" class="headerlink" title="Hadoop 下载"></a>Hadoop 下载</h3><ol>
-<li><p><a target="_blank" rel="noopener" href="https://hadoop.apache.org/releases.html">官网</a>查看安装包 binary download</p>
-</li>
-<li><p>下载 wget </p>
-</li>
-<li><p><font color="red">注意！！！</font> </p>
-<p>安装在 cd  &#x2F;usr&#x2F;local&#x2F;hadoop&#x2F; 目录下</p>
-<blockquote>
-<p> wget <a target="_blank" rel="noopener" href="https://www.apache.org/dyn/closer.cgi/hadoop/common/hadoop-2.10.1/hadoop-2.10.1.tar.gz">https://www.apache.org/dyn/closer.cgi/hadoop/common/hadoop-2.10.1/hadoop-2.10.1.tar.gz</a> 是从官网下载，如果，返回的是</p>
-<p><img src="/%E6%9D%82%E8%AE%B0/%E6%9D%82%E8%AE%B0/zhangyuyang/Desktop/blog/source/_posts/%E6%9D%82%E8%AE%B0/QQ20220402-194936@2x.png" alt="QQ20220402-194936@2x">说明在的不是压缩包，用</p>
-<p>tar -zxvf hadoop-2.10.1.tar.gz</p>
-<p>会报错</p>
-<blockquote>
-<p>gzip: stdin: not in gzip format<br>tar: Child returned status 1<br>tar: Error is not recoverable: exiting now</p>
-</blockquote>
-<p>因此，使用清华镜像安装</p>
-<p><a target="_blank" rel="noopener" href="https://mirrors.tuna.tsinghua.edu.cn/apache/hadoop/common/hadoop-2.10.1/">https://mirrors.tuna.tsinghua.edu.cn/apache/hadoop/common/hadoop-2.10.1/</a></p>
-</blockquote>
-</li>
-<li><p>解压</p>
-<blockquote>
-<figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br></pre></td><td class="code"><pre><span class="line">[root@VM-8-9-centos hadoop]<span class="comment"># tar -zxvf hadoop-2.10.1.tar.gz </span></span><br><span class="line">[root@VM-8-9-centos hadoop]<span class="comment"># cd hadoop-2.10.1/</span></span><br><span class="line">[root@VM-8-9-centos hadoop-2.10.1]<span class="comment"># ls</span></span><br><span class="line">bin  etc  include  lib  libexec  LICENSE.txt  NOTICE.txt  README.txt  sbin  share</span><br></pre></td></tr></table></figure>
-</blockquote>
-</li>
-<li><p>将Hadoop的目录，导入环境变量</p>
-<blockquote>
-<figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><span class="line">[root@VM-8-9-centos hadoop-2.10.1]<span class="comment"># export HADOOP_HOME=/usr/local/hadoop/hadoop-2.10.1</span></span><br><span class="line">[root@VM-8-9-centos hadoop-2.10.1]<span class="comment"># export $HADOOP_HOME </span></span><br><span class="line">-bash: <span class="built_in">export</span>: `/usr/local/hadoop/hadoop-2.10.1<span class="string">&#x27;: not a valid identifier</span></span><br></pre></td></tr></table></figure>
-
-</blockquote>
-<blockquote>
-<p>export 导出的环境变量是临时的，关机就会失效，要想永久有效，需写入</p>
-<ol>
-<li>&#x2F;etc&#x2F;profile 变量中 然后 source &#x2F;etc&#x2F;profile使的修改生效。 改方法对所有用户有效，且是永久的</li>
-<li>在 ~&#x2F;.bash_profile  然后 source  ~&#x2F;.bash_profile</li>
-<li>在 ~&#x2F;.bashrc 中写入 然后 source  ~&#x2F;.bashrc</li>
-</ol>
-<p>![Screenshot 2022-04-04 at 10.59.03](&#x2F;Users&#x2F;zhangyuyang&#x2F;Desktop&#x2F;blog&#x2F;source&#x2F;_posts&#x2F;杂记&#x2F;Screenshot 2022-04-04 at 10.59.03.png)</p>
-</blockquote>
-</li>
-<li><p>配置JAVA_HOME</p>
-<blockquote>
-<p>找到JDK所在的路径</p>
-<figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><span class="line">$ whereis java <span class="comment"># 找到Java的执行文件</span></span><br><span class="line">$ <span class="built_in">ls</span> -lrt /usr/bin/java <span class="comment">#根据执行文件找到相应的文件路径</span></span><br><span class="line">$ <span class="built_in">ls</span> -lrt /etc/alternatives/java <span class="comment"># 还不是源文件</span></span><br></pre></td></tr></table></figure>
-
-<p>![Screenshot 2022-04-04 at 11.08.26](&#x2F;Users&#x2F;zhangyuyang&#x2F;Desktop&#x2F;blog&#x2F;source&#x2F;_posts&#x2F;杂记&#x2F;Screenshot 2022-04-04 at 11.08.26.png)</p>
-<p>找到 JDK的路径： &#x2F;etc&#x2F;java&#x2F;java-11-openjdk&#x2F;java-11-openjdk-11.0.13.0.8-4.el8_5.x86_64</p>
-</blockquote>
-</li>
-</ol>
-<h2 id="注意事项"><a href="#注意事项" class="headerlink" title="注意事项"></a>注意事项</h2><p>当Hadoop运行时，会对外网打开端口，可能会被植入木马。所以最好改变Hadoop的默认端口</p>
-<p><a target="_blank" rel="noopener" href="https://cloudstor.aarnet.edu.au/plus/s/nVhPUIuW9H7d5LN">https://cloudstor.aarnet.edu.au/plus/s/nVhPUIuW9H7d5LN</a></p>
-<p>Linux 安装vim失败</p>
-<p>![Screenshot 2022-04-22 at 22.33.40](&#x2F;Users&#x2F;zhangyuyang&#x2F;Desktop&#x2F;blog&#x2F;source&#x2F;_posts&#x2F;杂记&#x2F;Screenshot 2022-04-22 at 22.33.40.png)</p>
-<p>解决办法：把vim卸载了重新安装</p>
-<ul>
-<li><p><strong>sudo apt-get purge vim-common</strong>： 卸载</p>
-</li>
-<li><p><strong>sudo apt-get update</strong>： 对软件包列表进行更新</p>
-</li>
-<li><p><strong>sudo apt-get upgrade</strong>： 对已经安装的软件包本身进行更新</p>
-</li>
-<li><p><strong>sudo apt-get install vim</strong>： 安装</p>
-</li>
-</ul>
-<blockquote>
-<p>apt-get purge 与 apt-get remove 的区别:</p>
-<p>apt-get remove 会删除软件包而保留软件的配置文件<br>apt-get purge 会同时清除软件包和软件的配置文件</p>
-</blockquote>
-
-      
-    </div>
-
-    
-    
-    
-    
-      <footer class="post-footer">
-        <div class="post-eof"></div>
-      </footer>
-  </article>
-  
-  
-  
-
-      
-  
-  
-  <article itemscope itemtype="http://schema.org/Article" class="post-block" lang="en">
-    <link itemprop="mainEntityOfPage" href="https://yu-yang.pro/MIT-Missing-Semeter/missing-semester/Lec5/">
-
-    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
-      <meta itemprop="image" content="/images/profile_img.jpg">
-      <meta itemprop="name" content="Yuyang Zhang">
-      <meta itemprop="description" content="stay hungry stay foolish">
-    </span>
-
-    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
-      <meta itemprop="name" content="Yuyang's 博客">
-    </span>
-      <header class="post-header">
-        <h2 class="post-title" itemprop="name headline">
-          
-            <a href="/MIT-Missing-Semeter/missing-semester/Lec5/" class="post-title-link" itemprop="url">post</a>
-        </h2>
-
-        <div class="post-meta">
-            <span class="post-meta-item">
-              <span class="post-meta-item-icon">
-                <i class="far fa-calendar"></i>
-              </span>
-              <span class="post-meta-item-text">Posted on</span>
-
-              <time title="Created: 2022-04-13 21:22:07" itemprop="dateCreated datePublished" datetime="2022-04-13T21:22:07+08:00">2022-04-13</time>
-            </span>
-              <span class="post-meta-item">
-                <span class="post-meta-item-icon">
-                  <i class="far fa-calendar-check"></i>
-                </span>
-                <span class="post-meta-item-text">Edited on</span>
-                <time title="Modified: 2022-04-22 16:53:42" itemprop="dateModified" datetime="2022-04-22T16:53:42+08:00">2022-04-22</time>
-              </span>
-            <span class="post-meta-item">
-              <span class="post-meta-item-icon">
-                <i class="far fa-folder"></i>
-              </span>
-              <span class="post-meta-item-text">In</span>
-                <span itemprop="about" itemscope itemtype="http://schema.org/Thing">
-                  <a href="/categories/MIT-Missing-Semeter/" itemprop="url" rel="index"><span itemprop="name">MIT Missing Semeter</span></a>
-                </span>
-            </span>
-
-          <br>
-            <span class="post-meta-item" title="Symbols count in article">
-              <span class="post-meta-item-icon">
-                <i class="far fa-file-word"></i>
-              </span>
-                <span class="post-meta-item-text">Symbols count in article: </span>
-              <span>2.8k</span>
-            </span>
-            <span class="post-meta-item" title="Reading time">
-              <span class="post-meta-item-icon">
-                <i class="far fa-clock"></i>
-              </span>
-                <span class="post-meta-item-text">Reading time &asymp;</span>
-              <span>3 mins.</span>
-            </span>
-
-        </div>
-      </header>
-
-    
-    
-    
-    <div class="post-body" itemprop="articleBody">
-
-      
-        
-          <div class="out-img-topic">
-            <img src=/images/miss-sem.jpeg class="img-topic" height="500" width="700">
-          </div>
-        
-          <p>ssh</p>
-<p>ssh 连接到其他服务器：</p>
-<figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line">ssh bigdata@192.168.56.101</span><br><span class="line"><span class="comment"># 输入密码</span></span><br></pre></td></tr></table></figure>
-
-<p>ssh 可以直接远程执行命令</p>
-<figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br></pre></td><td class="code"><pre><span class="line">bigdata@bigdata-VirtualBox:~$ ssh bigdata@192.168.56.101 <span class="built_in">ls</span></span><br><span class="line">Desktop</span><br><span class="line">Documents</span><br><span class="line">Downloads</span><br><span class="line">Music</span><br><span class="line">Pictures</span><br><span class="line">Public</span><br><span class="line">Templates</span><br><span class="line">Videos</span><br><span class="line">derby.log</span><br><span class="line">eclipse</span><br><span class="line">examples.desktop</span><br><span class="line">hello.hql</span><br><span class="line">hello.rpt</span><br><span class="line">shrink.sh</span><br><span class="line">spark-warehouse</span><br><span class="line">sqldeveloper</span><br><span class="line">workspace</span><br><span class="line"></span><br></pre></td></tr></table></figure>
-
-
-
-<p>ssh 免密登录</p>
-<p>避免每次登录都输入密码的麻烦了秘密就可以登录</p>
-<p>密钥： 通常是 ~&#x2F;.ssh&#x2F;id_rsa 在 ~&#x2F;.ssh 文件下</p>
-<p>公钥： 通常是 ~&#x2F;.ssh&#x2F;id_rsa.pub 在 ~&#x2F;.ssh 文件下</p>
-<p><code>ssh</code> 会查询 <code>.ssh/authorized_keys</code> 来确认那些用户可以被允许登录。您可以通过下面的命令将一个公钥拷贝到这里:</p>
-<figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line"><span class="built_in">cat</span> .ssh/id_ed25519 | ssh foobar@remote <span class="string">&#x27;cat &gt;&gt; ~/.ssh/authorized_keys&#x27;</span></span><br></pre></td></tr></table></figure>
-
-<p>如果支持 <code>ssh-copy-id</code> 的话，可以使用下面这种更简单的解决方案：</p>
-<figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">ssh-copy-id -i .ssh/id_ed25519.pub foobar@remote</span><br></pre></td></tr></table></figure>
-
-
-
-<p>SSH 配置文件：</p>
-<p>直接连接</p>
-<p>![Screenshot 2022-04-22 at 15.47.44](&#x2F;Users&#x2F;zhangyuyang&#x2F;Desktop&#x2F;blog&#x2F;source&#x2F;_posts&#x2F;missing-semester&#x2F;Lec5&#x2F;Screenshot 2022-04-22 at 15.47.44.png)</p>
-<figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br></pre></td><td class="code"><pre><span class="line">(base) zhangyuyang@34 ISIT312 % ssh vm</span><br><span class="line">Welcome to Ubuntu 14.04.5 LTS (GNU/Linux 4.4.0-31-generic x86_64)</span><br><span class="line"></span><br><span class="line"> * Documentation:  https://help.ubuntu.com/</span><br><span class="line"></span><br><span class="line">Your Hardware Enablement Stack (HWE) is supported until April 2019.</span><br><span class="line">Last login: Fri Apr 22 17:41:03 2022 from 192.168.56.1</span><br></pre></td></tr></table></figure>
-
-<p>这么做的好处是，使用 <code>~/.ssh/config</code> 文件来创建别名，类似 <code>scp</code>、<code>rsync</code>和<code>mosh</code>的这些命令都可以读取这个配置并将设置转换为对应的命令行选项。</p>
-<p>服务器侧的配置通常放在 <code>/etc/ssh/sshd_config</code>。您可以在这里配置免密认证、修改 shh 端口、开启 X11 转发等等。 您也可以为每个用户单独指定配置。</p>
-<figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br></pre></td><td class="code"><pre><span class="line">bigdata@bigdata-VirtualBox:/etc/ssh$ ll</span><br><span class="line">total 300</span><br><span class="line">drwxr-xr-x   2 root root   4096 Jun 21  2017 ./</span><br><span class="line">drwxr-xr-x 139 root root  12288 Apr 22 17:10 ../</span><br><span class="line">-rw-r--r--   1 root root 242091 May  6  2016 moduli</span><br><span class="line">-rw-r--r--   1 root root   1690 May  6  2016 ssh_config</span><br><span class="line">-rw-------   1 root root    668 Jun 21  2017 ssh_host_dsa_key</span><br><span class="line">-rw-r--r--   1 root root    613 Jun 21  2017 ssh_host_dsa_key.pub</span><br><span class="line">-rw-------   1 root root    227 Jun 21  2017 ssh_host_ecdsa_key</span><br><span class="line">-rw-r--r--   1 root root    185 Jun 21  2017 ssh_host_ecdsa_key.pub</span><br><span class="line">-rw-------   1 root root    419 Jun 21  2017 ssh_host_ed25519_key</span><br><span class="line">-rw-r--r--   1 root root    105 Jun 21  2017 ssh_host_ed25519_key.pub</span><br><span class="line">-rw-------   1 root root   1675 Jun 21  2017 ssh_host_rsa_key</span><br><span class="line">-rw-r--r--   1 root root    405 Jun 21  2017 ssh_host_rsa_key.pub</span><br><span class="line">-rw-r--r--   1 root root    338 Jun 21  2017 ssh_import_id</span><br><span class="line">-rw-r--r--   1 root root   2541 Jun 21  2017 sshd_config</span><br></pre></td></tr></table></figure>
-
-
-
-<p>SSH 复制文件：</p>
-<ul>
-<li><p><code>ssh+tee</code>, 最简单的方法是执行 <code>ssh</code> 命令，然后通过这样的方法利用标准输入实现 <code>cat localfile | ssh remote_server tee serverfile</code>。回忆一下，<a target="_blank" rel="noopener" href="https://www.man7.org/linux/man-pages/man1/tee.1.html"><code>tee</code></a> 命令会将标准输出写入到一个文件；</p>
-<p>注意： serverfile 要创造好，且有第三方写入权限 : -rw-rw-rw-</p>
-<figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br></pre></td><td class="code"><pre><span class="line"><span class="built_in">chmod</span> o=rw BigData.txt </span><br><span class="line">o other</span><br><span class="line">u user</span><br><span class="line">g group</span><br></pre></td></tr></table></figure>
-</li>
-<li><p><a target="_blank" rel="noopener" href="https://www.man7.org/linux/man-pages/man1/scp.1.html"><code>scp</code></a> ：当需要拷贝大量的文件或目录时，使用<code>scp</code> 命令则更加方便，因为它可以方便的遍历相关路径。语法如下：<code>scp path/to/local_file remote_host:path/to/remote_file</code>；</p>
-<figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line">scp ./README.txt vm:/home/bigdata/Desktop</span><br><span class="line"><span class="comment"># vm 是配置文件中的host</span></span><br></pre></td></tr></table></figure></li>
-</ul>
-<p>screen： 开启多个终端</p>
-<p>![Screenshot 2022-04-22 at 16.23.53](&#x2F;Users&#x2F;zhangyuyang&#x2F;Desktop&#x2F;blog&#x2F;source&#x2F;_posts&#x2F;missing-semester&#x2F;Lec5&#x2F;Screenshot 2022-04-22 at 16.23.53.png)</p>
-<h1 id="Hammerspoon"><a href="#Hammerspoon" class="headerlink" title="Hammerspoon"></a>Hammerspoon</h1>
-      
-    </div>
-
-    
-    
-    
-    
-      <footer class="post-footer">
-        <div class="post-eof"></div>
-      </footer>
-  </article>
-  
-  
-  
-
-      
-  
-  
-  <article itemscope itemtype="http://schema.org/Article" class="post-block" lang="en">
-    <link itemprop="mainEntityOfPage" href="https://yu-yang.pro/Distributed-Systems/Distributed_Sytem/Designing-data-intensive-applications/Chapter6/">
-
-    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
-      <meta itemprop="image" content="/images/profile_img.jpg">
-      <meta itemprop="name" content="Yuyang Zhang">
-      <meta itemprop="description" content="stay hungry stay foolish">
-    </span>
-
-    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
-      <meta itemprop="name" content="Yuyang's 博客">
-    </span>
-      <header class="post-header">
-        <h2 class="post-title" itemprop="name headline">
-          
-            <a href="/Distributed-Systems/Distributed_Sytem/Designing-data-intensive-applications/Chapter6/" class="post-title-link" itemprop="url">Partitioning(数据分区)</a>
-        </h2>
-
-        <div class="post-meta">
-            <span class="post-meta-item">
-              <span class="post-meta-item-icon">
-                <i class="far fa-calendar"></i>
-              </span>
-              <span class="post-meta-item-text">Posted on</span>
-              
-
-              <time title="Created: 2022-04-22 11:54:02 / Modified: 13:40:30" itemprop="dateCreated datePublished" datetime="2022-04-22T11:54:02+08:00">2022-04-22</time>
-            </span>
-            <span class="post-meta-item">
-              <span class="post-meta-item-icon">
-                <i class="far fa-folder"></i>
-              </span>
-              <span class="post-meta-item-text">In</span>
-                <span itemprop="about" itemscope itemtype="http://schema.org/Thing">
-                  <a href="/categories/Distributed-Systems/" itemprop="url" rel="index"><span itemprop="name">Distributed Systems</span></a>
-                </span>
-            </span>
-
-          <br>
-            <span class="post-meta-item" title="Symbols count in article">
-              <span class="post-meta-item-icon">
-                <i class="far fa-file-word"></i>
-              </span>
-                <span class="post-meta-item-text">Symbols count in article: </span>
-              <span>8.5k</span>
-            </span>
-            <span class="post-meta-item" title="Reading time">
-              <span class="post-meta-item-icon">
-                <i class="far fa-clock"></i>
-              </span>
-                <span class="post-meta-item-text">Reading time &asymp;</span>
-              <span>8 mins.</span>
-            </span>
-
-        </div>
-      </header>
-
-    
-    
-    
-    <div class="post-body" itemprop="articleBody">
-
-      
-        
-          <div class="out-img-topic">
-            <img src=/images/DDIA.jpeg class="img-topic" height="500" width="700">
-          </div>
-        
-          <p>Chapter 5 discussed replication. However  面对海量数据或者非常高的查询吞吐量（query throughout）还需要将数据 partitions，或者叫sharding</p>
-          <!--noindex-->
-            <div class="post-button">
-              <a class="btn" href="/Distributed-Systems/Distributed_Sytem/Designing-data-intensive-applications/Chapter6/#more" rel="contents">
-                Read more &raquo;
-              </a>
-            </div>
-          <!--/noindex-->
-        
-      
-    </div>
-
-    
-    
-    
-    
-      <footer class="post-footer">
-        <div class="post-eof"></div>
-      </footer>
-  </article>
-  
-  
-  
-
-      
-  
-  
-  <article itemscope itemtype="http://schema.org/Article" class="post-block" lang="en">
-    <link itemprop="mainEntityOfPage" href="https://yu-yang.pro/MIT-Missing-Semeter/missing-semester/Lec4/">
-
-    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
-      <meta itemprop="image" content="/images/profile_img.jpg">
-      <meta itemprop="name" content="Yuyang Zhang">
-      <meta itemprop="description" content="stay hungry stay foolish">
-    </span>
-
-    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
-      <meta itemprop="name" content="Yuyang's 博客">
-    </span>
-      <header class="post-header">
-        <h2 class="post-title" itemprop="name headline">
-          
-            <a href="/MIT-Missing-Semeter/missing-semester/Lec4/" class="post-title-link" itemprop="url">Lecture4 Data Wrangling</a>
-        </h2>
-
-        <div class="post-meta">
-            <span class="post-meta-item">
-              <span class="post-meta-item-icon">
-                <i class="far fa-calendar"></i>
-              </span>
-              <span class="post-meta-item-text">Posted on</span>
-
-              <time title="Created: 2022-04-13 21:21:42" itemprop="dateCreated datePublished" datetime="2022-04-13T21:21:42+08:00">2022-04-13</time>
-            </span>
-              <span class="post-meta-item">
-                <span class="post-meta-item-icon">
-                  <i class="far fa-calendar-check"></i>
-                </span>
-                <span class="post-meta-item-text">Edited on</span>
-                <time title="Modified: 2022-04-20 14:56:33" itemprop="dateModified" datetime="2022-04-20T14:56:33+08:00">2022-04-20</time>
-              </span>
-            <span class="post-meta-item">
-              <span class="post-meta-item-icon">
-                <i class="far fa-folder"></i>
-              </span>
-              <span class="post-meta-item-text">In</span>
-                <span itemprop="about" itemscope itemtype="http://schema.org/Thing">
-                  <a href="/categories/MIT-Missing-Semeter/" itemprop="url" rel="index"><span itemprop="name">MIT Missing Semeter</span></a>
-                </span>
-            </span>
-
-          <br>
-            <span class="post-meta-item" title="Symbols count in article">
-              <span class="post-meta-item-icon">
-                <i class="far fa-file-word"></i>
-              </span>
-                <span class="post-meta-item-text">Symbols count in article: </span>
-              <span>63</span>
-            </span>
-            <span class="post-meta-item" title="Reading time">
-              <span class="post-meta-item-icon">
-                <i class="far fa-clock"></i>
-              </span>
-                <span class="post-meta-item-text">Reading time &asymp;</span>
-              <span>1 mins.</span>
-            </span>
-
-        </div>
-      </header>
-
-    
-    
-    
-    <div class="post-body" itemprop="articleBody">
-
-      
-        
-          <div class="out-img-topic">
-            <img src=/images/miss-sem.jpeg class="img-topic" height="500" width="700">
-          </div>
-        
-          <p>Lecture4 关于将某种格式存储的数据转换成另外一种格式 具体来讲，需要不断地对数据进行处理，直到得到我们想要的最终结果。</p>
-          <!--noindex-->
-            <div class="post-button">
-              <a class="btn" href="/MIT-Missing-Semeter/missing-semester/Lec4/#more" rel="contents">
-                Read more &raquo;
-              </a>
-            </div>
-          <!--/noindex-->
-        
-      
-    </div>
-
-    
-    
-    
-    
-      <footer class="post-footer">
-        <div class="post-eof"></div>
-      </footer>
-  </article>
-  
-  
-  
-
-      
-  
-  
-  <article itemscope itemtype="http://schema.org/Article" class="post-block" lang="en">
-    <link itemprop="mainEntityOfPage" href="https://yu-yang.pro/MIT-Missing-Semeter/missing-semester/Lec3/">
-
-    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
-      <meta itemprop="image" content="/images/profile_img.jpg">
-      <meta itemprop="name" content="Yuyang Zhang">
-      <meta itemprop="description" content="stay hungry stay foolish">
-    </span>
-
-    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
-      <meta itemprop="name" content="Yuyang's 博客">
-    </span>
-      <header class="post-header">
-        <h2 class="post-title" itemprop="name headline">
-          
-            <a href="/MIT-Missing-Semeter/missing-semester/Lec3/" class="post-title-link" itemprop="url">Lecture3 Editors(Vim)</a>
-        </h2>
-
-        <div class="post-meta">
-            <span class="post-meta-item">
-              <span class="post-meta-item-icon">
-                <i class="far fa-calendar"></i>
-              </span>
-              <span class="post-meta-item-text">Posted on</span>
-
-              <time title="Created: 2022-04-13 21:21:38" itemprop="dateCreated datePublished" datetime="2022-04-13T21:21:38+08:00">2022-04-13</time>
-            </span>
-              <span class="post-meta-item">
-                <span class="post-meta-item-icon">
-                  <i class="far fa-calendar-check"></i>
-                </span>
-                <span class="post-meta-item-text">Edited on</span>
-                <time title="Modified: 2022-04-19 16:17:56" itemprop="dateModified" datetime="2022-04-19T16:17:56+08:00">2022-04-19</time>
-              </span>
-            <span class="post-meta-item">
-              <span class="post-meta-item-icon">
-                <i class="far fa-folder"></i>
-              </span>
-              <span class="post-meta-item-text">In</span>
-                <span itemprop="about" itemscope itemtype="http://schema.org/Thing">
-                  <a href="/categories/MIT-Missing-Semeter/" itemprop="url" rel="index"><span itemprop="name">MIT Missing Semeter</span></a>
-                </span>
-            </span>
-
-          <br>
-            <span class="post-meta-item" title="Symbols count in article">
-              <span class="post-meta-item-icon">
-                <i class="far fa-file-word"></i>
-              </span>
-                <span class="post-meta-item-text">Symbols count in article: </span>
-              <span>1.1k</span>
-            </span>
-            <span class="post-meta-item" title="Reading time">
-              <span class="post-meta-item-icon">
-                <i class="far fa-clock"></i>
-              </span>
-                <span class="post-meta-item-text">Reading time &asymp;</span>
-              <span>1 mins.</span>
-            </span>
-
-        </div>
-      </header>
-
-    
-    
-    
-    <div class="post-body" itemprop="articleBody">
-
-      
-        
-          <div class="out-img-topic">
-            <img src=/images/miss-sem.jpeg class="img-topic" height="500" width="700">
-          </div>
-        
-          <p>Mode:</p>
-<ul>
-<li>normal</li>
-<li>insert : press i</li>
-<li>replace: r</li>
-<li>visual: v</li>
-<li>Visual Block: command+v</li>
-<li>command-line: :</li>
-</ul>
-<p>help</p>
-<p>:help :w </p>
-<p>![Screenshot 2022-04-19 at 16.09.11](&#x2F;Users&#x2F;zhangyuyang&#x2F;Desktop&#x2F;blog&#x2F;source&#x2F;_posts&#x2F;missing-semester&#x2F;Lec3&#x2F;Screenshot 2022-04-19 at 16.09.11.png)</p>
-<p>:sp 两个窗口</p>
-<p>![Screenshot 2022-04-19 at 16.13.07](&#x2F;Users&#x2F;zhangyuyang&#x2F;Desktop&#x2F;blog&#x2F;source&#x2F;_posts&#x2F;missing-semester&#x2F;Lec3&#x2F;Screenshot 2022-04-19 at 16.13.07.png)</p>
-<p>^： 移到内容的最前</p>
-<p>![Screenshot 2022-04-19 at 16.16.52](&#x2F;Users&#x2F;zhangyuyang&#x2F;Desktop&#x2F;blog&#x2F;source&#x2F;_posts&#x2F;missing-semester&#x2F;Lec3&#x2F;Screenshot 2022-04-19 at 16.16.52.png)</p>
-<p>$: 移到最后</p>
-<p>![Screenshot 2022-04-19 at 16.17.09](&#x2F;Users&#x2F;zhangyuyang&#x2F;Desktop&#x2F;blog&#x2F;source&#x2F;_posts&#x2F;missing-semester&#x2F;Lec3&#x2F;Screenshot 2022-04-19 at 16.17.09.png)</p>
-<p>0: 移到一行的最前</p>
-<p>![Screenshot 2022-04-19 at 16.17.51](&#x2F;Users&#x2F;zhangyuyang&#x2F;Desktop&#x2F;blog&#x2F;source&#x2F;_posts&#x2F;missing-semester&#x2F;Lec3&#x2F;Screenshot 2022-04-19 at 16.17.51.png)</p>
-
-      
-    </div>
-
-    
-    
-    
-    
-      <footer class="post-footer">
-        <div class="post-eof"></div>
-      </footer>
-  </article>
-  
-  
-  
-
-      
-  
-  
-  <article itemscope itemtype="http://schema.org/Article" class="post-block" lang="en">
-    <link itemprop="mainEntityOfPage" href="https://yu-yang.pro/Data-Warehouse/Data_Warehouse/Data_Warehouse_Concepts/">
-
-    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
-      <meta itemprop="image" content="/images/profile_img.jpg">
-      <meta itemprop="name" content="Yuyang Zhang">
-      <meta itemprop="description" content="stay hungry stay foolish">
-    </span>
-
-    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
-      <meta itemprop="name" content="Yuyang's 博客">
-    </span>
-      <header class="post-header">
-        <h2 class="post-title" itemprop="name headline">
-          
-            <a href="/Data-Warehouse/Data_Warehouse/Data_Warehouse_Concepts/" class="post-title-link" itemprop="url">Conceptual Data Warehouse Design</a>
-        </h2>
-
-        <div class="post-meta">
-            <span class="post-meta-item">
-              <span class="post-meta-item-icon">
-                <i class="far fa-calendar"></i>
-              </span>
-              <span class="post-meta-item-text">Posted on</span>
-              
-
-              <time title="Created: 2022-04-18 10:36:51 / Modified: 21:56:09" itemprop="dateCreated datePublished" datetime="2022-04-18T10:36:51+08:00">2022-04-18</time>
-            </span>
-            <span class="post-meta-item">
-              <span class="post-meta-item-icon">
-                <i class="far fa-folder"></i>
-              </span>
-              <span class="post-meta-item-text">In</span>
-                <span itemprop="about" itemscope itemtype="http://schema.org/Thing">
-                  <a href="/categories/Data-Warehouse/" itemprop="url" rel="index"><span itemprop="name">Data Warehouse</span></a>
-                </span>
-            </span>
-
-          <br>
-            <span class="post-meta-item" title="Symbols count in article">
-              <span class="post-meta-item-icon">
-                <i class="far fa-file-word"></i>
-              </span>
-                <span class="post-meta-item-text">Symbols count in article: </span>
-              <span>283</span>
-            </span>
-            <span class="post-meta-item" title="Reading time">
-              <span class="post-meta-item-icon">
-                <i class="far fa-clock"></i>
-              </span>
-                <span class="post-meta-item-text">Reading time &asymp;</span>
-              <span>1 mins.</span>
-            </span>
-
-        </div>
-      </header>
-
-    
-    
-    
-    <div class="post-body" itemprop="articleBody">
-
-      
-        
-          <div class="out-img-topic">
-            <img src=/images/datawarehouse.jpg class="img-topic" height="500" width="700">
-          </div>
-        
-          <p>这一章主要集中于 conceptual modeling for data warehouse. Conceptual models facilitate communication between users and designers. </p>
-          <!--noindex-->
-            <div class="post-button">
-              <a class="btn" href="/Data-Warehouse/Data_Warehouse/Data_Warehouse_Concepts/#more" rel="contents">
-                Read more &raquo;
-              </a>
-            </div>
-          <!--/noindex-->
-        
-      
-    </div>
-
-    
-    
-    
-    
-      <footer class="post-footer">
-        <div class="post-eof"></div>
-      </footer>
-  </article>
-  
-  
-  
-
 
   
   <nav class="pagination">
-    <span class="page-number current">1</span><a class="page-number" href="/page/2/">2</a><span class="space">&hellip;</span><a class="page-number" href="/page/4/">4</a><a class="extend next" rel="next" href="/page/2/"><i class="fa fa-angle-right" aria-label="Next page"></i></a>
+    <span class="page-number current">1</span><a class="page-number" href="/page/2/">2</a><span class="space">&hellip;</span><a class="page-number" href="/page/5/">5</a><a class="extend next" rel="next" href="/page/2/"><i class="fa fa-angle-right" aria-label="Next page"></i></a>
   </nav>
 
 
@@ -1726,7 +2034,7 @@
       <div class="site-state-item site-state-posts">
           <a href="/archives/">
         
-          <span class="site-state-item-count">39</span>
+          <span class="site-state-item-count">43</span>
           <span class="site-state-item-name">posts</span>
         </a>
       </div>
@@ -1796,12 +2104,12 @@
     <span class="post-meta-item-icon">
       <i class="fa fa-chart-area"></i>
     </span>
-    <span title="Symbols count total">162k</span>
+    <span title="Symbols count total">198k</span>
     <span class="post-meta-divider">|</span>
     <span class="post-meta-item-icon">
       <i class="fa fa-coffee"></i>
     </span>
-    <span title="Reading time total">2:27</span>
+    <span title="Reading time total">3:01</span>
 </div>
 
         
