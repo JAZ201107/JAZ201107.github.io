@@ -2515,7 +2515,252 @@
     <url>/uncategorized/Flink/Chapter06/</url>
     <content><![CDATA[<p>Chapter 6 是关于时间和窗口的</p>
 <span id="more"></span>
-]]></content>
+
+<p>[toc]</p>
+<h2 id="6-1-时间语义"><a href="#6-1-时间语义" class="headerlink" title="6.1 时间语义"></a>6.1 时间语义</h2><h3 id="6-1-1-Flink中的时间语以"><a href="#6-1-1-Flink中的时间语以" class="headerlink" title="6.1.1 Flink中的时间语以"></a>6.1.1 Flink中的时间语以</h3><ul>
+<li>处理时间（processing time）</li>
+<li>事件时间（Event time）（默认）</li>
+<li>摄入时间 Ingestion time： 数据进入 Flink 数据流的时间，是事件时间和处理时间的一个中和</li>
+</ul>
+<h4 id="6-1-1-1-处理时间"><a href="#6-1-1-1-处理时间" class="headerlink" title="6.1.1.1 处理时间"></a>6.1.1.1 处理时间</h4><p>处理操作的机器的系统时间。</p>
+<h4 id="6-1-1-2-事件时间"><a href="#6-1-1-2-事件时间" class="headerlink" title="6.1.1.2 事件时间"></a>6.1.1.2 事件时间</h4><p>每个事件在对应的设备上发生的时间，也就是数据生成的时间。</p>
+<p>它可以作为一个属性嵌入到数据中。这其实 就是这条数据记录的“时间戳”(Timestamp)。</p>
+<p>由于Flink分布式的特性，需要另外的标志来表示事件时间进展。叫做 watermark</p>
+<h3 id="6-1-2-哪种时间语以更重要"><a href="#6-1-2-哪种时间语以更重要" class="headerlink" title="6.1.2 哪种时间语以更重要"></a>6.1.2 哪种时间语以更重要</h3><p>实际应用中，事件时间语义会更为常见。一般情况下，业务日志数据中都会记录数 据生成的时间戳(timestamp)，它就可以作为事件时间的判断基础。</p>
+<p>对比：</p>
+<p>处理时间是我们计算效率的衡量标准，而事件时间会更符合我们的业务计算逻 辑。所以更多时候我们使用事件时间</p>
+<h2 id="6-2-Watermark"><a href="#6-2-Watermark" class="headerlink" title="6.2 Watermark"></a>6.2 Watermark</h2><h3 id="6-2-1-事件时间和窗口"><a href="#6-2-1-事件时间和窗口" class="headerlink" title="6.2.1 事件时间和窗口"></a>6.2.1 事件时间和窗口</h3><p>![Screenshot 2022-05-10 at 16.15.13](&#x2F;Users&#x2F;zhangyuyang&#x2F;Desktop&#x2F;blog&#x2F;source&#x2F;_posts&#x2F;Flink&#x2F;Chapter06&#x2F;Screenshot 2022-05-10 at 16.15.13.png)</p>
+<p>用数据的时间戳来表示当前的时间进展，窗口的关闭以数据的时间戳等于窗口结束时间戳为准。</p>
+<h3 id="6-2-2-什么是水位线"><a href="#6-2-2-什么是水位线" class="headerlink" title="6.2.2 什么是水位线"></a>6.2.2 什么是水位线</h3><p>在数据流中加入一个时钟标记，这个标记可以直接 broadcast到下游，当下游任务收到这个标记。就更新自己的时钟。这种时钟标记，被称为 watermark（水位线）</p>
+<p>![Screenshot 2022-05-10 at 16.19.28](&#x2F;Users&#x2F;zhangyuyang&#x2F;Desktop&#x2F;blog&#x2F;source&#x2F;_posts&#x2F;Flink&#x2F;Chapter06&#x2F;Screenshot 2022-05-10 at 16.19.28.png)</p>
+<p>如果出现下游有多个并行子任务的情形，我们 只要将水位线广播出去，就可以通知到所有下游任务当前的时间进度了。</p>
+<h4 id="6-2-2-1-有序流中的水位线"><a href="#6-2-2-1-有序流中的水位线" class="headerlink" title="6.2.2.1 有序流中的水位线"></a>6.2.2.1 有序流中的水位线</h4><p>存在问题：</p>
+<p>如果有大量的数据，那么时间差会非常小，提取时间戳、插入水位线就做了大量的无用功。</p>
+<p>因此，水位线可以周期性插入（根据处理时间-》系统时间）</p>
+<p>![Screenshot 2022-05-10 at 16.22.12](&#x2F;Users&#x2F;zhangyuyang&#x2F;Desktop&#x2F;blog&#x2F;source&#x2F;_posts&#x2F;Flink&#x2F;Chapter06&#x2F;Screenshot 2022-05-10 at 16.22.12.png)</p>
+<h4 id="6-2-2-2-乱序流中的水位线"><a href="#6-2-2-2-乱序流中的水位线" class="headerlink" title="6.2.2.2 乱序流中的水位线"></a>6.2.2.2 乱序流中的水位线</h4><p>out-of-order： 一个 7 秒时产生的数据，比9秒产生的数据，处理的晚，之后 7 秒的数据才姗姗来迟。</p>
+<p>![Screenshot 2022-05-10 at 16.22.48](&#x2F;Users&#x2F;zhangyuyang&#x2F;Desktop&#x2F;blog&#x2F;source&#x2F;_posts&#x2F;Flink&#x2F;Chapter06&#x2F;Screenshot 2022-05-10 at 16.22.48.png)</p>
+<p>存在问题：新的时间戳比之前的还小。</p>
+<p>水位线就代表了时钟，时光 不能倒流，所以水位线的时间戳也不能减小</p>
+<p>解决：我们插入新的水位线时，要先判断一下时间戳是否比之前的大，否则 就不再生成新的水位线</p>
+<p>![Screenshot 2022-05-10 at 16.24.31](&#x2F;Users&#x2F;zhangyuyang&#x2F;Desktop&#x2F;blog&#x2F;source&#x2F;_posts&#x2F;Flink&#x2F;Chapter06&#x2F;Screenshot 2022-05-10 at 16.24.31.png)</p>
+<p>与有序水位线相同，也可以周期性插入</p>
+<p>存在问题：无法正确处理 “迟到”的数据</p>
+<p>当 9 秒产生的数据到来之后，我们就直接将时钟推进到了 9 秒;如果有一个窗口结束时间就是 9 秒(比如，要统计 0~9 秒的所有数据)，那么这时窗口 就应该关闭、将收集到的所有数据计算输出结果了。但事实上，由于数据是乱序的，还可能有 时间戳为7秒、8秒的数据在9秒的数据之后才到来。（Late data）</p>
+<p>解决办法：延迟关闭窗口，“等上 2 秒”</p>
+<h4 id="6-2-2-3-水位线的特性"><a href="#6-2-2-3-水位线的特性" class="headerlink" title="6.2.2.3 水位线的特性"></a>6.2.2.3 水位线的特性</h4><ul>
+<li>水位线是插入到数据流中的一个标记，可以认为是一个特殊的数据</li>
+<li>水位线主要的内容是一个时间戳，用来表示当前事件时间的进展</li>
+<li>水位线是基于数据的时间戳生成的</li>
+<li>水位线的时间戳必须单调递增，以确保任务的事件时间时钟一直向前推进</li>
+<li>水位线可以通过设置延迟，来保证正确处理乱序数据</li>
+<li>一个水位线 Watermark(t)，表示在当前流中事件时间已经达到了时间戳 t, 这代表 t 之 前的所有数据都到齐了，之后流中不会出现时间戳 t’ ≤ t 的数据</li>
+</ul>
+<h3 id="6-2-3-如何生成水位线"><a href="#6-2-3-如何生成水位线" class="headerlink" title="6.2.3 如何生成水位线"></a>6.2.3 如何生成水位线</h3><h4 id="6-2-3-1-总体原则"><a href="#6-2-3-1-总体原则" class="headerlink" title="6.2.3.1 总体原则"></a>6.2.3.1 总体原则</h4><p>权衡机制，由程序员决定</p>
+<h4 id="6-2-3-2-Watermark-Strategies"><a href="#6-2-3-2-Watermark-Strategies" class="headerlink" title="6.2.3.2 Watermark Strategies"></a>6.2.3.2 Watermark Strategies</h4><p>在DataStream API中，有.assignTimestampsAndWatermarks()，用来分配时间戳，并生成水位线</p>
+<figure class="highlight java"><table><tr><td class="code"><pre><span class="line">eventDataStreamSource.assignTimestampsAndWatermarks(tWatermarkStrategy)</span><br></pre></td></tr></table></figure>
+
+<p>该方法需要，传入一个 WatermarkStrategy 作为参数，WatermarkStrategy中包含了一个 “TimesampAssigner 和 WatermarkGenerator</p>
+<p>![Screenshot 2022-05-10 at 16.38.34](&#x2F;Users&#x2F;zhangyuyang&#x2F;Desktop&#x2F;blog&#x2F;source&#x2F;_posts&#x2F;Flink&#x2F;Chapter06&#x2F;Screenshot 2022-05-10 at 16.38.34.png)</p>
+<ul>
+<li>TimestampAssigner: 从 数据元素中提取时间戳，并分配给元素。 时间戳是生成水位线的基础</li>
+<li>WatermarkGenrator： 基于时间戳生成水位线，在WatermarkGenerator接口中有 onEvent， 和 onPeriodicEmit（） 两个方法</li>
+</ul>
+<p>![Screenshot 2022-05-10 at 16.40.27](&#x2F;Users&#x2F;zhangyuyang&#x2F;Desktop&#x2F;blog&#x2F;source&#x2F;_posts&#x2F;Flink&#x2F;Chapter06&#x2F;Screenshot 2022-05-10 at 16.40.27.png)</p>
+<ul>
+<li><p>onEvent： 每个事件(数据)到来都会调用的方法</p>
+<ul>
+<li>T var1: 当前事件</li>
+<li>long var2: 时间戳</li>
+<li>WatermarkOutput var4: 允许发出水位线的一个 WatermarkOutput</li>
+</ul>
+</li>
+<li><p>onPeriodicEmit： 周期性调用方法：</p>
+<ul>
+<li><p>可以由WatermarkOutput发出水位线</p>
+</li>
+<li><p>可以调用环境配置的.setAutoWatermarkInterval()方法来设置，默认为</p>
+<p>200ms</p>
+</li>
+</ul>
+</li>
+</ul>
+<figure class="highlight java"><table><tr><td class="code"><pre><span class="line">env.getConfig().setAutoWatermarkInterval(<span class="number">60</span> * <span class="number">1000L</span>);</span><br></pre></td></tr></table></figure>
+
+<h4 id="6-2-3-3-Flink-内置水位线生成器"><a href="#6-2-3-3-Flink-内置水位线生成器" class="headerlink" title="6.2.3.3 Flink 内置水位线生成器"></a>6.2.3.3 Flink 内置水位线生成器</h4><p>可以通过调用 WatermarkStrategy 的静态辅助方法来创建。它们都是周期性 生成水位线的，分别对应着处理有序流和乱序流的场景。</p>
+<ul>
+<li>有序</li>
+</ul>
+<p>直接调用 WatermarkStrategy.forMonotonousTimestamps()方法就可以实现</p>
+<figure class="highlight java"><table><tr><td class="code"><pre><span class="line">eventDataStreamSource.assignTimestampsAndWatermarks(</span><br><span class="line">                WatermarkStrategy.&lt;Event&gt;forMonotonousTimestamps()</span><br><span class="line">                        .withTimestampAssigner(</span><br><span class="line">                                <span class="keyword">new</span> <span class="title class_">SerializableTimestampAssigner</span>&lt;Event&gt;() &#123;</span><br><span class="line">                                    <span class="meta">@Override</span></span><br><span class="line">                                    <span class="keyword">public</span> <span class="type">long</span> <span class="title function_">extractTimestamp</span><span class="params">(Event event, <span class="type">long</span> l)</span> &#123;</span><br><span class="line">                                        <span class="keyword">return</span> event.timestamp;</span><br><span class="line">                                    &#125;</span><br><span class="line">                                &#125;</span><br><span class="line">                        )</span><br><span class="line">        );</span><br></pre></td></tr></table></figure>
+
+<p>调用.withTimestampAssigner()方法，将数据中的 timestamp 字段提取出来， 作为时间戳分配给数据元素;然后用内置的有序流水位线生成器构造出了生成策略。</p>
+<ul>
+<li>乱序流</li>
+</ul>
+<p>需设置一个固定量的延迟时间（Fixed Amount of Lateness）</p>
+<p>这时Watermark是：当前数据流中最大的时间戳减去延迟的 结果</p>
+<figure class="highlight java"><table><tr><td class="code"><pre><span class="line">eventDataStreamSource.assignTimestampsAndWatermarks(</span><br><span class="line">                WatermarkStrategy.&lt;Event&gt;forBoundedOutOfOrderness(Duration.ofSeconds(<span class="number">5</span>))</span><br><span class="line">                        .withTimestampAssigner(</span><br><span class="line">                                <span class="keyword">new</span> <span class="title class_">SerializableTimestampAssigner</span>&lt;Event&gt;() &#123;</span><br><span class="line">                                    <span class="meta">@Override</span></span><br><span class="line">                                    <span class="keyword">public</span> <span class="type">long</span> <span class="title function_">extractTimestamp</span><span class="params">(Event event, <span class="type">long</span> l)</span> &#123;</span><br><span class="line">                                        <span class="keyword">return</span> event.timestamp;</span><br><span class="line">                                    &#125;</span><br><span class="line">                                &#125;</span><br><span class="line">                        )</span><br><span class="line">        );</span><br></pre></td></tr></table></figure>
+
+<p>有序，无序流本质上相同：</p>
+<figure class="highlight java"><table><tr><td class="code"><pre><span class="line">WatermarkStrategy.forMonotonousTimestamps()</span><br><span class="line">WatermarkStrategy.forBoundedOutOfOrderness(Duration.ofSeconds(<span class="number">0</span>))</span><br></pre></td></tr></table></figure>
+
+<p>watermark是实际上 -1 毫秒：</p>
+<p>![Screenshot 2022-05-10 at 16.51.25](&#x2F;Users&#x2F;zhangyuyang&#x2F;Desktop&#x2F;blog&#x2F;source&#x2F;_posts&#x2F;Flink&#x2F;Chapter06&#x2F;Screenshot 2022-05-10 at 16.51.25.png)</p>
+<h4 id="6-2-3-4-自定义水位线策略"><a href="#6-2-3-4-自定义水位线策略" class="headerlink" title="6.2.3.4 自定义水位线策略"></a>6.2.3.4 自定义水位线策略</h4><p>Flink有两种不同的生成水位线的方法：</p>
+<ul>
+<li>周期性（Periodic）</li>
+<li>断点式（Punctuated）</li>
+</ul>
+<h5 id="6-2-3-4-1-周期性水位线生成器"><a href="#6-2-3-4-1-周期性水位线生成器" class="headerlink" title="6.2.3.4.1 周期性水位线生成器"></a>6.2.3.4.1 周期性水位线生成器</h5><p>通过onEvent观察，判断输入的事件，在onPeriodicEmit中发出水位线</p>
+<figure class="highlight java"><table><tr><td class="code"><pre><span class="line">eventDataStreamSource.assignTimestampsAndWatermarks(<span class="keyword">new</span> <span class="title class_">CustomWatermarkStrategy</span>());</span><br><span class="line"></span><br><span class="line"></span><br><span class="line"><span class="keyword">public</span> <span class="keyword">static</span> <span class="keyword">class</span>  <span class="title class_">CustomWatermarkStrategy</span> <span class="keyword">implements</span> <span class="title class_">WatermarkStrategy</span>&lt;Event&gt;&#123;</span><br><span class="line">        <span class="meta">@Override</span></span><br><span class="line">        <span class="keyword">public</span> TimestampAssigner&lt;Event&gt; <span class="title function_">createTimestampAssigner</span><span class="params">(TimestampAssignerSupplier.Context context)</span> &#123;</span><br><span class="line">            <span class="keyword">return</span> <span class="keyword">new</span> <span class="title class_">SerializableTimestampAssigner</span>&lt;Event&gt;() &#123;</span><br><span class="line">                <span class="meta">@Override</span></span><br><span class="line">                <span class="keyword">public</span> <span class="type">long</span> <span class="title function_">extractTimestamp</span><span class="params">(Event event, <span class="type">long</span> l)</span> &#123;</span><br><span class="line">                    <span class="keyword">return</span> event.timestamp;</span><br><span class="line">                &#125;</span><br><span class="line">            &#125;;</span><br><span class="line">        &#125;</span><br><span class="line"></span><br><span class="line">        <span class="meta">@Override</span></span><br><span class="line">        <span class="keyword">public</span> WatermarkGenerator&lt;Event&gt; <span class="title function_">createWatermarkGenerator</span><span class="params">(WatermarkGeneratorSupplier.Context context)</span> &#123;</span><br><span class="line">            <span class="keyword">return</span> <span class="keyword">new</span> <span class="title class_">CustomerPeriodicGenerator</span>();</span><br><span class="line">        &#125;</span><br><span class="line">    &#125;</span><br><span class="line"></span><br><span class="line"></span><br><span class="line">    <span class="keyword">public</span> <span class="keyword">static</span> <span class="keyword">class</span> <span class="title class_">CustomerPeriodicGenerator</span> <span class="keyword">implements</span> <span class="title class_">WatermarkGenerator</span>&lt;Event&gt;&#123;</span><br><span class="line">        <span class="keyword">private</span> <span class="type">Long</span> <span class="variable">delayTime</span> <span class="operator">=</span> <span class="number">5000L</span>; <span class="comment">// 延迟时间</span></span><br><span class="line">        <span class="keyword">private</span> <span class="type">Long</span> <span class="variable">maxTs</span>  <span class="operator">=</span> Long.MIN_VALUE+delayTime+<span class="number">1L</span>; <span class="comment">// 观察到的最大时间戳</span></span><br><span class="line"></span><br><span class="line">        <span class="meta">@Override</span></span><br><span class="line">        <span class="keyword">public</span> <span class="keyword">void</span> <span class="title function_">onEvent</span><span class="params">(Event event, <span class="type">long</span> l, WatermarkOutput watermarkOutput)</span> &#123;</span><br><span class="line">            maxTs = Math.max(event.timestamp,maxTs); <span class="comment">// 更新最大时间戳</span></span><br><span class="line">        &#125;</span><br><span class="line"></span><br><span class="line">        <span class="meta">@Override</span></span><br><span class="line">        <span class="keyword">public</span> <span class="keyword">void</span> <span class="title function_">onPeriodicEmit</span><span class="params">(WatermarkOutput watermarkOutput)</span> &#123;</span><br><span class="line">            <span class="comment">// emit 水位线，默认 200ms</span></span><br><span class="line">            watermarkOutput.emitWatermark(<span class="keyword">new</span> <span class="title class_">Watermark</span>(maxTs - delayTime-<span class="number">1L</span>));</span><br><span class="line">        &#125;</span><br><span class="line">    &#125;</span><br><span class="line"></span><br></pre></td></tr></table></figure>
+
+
+
+
+
+<h5 id="6-2-3-4-1-断点式水位线生成器-Punctuated-Generator"><a href="#6-2-3-4-1-断点式水位线生成器-Punctuated-Generator" class="headerlink" title="6.2.3.4.1 断点式水位线生成器(Punctuated Generator)"></a>6.2.3.4.1 断点式水位线生成器(Punctuated Generator)</h5><figure class="highlight java"><table><tr><td class="code"><pre><span class="line"><span class="keyword">public</span> <span class="keyword">static</span> <span class="keyword">class</span> <span class="title class_">CustomerPunctuatedGenerator</span> <span class="keyword">implements</span> <span class="title class_">WatermarkGenerator</span>&lt;Event&gt;&#123;</span><br><span class="line">        <span class="meta">@Override</span></span><br><span class="line">        <span class="keyword">public</span> <span class="keyword">void</span> <span class="title function_">onEvent</span><span class="params">(Event event, <span class="type">long</span> l, WatermarkOutput watermarkOutput)</span> &#123;</span><br><span class="line">            <span class="keyword">if</span>(event.user.equals(<span class="string">&quot;Mary&quot;</span>))&#123;</span><br><span class="line">                watermarkOutput.emitWatermark(<span class="keyword">new</span> <span class="title class_">Watermark</span>(event.timestamp-<span class="number">1L</span>));</span><br><span class="line">            &#125;</span><br><span class="line">        &#125;</span><br><span class="line"></span><br><span class="line">        <span class="meta">@Override</span></span><br><span class="line">        <span class="keyword">public</span> <span class="keyword">void</span> <span class="title function_">onPeriodicEmit</span><span class="params">(WatermarkOutput watermarkOutput)</span> &#123;</span><br><span class="line"></span><br><span class="line">        &#125;</span><br><span class="line">    &#125;</span><br></pre></td></tr></table></figure>
+
+<h4 id="6-2-3-5-在自定义数据源中发送水位线"><a href="#6-2-3-5-在自定义数据源中发送水位线" class="headerlink" title="6.2.3.5 在自定义数据源中发送水位线"></a>6.2.3.5 在自定义数据源中发送水位线</h4><p>可以在自定义的数据源中，抽取事件时间，发射水位线。在自 定义数据源中发送了水位线以后，就不能再在程序中使用 assignTimestampsAndWatermarks 方 法来生成水位线了</p>
+<figure class="highlight java"><table><tr><td class="code"><pre><span class="line"><span class="keyword">public</span> <span class="keyword">void</span> <span class="title function_">run</span><span class="params">(SourceContext&lt;Event&gt; sourceContext)</span> <span class="keyword">throws</span> Exception &#123; <span class="type">Random</span> <span class="variable">random</span> <span class="operator">=</span> <span class="keyword">new</span> <span class="title class_">Random</span>();</span><br><span class="line">String[] userArr = &#123;<span class="string">&quot;Mary&quot;</span>, <span class="string">&quot;Bob&quot;</span>, <span class="string">&quot;Alice&quot;</span>&#125;;</span><br><span class="line">String[] urlArr = &#123;<span class="string">&quot;./home&quot;</span>, <span class="string">&quot;./cart&quot;</span>, <span class="string">&quot;./prod?id=1&quot;</span>&#125;;</span><br><span class="line"><span class="keyword">while</span> (running) &#123;</span><br><span class="line"><span class="type">long</span> <span class="variable">currTs</span> <span class="operator">=</span> Calendar.getInstance().getTimeInMillis(); <span class="comment">// 毫秒时</span></span><br><span class="line"><span class="type">String</span> <span class="variable">username</span> <span class="operator">=</span> userArr[random.nextInt(userArr.length)]; <span class="type">String</span> <span class="variable">url</span> <span class="operator">=</span> urlArr[random.nextInt(urlArr.length)];</span><br><span class="line"><span class="type">Event</span> <span class="variable">event</span> <span class="operator">=</span> <span class="keyword">new</span> <span class="title class_">Event</span>(username, url, currTs);</span><br><span class="line"><span class="comment">// 使用 collectWithTimestamp 方法将数据发送出去，并指明数据中的时间戳的字段</span></span><br><span class="line">sourceContext.collectWithTimestamp(event, event.timestamp);</span><br><span class="line"><span class="comment">// 发送水位线</span></span><br><span class="line">sourceContext.emitWatermark(<span class="keyword">new</span> <span class="title class_">Watermark</span>(event.timestamp - <span class="number">1L</span>)); Thread.sleep(<span class="number">1000L</span>);</span><br><span class="line">&#125; &#125;</span><br></pre></td></tr></table></figure>
+
+
+
+
+
+<h3 id="6-2-4-水位线传递"><a href="#6-2-4-水位线传递" class="headerlink" title="6.2.4 水位线传递"></a>6.2.4 水位线传递</h3><p>![Screenshot 2022-05-10 at 17.16.47](&#x2F;Users&#x2F;zhangyuyang&#x2F;Desktop&#x2F;blog&#x2F;source&#x2F;_posts&#x2F;Flink&#x2F;Chapter06&#x2F;Screenshot 2022-05-10 at 17.16.47.png)</p>
+<ol>
+<li><p>上游并行子任务发来不同的水位线，当前任务会为每一个分区设置一个“分区水位线” (Partition Watermark)，这是一个分区时钟;而当前任务自己的时钟，就是所有分区时钟里最</p>
+<p>小的那个</p>
+</li>
+<li><p>当有一个新的水位线(第一分区的 4)从上游传来时，当前任务会首先更新对应的分</p>
+<p>区时钟;然后再次判断所有分区时钟中的最小值，如果比之前大，说明事件时间有了进展，当 前任务的时钟也就可以更新了。这里要注意，更新后的任务时钟，并不一定是新来的那个分区 水位线，比如这里改变的是第一分区的时钟，但最小的分区时钟是第三分区的 3，于是当前任 务时钟就推进到了 3。当时钟有进展时，当前任务就会将自己的时钟以水位线的形式，广播给 下游所有子任务。</p>
+</li>
+<li><p>再次收到新的水位线(第二分区的 7)后，执行同样的处理流程。首先将第二个分区 时钟更新为 7，然后比较所有分区时钟;发现最小值没有变化，那么当前任务的时钟也不变，也不会向下游任务发出水位线</p>
+</li>
+<li><p>同样道理，当又一次收到新的水位线(第三分区的 6)之后，第三个分区时钟更新为 6，同时所有分区时钟最小值变成了第一分区的 4，所以当前任务的时钟推进到 4，并发出时间 戳为 4 的水位线，广播到下游各个分区任务。</p>
+</li>
+</ol>
+<h3 id="6-2-5-水位线的总结"><a href="#6-2-5-水位线的总结" class="headerlink" title="6.2.5 水位线的总结"></a>6.2.5 水位线的总结</h3><h2 id="6-3-窗口（Window）"><a href="#6-3-窗口（Window）" class="headerlink" title="6.3 窗口（Window）"></a>6.3 窗口（Window）</h2><h3 id="6-3-1-窗口的概念"><a href="#6-3-1-窗口的概念" class="headerlink" title="6.3.1 窗口的概念"></a>6.3.1 窗口的概念</h3><p>![Screenshot 2022-05-11 at 12.30.33](&#x2F;Users&#x2F;zhangyuyang&#x2F;Desktop&#x2F;blog&#x2F;source&#x2F;_posts&#x2F;Flink&#x2F;Chapter06&#x2F;Screenshot 2022-05-11 at 12.30.33.png)</p>
+<p>窗口是包含起始时间，不包括结束时间。</p>
+<p>在Flink中，窗口不是一个框，而是一个bucket，窗口把流切割成有限大小的多个 bucket，</p>
+<p>![Screenshot 2022-05-11 at 12.32.57](&#x2F;Users&#x2F;zhangyuyang&#x2F;Desktop&#x2F;blog&#x2F;source&#x2F;_posts&#x2F;Flink&#x2F;Chapter06&#x2F;Screenshot 2022-05-11 at 12.32.57.png)</p>
+<p>注意：Flink窗口是动态创建的，当有数据到达范围时，才触发窗口。</p>
+<h3 id="6-3-2-窗口的分类"><a href="#6-3-2-窗口的分类" class="headerlink" title="6.3.2 窗口的分类"></a>6.3.2 窗口的分类</h3><h4 id="6-3-2-1-按驱动类型"><a href="#6-3-2-1-按驱动类型" class="headerlink" title="6.3.2.1 按驱动类型"></a>6.3.2.1 按驱动类型</h4><p>![Screenshot 2022-05-11 at 12.39.03](&#x2F;Users&#x2F;zhangyuyang&#x2F;Desktop&#x2F;blog&#x2F;source&#x2F;_posts&#x2F;Flink&#x2F;Chapter06&#x2F;Screenshot 2022-05-11 at 12.39.03.png)</p>
+<h5 id="6-3-2-1-1时间窗口（Time-Window）"><a href="#6-3-2-1-1时间窗口（Time-Window）" class="headerlink" title="6.3.2.1.1时间窗口（Time Window）"></a>6.3.2.1.1时间窗口（Time Window）</h5><p>以时间点来定义窗口的开始和结束。</p>
+<p>开始的时间剪去结束的时间就是窗口的大小</p>
+<h5 id="6-3-2-1-2-计数窗口（Count-Window）"><a href="#6-3-2-1-2-计数窗口（Count-Window）" class="headerlink" title="6.3.2.1.2 计数窗口（Count Window）"></a>6.3.2.1.2 计数窗口（Count Window）</h5><p>每个窗口截取数据的个数，就是窗口的大小，通过GloablWindow来实现</p>
+<h4 id="6-3-2-2-按照窗口分配数据的规则分类"><a href="#6-3-2-2-按照窗口分配数据的规则分类" class="headerlink" title="6.3.2.2 按照窗口分配数据的规则分类"></a>6.3.2.2 按照窗口分配数据的规则分类</h4><h5 id="6-3-2-2-1-滚动窗口（Tumbling-Windows）"><a href="#6-3-2-2-1-滚动窗口（Tumbling-Windows）" class="headerlink" title="6.3.2.2.1 滚动窗口（Tumbling Windows）"></a>6.3.2.2.1 滚动窗口（Tumbling Windows）</h5><p>![Screenshot 2022-05-11 at 12.42.03](&#x2F;Users&#x2F;zhangyuyang&#x2F;Desktop&#x2F;blog&#x2F;source&#x2F;_posts&#x2F;Flink&#x2F;Chapter06&#x2F;Screenshot 2022-05-11 at 12.42.03.png)</p>
+<p>对数据进行均匀切片。窗口之前没有重叠。每个数据都会分配到一个窗口</p>
+<h5 id="6-3-2-2-2-滑动窗口（Sliding-Window）"><a href="#6-3-2-2-2-滑动窗口（Sliding-Window）" class="headerlink" title="6.3.2.2.2 滑动窗口（Sliding Window）"></a>6.3.2.2.2 滑动窗口（Sliding Window）</h5><p>![Screenshot 2022-05-11 at 12.43.15](&#x2F;Users&#x2F;zhangyuyang&#x2F;Desktop&#x2F;blog&#x2F;source&#x2F;_posts&#x2F;Flink&#x2F;Chapter06&#x2F;Screenshot 2022-05-11 at 12.43.15.png)</p>
+<p>窗口是滑动的，滑动的步长代表计算频率。</p>
+<p>数据可能会重叠，具体的个数由： size&#x2F;slide来决定</p>
+<h5 id="6-3-2-2-3-会话窗口（Session-Window）"><a href="#6-3-2-2-3-会话窗口（Session-Window）" class="headerlink" title="6.3.2.2.3 会话窗口（Session Window）"></a>6.3.2.2.3 会话窗口（Session Window）</h5><p>![Screenshot 2022-05-11 at 12.49.48](&#x2F;Users&#x2F;zhangyuyang&#x2F;Desktop&#x2F;blog&#x2F;source&#x2F;_posts&#x2F;Flink&#x2F;Chapter06&#x2F;Screenshot 2022-05-11 at 12.49.48.png)如果<strong>一段时间</strong>没有数据进入，那么关闭窗口。</p>
+<p>只能基于时间定义。</p>
+<p>在具体的实现上，可以通过提取器（gap extractor）动态提取最小间隔gap一段时间</p>
+<p>在Flink中的实现： 每来一个新的数据，都会创建一个新的session window。 判断与当前已有窗口之间的距离。如果小于size，就对他进行merge。</p>
+<h5 id="6-3-2-2-4-全局窗口（Global-Window）"><a href="#6-3-2-2-4-全局窗口（Global-Window）" class="headerlink" title="6.3.2.2.4 全局窗口（Global Window）"></a>6.3.2.2.4 全局窗口（Global Window）</h5><p>![Screenshot 2022-05-11 at 12.50.40](&#x2F;Users&#x2F;zhangyuyang&#x2F;Desktop&#x2F;blog&#x2F;source&#x2F;_posts&#x2F;Flink&#x2F;Chapter06&#x2F;Screenshot 2022-05-11 at 12.50.40.png)</p>
+<p>把key相同的数据分配到同一个窗口。默认是不会触发计算的，需要自定义触发器（Trigger）</p>
+<h3 id="6-3-3-窗口API"><a href="#6-3-3-窗口API" class="headerlink" title="6.3.3 窗口API"></a>6.3.3 窗口API</h3><h4 id="6-3-3-1-按键分区（Keyed）和非按键分区（Non-Keyed）"><a href="#6-3-3-1-按键分区（Keyed）和非按键分区（Non-Keyed）" class="headerlink" title="6.3.3.1 按键分区（Keyed）和非按键分区（Non-Keyed）"></a>6.3.3.1 按键分区（Keyed）和非按键分区（Non-Keyed）</h4><p>在调用窗口算子之前，有没有keyBy的操作</p>
+<p><strong>Keyed Windows</strong></p>
+<p>经过keyBy之后，数据流会按照key被分成多条（logical stream），这就是KeyedStream。窗口计算会在多个并行子任务上同时执行。相同key的数据发送到同一个并行子任务。</p>
+<figure class="highlight java"><table><tr><td class="code"><pre><span class="line">stream.keyBy()</span><br><span class="line">  		.window()</span><br></pre></td></tr></table></figure>
+
+<p><strong>Non-Keyed windows</strong></p>
+<figure class="highlight java"><table><tr><td class="code"><pre><span class="line">stream.windowAll()</span><br></pre></td></tr></table></figure>
+
+<h4 id="6-3-3-2-代码中窗口API的调用"><a href="#6-3-3-2-代码中窗口API的调用" class="headerlink" title="6.3.3.2 代码中窗口API的调用"></a>6.3.3.2 代码中窗口API的调用</h4><p>简单来说，窗口操作主要有两部分：</p>
+<ul>
+<li>window assigner</li>
+<li>window functions</li>
+</ul>
+<figure class="highlight java"><table><tr><td class="code"><pre><span class="line">stream.keyBy(&lt;key selector&gt;) .window(&lt;window assigner&gt;) .aggregate(&lt;window function&gt;)</span><br></pre></td></tr></table></figure>
+
+<p>.window() 传入一个窗口分配器</p>
+<p>.aggregate() 传入一个窗口函数，定义窗口具体的处理逻辑</p>
+<h3 id="6-3-4-窗口分配器（Window-Assigners）"><a href="#6-3-4-窗口分配器（Window-Assigners）" class="headerlink" title="6.3.4 窗口分配器（Window Assigners）"></a>6.3.4 窗口分配器（Window Assigners）</h3><p>窗口分配器其实就是在指定窗口的类型。</p>
+<p>keyBy的方法，.window() 传入一个WindowAssigner作为参数，返回WindowedStream。</p>
+<p>Non-keyBy 的方法，调 用.windowAll()方法，同样传入一个 WindowAssigner，返回的是 AllWindowedStream。</p>
+<h4 id="6-3-4-1-时间窗口"><a href="#6-3-4-1-时间窗口" class="headerlink" title="6.3.4.1 时间窗口"></a>6.3.4.1 时间窗口</h4><ol>
+<li>滚动处理时间窗口</li>
+</ol>
+<figure class="highlight java"><table><tr><td class="code"><pre><span class="line">eventDataStreamSource.keyBy()</span><br><span class="line">                      .window(TumblingProcessingTimeWindows.of(Time.seconds(<span class="number">10</span>)))</span><br><span class="line">                      .aggregate()</span><br><span class="line">  <span class="comment">// .of() 方法需要传入一个Time类型的参数size，表示滚动窗口的大小。of(Time.seconds(10))</span></span><br><span class="line">  <span class="comment">// .of() 还有一个重载方法，可以传入两个Time类型的参数： size 和 offset</span></span><br><span class="line"><span class="comment">// size 表示 窗口的大小</span></span><br><span class="line">  <span class="comment">// offset 表示偏移量，例子：从凌晨2点开始。 作用于不同时区</span></span><br><span class="line">  <span class="comment">// .window(TumblingProcessingTimeWindows.of(Time.days(1), Time.hours(-8)))</span></span><br></pre></td></tr></table></figure>
+
+<ol start="2">
+<li>滑动处理时间窗口![Screenshot 2022-05-11 at 13.10.56](&#x2F;Users&#x2F;zhangyuyang&#x2F;Desktop&#x2F;blog&#x2F;source&#x2F;_posts&#x2F;Flink&#x2F;Chapter06&#x2F;Screenshot 2022-05-11 at 13.10.56.png)</li>
+</ol>
+<figure class="highlight java"><table><tr><td class="code"><pre><span class="line">eventDataStreamSource.keyBy()</span><br><span class="line">                            .window(SlidingProcessingTimeWindows.of(Time.seconds(<span class="number">10</span>),Time.seconds(<span class="number">5</span>)))</span><br><span class="line">                            .aggregate()</span><br><span class="line">  <span class="comment">// 窗口函数也可增加偏移量</span></span><br></pre></td></tr></table></figure>
+
+<ol start="3">
+<li>处理时间会话窗口</li>
+</ol>
+<figure class="highlight java"><table><tr><td class="code"><pre><span class="line">eventDataStreamSource.keyBy()</span><br><span class="line">                            .window(ProcessingTimeSessionWindows.withGap(Time.seconds(<span class="number">10</span>)))</span><br><span class="line">                            .aggregate()</span><br><span class="line">  </span><br><span class="line">  <span class="comment">// 需要调用 .withGap 或者 withDynamicGap</span></span><br><span class="line">  </span><br><span class="line">  </span><br><span class="line">  withDynamicGap 需要传入  SessionWindowTimeGapExtracto 作为参数，来定义 seesion gap的动态提取逻辑</span><br><span class="line">  eventDataStreamSource.keyBy()                   .window(ProcessingTimeSessionWindows.withDynamicGap(<span class="keyword">new</span> <span class="title class_">SessionWindowTimeGapExtractor</span>&lt;Event&gt;() &#123;</span><br><span class="line"> <span class="meta">@Override</span></span><br><span class="line"><span class="keyword">public</span> <span class="type">long</span> <span class="title function_">extract</span><span class="params">(Event event)</span> &#123;<span class="keyword">return</span> event.timestamp;&#125;&#125;)</span><br><span class="line">                            )</span><br><span class="line">                             .aggregate()</span><br><span class="line">  </span><br></pre></td></tr></table></figure>
+
+<ol start="4">
+<li>滚动事件时间窗口： window(TumblingEventTimeWindows.of(Time.seconds(5)))</li>
+<li>滑动事件时间窗口： window(SlidingEventTimeWindows.of(Time.seconds(10), Time.seconds(5)))</li>
+<li>事件时间会话窗口：window(EventTimeSessionWindows.withGap(Time.seconds(10)))</li>
+</ol>
+<h4 id="6-3-4-2-计数窗口"><a href="#6-3-4-2-计数窗口" class="headerlink" title="6.3.4.2 计数窗口"></a>6.3.4.2 计数窗口</h4><ol>
+<li>滚动计数窗口</li>
+</ol>
+<figure class="highlight java"><table><tr><td class="code"><pre><span class="line">stream.keyBy()</span><br><span class="line">  		.countWindow(<span class="number">10</span>)</span><br></pre></td></tr></table></figure>
+
+<ol start="2">
+<li>滑动计数窗口</li>
+</ol>
+<figure class="highlight java"><table><tr><td class="code"><pre><span class="line">stream.keyBy()</span><br><span class="line">  		.countwindon(<span class="number">10</span>,<span class="number">3</span>)</span><br></pre></td></tr></table></figure>
+
+
+
+<h4 id="6-3-4-3-全局窗口"><a href="#6-3-4-3-全局窗口" class="headerlink" title="6.3.4.3 全局窗口"></a>6.3.4.3 全局窗口</h4><figure class="highlight java"><table><tr><td class="code"><pre><span class="line">stream.keyBY()</span><br><span class="line">  		.window(GlobalWindows.create());</span><br></pre></td></tr></table></figure>
+
+<h3 id="6-3-5-窗口函数（Window-Fucntions）"><a href="#6-3-5-窗口函数（Window-Fucntions）" class="headerlink" title="6.3.5 窗口函数（Window Fucntions）"></a>6.3.5 窗口函数（Window Fucntions）</h3><p>![Screenshot 2022-05-11 at 13.21.33](&#x2F;Users&#x2F;zhangyuyang&#x2F;Desktop&#x2F;blog&#x2F;source&#x2F;_posts&#x2F;Flink&#x2F;Chapter06&#x2F;Screenshot 2022-05-11 at 13.21.33.png)</p>
+<p>窗口函数主要可以分成两类：</p>
+<ul>
+<li>增量聚合函数（incremental aggregation function）<ul>
+<li>归约函数（ReduceFunction）</li>
+</ul>
+</li>
+<li>全窗口函数 （full window fucntion）</li>
+</ul>
+<ol>
+<li>增量聚合函数（incremental aggregation function）</li>
+</ol>
+<p> 归约函数（ReduceFunction）</p>
+<p>将窗口中收集到的数据两两进行归约。当我们进行流处 理时，就是要保存一个状态;每来一个新的数据，就和之前的聚合状态做归约</p>
+<figure class="highlight java"><table><tr><td class="code"><pre><span class="line">```</span><br><span class="line"></span><br><span class="line"></span><br><span class="line"></span><br><span class="line">聚合函数（AggregateFunction）</span><br><span class="line"></span><br><span class="line">取消中间状态，比如计算平均值</span><br><span class="line"></span><br><span class="line">基于 WindowedStream调用 .aggregte() 方法， 需要闯入一个 AggregateFunction的实现类作为参数。</span><br><span class="line"></span><br><span class="line"><span class="number">2.</span> 全窗口函数（Full window functions）</span><br><span class="line"></span><br><span class="line">相当于批处理模式，攒数据，然后处理</span><br><span class="line"></span><br><span class="line">窗口函数（WindowFunction）</span><br><span class="line"></span><br><span class="line">处理窗口函数（ProcessWindowFucntion）</span><br><span class="line"></span><br><span class="line"><span class="number">3.</span> 增量聚合和窗口函数的结合使用</span><br><span class="line"></span><br><span class="line"></span><br><span class="line"></span><br><span class="line"></span><br><span class="line"></span><br><span class="line">### <span class="number">6.3</span><span class="number">.7</span> 其他API</span><br><span class="line"></span><br><span class="line">#### <span class="number">6.3</span><span class="number">.7</span><span class="number">.1</span> 触发器（Tigger）</span><br><span class="line"></span><br><span class="line">触发器主要用来控制窗口什么时候出发计算。</span><br><span class="line"></span><br><span class="line">触发器是窗口算子的内部属性，每个WindowAssigner 都会对应一个默认的触发器。</span><br><span class="line"></span><br><span class="line">Trigger是一个抽象类：</span><br><span class="line"></span><br><span class="line">* onElement（）： 每个元素到来，都会调用这个函数</span><br><span class="line">* onEvenTime（）： 注册的事件时间定时器触发调用</span><br><span class="line">* onProcessingTime（）： 当注册的处理时间定时器触发时，调用</span><br><span class="line">* clear（）： 当窗口关闭销毁时调用</span><br><span class="line"></span><br><span class="line">前三个方法的返回类型都是TriggerResult，这是一个<span class="keyword">enum</span>：</span><br><span class="line"></span><br><span class="line">* CONTINUE： 什么都不做</span><br><span class="line">* FIRE：触发计算，输出结果</span><br><span class="line">* PURGE：清空窗口中的所有数据，销毁窗口</span><br><span class="line">* FIRE_AND_PURGE：触发计算结果，并清楚窗口</span><br><span class="line"></span><br><span class="line">#### <span class="number">6.3</span><span class="number">.7</span><span class="number">.2</span> 移除器（Evictor）</span><br><span class="line"></span><br><span class="line">用来定义移除某些数据的逻辑。基于WindowedStream调用 .evictor() 方法，可以自定义一个evictor， 是一个接口。</span><br><span class="line"></span><br><span class="line">```java</span><br><span class="line">stream.keyBy()</span><br><span class="line">  		.window()</span><br><span class="line">  		.evictor(<span class="keyword">new</span> <span class="title class_">MyEvictor</span>())</span><br></pre></td></tr></table></figure>
+
+<p>Evictor 接口定义了两种方法：</p>
+<ul>
+<li>evictBefore（）：定义执行窗口函数之前的移除数据操作</li>
+<li>evictAfter（）： 定义执行窗口函数之后的数据操作</li>
+</ul>
+<p>默认情况下，预实现的移除器都是在window functions 之前移除的</p>
+<h4 id="6-3-7-3-允许延迟（Allowed-Lateness）"><a href="#6-3-7-3-允许延迟（Allowed-Lateness）" class="headerlink" title="6.3.7.3 允许延迟（Allowed Lateness）"></a>6.3.7.3 允许延迟（Allowed Lateness）</h4><p>调用 allowedLateness接口，传入时间，表示延迟等待</p>
+<figure class="highlight java"><table><tr><td class="code"><pre><span class="line">stream.keyBy(...)</span><br><span class="line">      .window(TumblingEventTimeWindows.of(Time.hours(<span class="number">1</span>)))</span><br><span class="line">      .allowedLateness(Time.minutes(<span class="number">1</span>))</span><br></pre></td></tr></table></figure>
+
+<h4 id="6-3-7-4-将迟到的数据放入侧输出流"><a href="#6-3-7-4-将迟到的数据放入侧输出流" class="headerlink" title="6.3.7.4 将迟到的数据放入侧输出流"></a>6.3.7.4 将迟到的数据放入侧输出流</h4><p>另一种处理迟到数据的方法：将未收入窗口的迟到数据，放入 side output，进行另外的处理。</p>
+<p>调用 .sideOutputLateData()  方法，需要传入一个输出标签 （OutputTag）</p>
+<figure class="highlight java"><table><tr><td class="code"><pre><span class="line">stream.keyBy(...)</span><br><span class="line">      .window(TumblingEventTimeWindows.of(Time.hours(<span class="number">1</span>)))</span><br><span class="line">     .sideOutputLateData(outputTag)</span><br></pre></td></tr></table></figure>
+
+<p>将数据放入侧输出流之后，还可以将其提取出来。</p>
+<figure class="highlight java"><table><tr><td class="code"><pre><span class="line">DataStream&lt;Event&gt; lateStream = winAggStream.getSideOutput(outputTag);</span><br></pre></td></tr></table></figure>
+
+<h3 id="6-3-8-窗口的生命周期"><a href="#6-3-8-窗口的生命周期" class="headerlink" title="6.3.8 窗口的生命周期"></a>6.3.8 窗口的生命周期</h3><h4 id="6-3-8-1-窗口的创建"><a href="#6-3-8-1-窗口的创建" class="headerlink" title="6.3.8.1 窗口的创建"></a>6.3.8.1 窗口的创建</h4><p>由 window assigners 指定，窗口不会预先创建好，而是由数据驱动</p>
+<h4 id="6-3-8-2-窗口计算的触发"><a href="#6-3-8-2-窗口计算的触发" class="headerlink" title="6.3.8.2 窗口计算的触发"></a>6.3.8.2 窗口计算的触发</h4><p>每个窗口由自己的 window functions 和 trigger。</p>
+<p>window functions可以分为： </p>
+<ul>
+<li>增量聚合函数</li>
+<li>全窗口函数</li>
+</ul>
+<p>触发器时指定调用窗口函数的条件</p>
+<h4 id="6-3-8-3-窗口的销毁"><a href="#6-3-8-3-窗口的销毁" class="headerlink" title="6.3.8.3 窗口的销毁"></a>6.3.8.3 窗口的销毁</h4><p>一般情况下，当时间达到了结束点，就会直接触发计算输出结果、进而清除状态销毁窗口。</p>
+<p>Flink 只对TimeWindow 有销毁机制；</p>
+<h4 id="6-3-8-4-窗口API调用总结"><a href="#6-3-8-4-窗口API调用总结" class="headerlink" title="6.3.8.4 窗口API调用总结"></a>6.3.8.4 窗口API调用总结</h4><p>![Screenshot 2022-05-12 at 12.37.58](&#x2F;Users&#x2F;zhangyuyang&#x2F;Desktop&#x2F;blog&#x2F;source&#x2F;_posts&#x2F;Flink&#x2F;Chapter06&#x2F;Screenshot 2022-05-12 at 12.37.58.png)</p>
+<h2 id="6-4-迟到数据的处理"><a href="#6-4-迟到数据的处理" class="headerlink" title="6.4 迟到数据的处理"></a>6.4 迟到数据的处理</h2><h3 id="6-4-1-设置水位线延迟时间"><a href="#6-4-1-设置水位线延迟时间" class="headerlink" title="6.4.1 设置水位线延迟时间"></a>6.4.1 设置水位线延迟时间</h3><p>水位线是所有事件时间定时器触发的判断标准。</p>
+<h3 id="6-4-2-允许窗口处理迟到数据"><a href="#6-4-2-允许窗口处理迟到数据" class="headerlink" title="6.4.2 允许窗口处理迟到数据"></a>6.4.2 允许窗口处理迟到数据</h3><p>设置窗口延迟，在水位线到达窗口结束时间时，先近似输出一个计算结果。然后保持窗口继续。等待延迟数据，窗口重新计算，再次输出</p>
+<h4 id="6-4-3-将迟到数据放到side-output"><a href="#6-4-3-将迟到数据放到side-output" class="headerlink" title="6.4.3. 将迟到数据放到side output"></a>6.4.3. 将迟到数据放到side output</h4>]]></content>
   </entry>
   <entry>
     <title>post</title>
