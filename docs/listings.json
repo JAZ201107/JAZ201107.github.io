@@ -2,11 +2,11 @@
   {
     "listing": "/index.html",
     "items": [
-      "/posts/Reinforcement Learning/test.html",
       "/posts/post-with-code/index.html",
       "/posts/test_side_bar/another.html",
       "/posts/test_side_bar/test.html",
-      "/posts/welcome/index.html"
+      "/posts/welcome/index.html",
+      "/posts/Reinforcement Learning/test.html"
     ]
   }
 ]
