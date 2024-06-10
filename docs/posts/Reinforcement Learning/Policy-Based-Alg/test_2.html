@@ -6,10 +6,10 @@
 
 <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=yes">
 
-<meta name="author" content="Yuyang">
-<meta name="dcterms.date" content="2024-01-01">
+<meta name="author" content="Harlow Malloc">
+<meta name="dcterms.date" content="2024-06-08">
 
-<title>Yuyang's Blog – Test Deployment</title>
+<title>Yuyang's Blog – Post With Code V2</title>
 <style>
 code{white-space: pre-wrap;}
 span.smallcaps{font-variant: small-caps;}
@@ -22,30 +22,64 @@ ul.task-list li input[type="checkbox"] {
   margin: 0 0.8em 0.2em -1em; /* quarto-specific, see https://github.com/quarto-dev/quarto-cli/issues/4556 */ 
   vertical-align: middle;
 }
+/* CSS for syntax highlighting */
+pre > code.sourceCode { white-space: pre; position: relative; }
+pre > code.sourceCode > span { line-height: 1.25; }
+pre > code.sourceCode > span:empty { height: 1.2em; }
+.sourceCode { overflow: visible; }
+code.sourceCode > span { color: inherit; text-decoration: inherit; }
+div.sourceCode { margin: 1em 0; }
+pre.sourceCode { margin: 0; }
+@media screen {
+div.sourceCode { overflow: auto; }
+}
+@media print {
+pre > code.sourceCode { white-space: pre-wrap; }
+pre > code.sourceCode > span { display: inline-block; text-indent: -5em; padding-left: 5em; }
+}
+pre.numberSource code
+  { counter-reset: source-line 0; }
+pre.numberSource code > span
+  { position: relative; left: -4em; counter-increment: source-line; }
+pre.numberSource code > span > a:first-child::before
+  { content: counter(source-line);
+    position: relative; left: -1em; text-align: right; vertical-align: baseline;
+    border: none; display: inline-block;
+    -webkit-touch-callout: none; -webkit-user-select: none;
+    -khtml-user-select: none; -moz-user-select: none;
+    -ms-user-select: none; user-select: none;
+    padding: 0 4px; width: 4em;
+  }
+pre.numberSource { margin-left: 3em;  padding-left: 4px; }
+div.sourceCode
+  {   }
+@media screen {
+pre > code.sourceCode > span > a:first-child::before { text-decoration: underline; }
+}
 </style>
 
 
-<script src="../../site_libs/quarto-nav/quarto-nav.js"></script>
-<script src="../../site_libs/quarto-nav/headroom.min.js"></script>
-<script src="../../site_libs/clipboard/clipboard.min.js"></script>
-<script src="../../site_libs/quarto-search/autocomplete.umd.js"></script>
-<script src="../../site_libs/quarto-search/fuse.min.js"></script>
-<script src="../../site_libs/quarto-search/quarto-search.js"></script>
-<meta name="quarto:offset" content="../../">
-<link href="../../images.jpeg" rel="icon" type="image/jpeg">
-<script src="../../site_libs/quarto-listing/list.min.js"></script>
-<script src="../../site_libs/quarto-listing/quarto-listing.js"></script>
-<script src="../../site_libs/quarto-html/quarto.js"></script>
-<script src="../../site_libs/quarto-html/popper.min.js"></script>
-<script src="../../site_libs/quarto-html/tippy.umd.min.js"></script>
-<script src="../../site_libs/quarto-html/anchor.min.js"></script>
-<link href="../../site_libs/quarto-html/tippy.css" rel="stylesheet">
-<link href="../../site_libs/quarto-html/quarto-syntax-highlighting.css" rel="stylesheet" class="quarto-color-scheme" id="quarto-text-highlighting-styles">
-<link href="../../site_libs/quarto-html/quarto-syntax-highlighting-dark.css" rel="prefetch" class="quarto-color-scheme quarto-color-alternate" id="quarto-text-highlighting-styles">
-<script src="../../site_libs/bootstrap/bootstrap.min.js"></script>
-<link href="../../site_libs/bootstrap/bootstrap-icons.css" rel="stylesheet">
-<link href="../../site_libs/bootstrap/bootstrap.min.css" rel="stylesheet" class="quarto-color-scheme" id="quarto-bootstrap" data-mode="light">
-<link href="../../site_libs/bootstrap/bootstrap-dark.min.css" rel="prefetch" class="quarto-color-scheme quarto-color-alternate" id="quarto-bootstrap" data-mode="dark">
+<script src="../../../site_libs/quarto-nav/quarto-nav.js"></script>
+<script src="../../../site_libs/quarto-nav/headroom.min.js"></script>
+<script src="../../../site_libs/clipboard/clipboard.min.js"></script>
+<script src="../../../site_libs/quarto-search/autocomplete.umd.js"></script>
+<script src="../../../site_libs/quarto-search/fuse.min.js"></script>
+<script src="../../../site_libs/quarto-search/quarto-search.js"></script>
+<meta name="quarto:offset" content="../../../">
+<link href="../../../images.jpeg" rel="icon" type="image/jpeg">
+<script src="../../../site_libs/quarto-listing/list.min.js"></script>
+<script src="../../../site_libs/quarto-listing/quarto-listing.js"></script>
+<script src="../../../site_libs/quarto-html/quarto.js"></script>
+<script src="../../../site_libs/quarto-html/popper.min.js"></script>
+<script src="../../../site_libs/quarto-html/tippy.umd.min.js"></script>
+<script src="../../../site_libs/quarto-html/anchor.min.js"></script>
+<link href="../../../site_libs/quarto-html/tippy.css" rel="stylesheet">
+<link href="../../../site_libs/quarto-html/quarto-syntax-highlighting.css" rel="stylesheet" class="quarto-color-scheme" id="quarto-text-highlighting-styles">
+<link href="../../../site_libs/quarto-html/quarto-syntax-highlighting-dark.css" rel="prefetch" class="quarto-color-scheme quarto-color-alternate" id="quarto-text-highlighting-styles">
+<script src="../../../site_libs/bootstrap/bootstrap.min.js"></script>
+<link href="../../../site_libs/bootstrap/bootstrap-icons.css" rel="stylesheet">
+<link href="../../../site_libs/bootstrap/bootstrap.min.css" rel="stylesheet" class="quarto-color-scheme" id="quarto-bootstrap" data-mode="light">
+<link href="../../../site_libs/bootstrap/bootstrap-dark.min.css" rel="prefetch" class="quarto-color-scheme quarto-color-alternate" id="quarto-bootstrap" data-mode="dark">
 <script id="quarto-search-options" type="application/json">{
   "location": "navbar",
   "copy-button": false,
@@ -134,10 +168,10 @@ window.Quarto = {
 };
 </script>
 
-<link rel="stylesheet" href="../../styles.css">
-<meta name="twitter:title" content="Yuyang’s Blog - Test Deployment">
+<link rel="stylesheet" href="../../../styles.css">
+<meta name="twitter:title" content="Yuyang’s Blog - Post With Code V2">
 <meta name="twitter:description" content="">
-<meta name="twitter:image" content="q-learning.png">
+<meta name="twitter:image" content="image.jpg">
 <meta name="twitter:card" content="summary_large_image">
 </head>
 
@@ -148,7 +182,7 @@ window.Quarto = {
     <nav class="navbar navbar-expand-lg " data-bs-theme="dark">
       <div class="navbar-container container-fluid">
       <div class="navbar-brand-container mx-auto">
-    <a class="navbar-brand" href="../../index.html">
+    <a class="navbar-brand" href="../../../index.html">
     <span class="navbar-title">Yuyang’s Blog</span>
     </a>
   </div>
@@ -159,7 +193,7 @@ window.Quarto = {
           <div class="collapse navbar-collapse" id="navbarCollapse">
             <ul class="navbar-nav navbar-nav-scroll ms-auto">
   <li class="nav-item">
-    <a class="nav-link" href="../../about.html"> 
+    <a class="nav-link" href="../../../about.html"> 
 <span class="menu-text">About</span></a>
   </li>  
   <li class="nav-item compact">
@@ -189,9 +223,11 @@ window.Quarto = {
 <header id="title-block-header" class="quarto-title-block default toc-left page-columns page-full">
   <div class="quarto-title-banner page-columns page-full">
     <div class="quarto-title column-body">
-      <h1 class="title">Test Deployment</h1>
+      <h1 class="title">Post With Code V2</h1>
                                 <div class="quarto-categories">
-                <div class="quarto-category">test</div>
+                <div class="quarto-category">news</div>
+                <div class="quarto-category">code</div>
+                <div class="quarto-category">analysis</div>
               </div>
                   </div>
   </div>
@@ -202,14 +238,14 @@ window.Quarto = {
       <div>
       <div class="quarto-title-meta-heading">Author</div>
       <div class="quarto-title-meta-contents">
-               <p>Yuyang </p>
+               <p>Harlow Malloc </p>
             </div>
     </div>
       
       <div>
       <div class="quarto-title-meta-heading">Published</div>
       <div class="quarto-title-meta-contents">
-        <p class="date">January 1, 2024</p>
+        <p class="date">June 8, 2024</p>
       </div>
     </div>
     
@@ -220,12 +256,32 @@ window.Quarto = {
   </header><div id="quarto-content" class="quarto-container page-columns page-rows-contents page-layout-article page-navbar">
 <!-- sidebar -->
   <nav id="quarto-sidebar" class="sidebar collapse collapse-horizontal quarto-sidebar-collapse-item sidebar-navigation floating overflow-auto">
-    
+    <nav id="TOC" role="doc-toc" class="toc-active">
+    <h2 id="toc-title">Table of Content</h2>
+   
+  <ul>
+  <li><a href="#markov-property" id="toc-markov-property" class="nav-link active" data-scroll-target="#markov-property">Markov Property</a></li>
+  <li><a href="#mdp" id="toc-mdp" class="nav-link" data-scroll-target="#mdp">MDP</a>
+  <ul class="collapse">
+  <li><a href="#discount-factor-gamma" id="toc-discount-factor-gamma" class="nav-link" data-scroll-target="#discount-factor-gamma">Discount Factor <span class="math inline">\(\gamma\)</span></a></li>
+  </ul></li>
+  <li><a href="#solving-mdp" id="toc-solving-mdp" class="nav-link" data-scroll-target="#solving-mdp">Solving MDP</a>
+  <ul class="collapse">
+  <li><a href="#bellman-equation" id="toc-bellman-equation" class="nav-link" data-scroll-target="#bellman-equation">Bellman Equation</a>
+  <ul class="collapse">
+  <li><a href="#value-iteration" id="toc-value-iteration" class="nav-link" data-scroll-target="#value-iteration">Value Iteration</a></li>
+  <li><a href="#q-value-iteration" id="toc-q-value-iteration" class="nav-link" data-scroll-target="#q-value-iteration">Q-Value Iteration</a></li>
+  <li><a href="#policy-iteration" id="toc-policy-iteration" class="nav-link" data-scroll-target="#policy-iteration">Policy Iteration</a></li>
+  </ul></li>
+  </ul></li>
+  <li><a href="#practice-example" id="toc-practice-example" class="nav-link" data-scroll-target="#practice-example">Practice Example</a></li>
+  </ul>
+</nav>
 </nav>
 <div id="quarto-sidebar-glass" class="quarto-sidebar-collapse-item" data-bs-toggle="collapse" data-bs-target=".quarto-sidebar-collapse-item"></div>
 <!-- margin-sidebar -->
     <div id="quarto-margin-sidebar" class="sidebar margin-sidebar">
-    <h5 class="quarto-listing-category-title">Categories</h5><div class="quarto-listing-category category-default"><div class="category" data-category="">All <span class="quarto-category-count">(2)</span></div><div class="category" data-category="new">new <span class="quarto-category-count">(1)</span></div></div></div>
+    <h5 class="quarto-listing-category-title">Categories</h5><div class="quarto-listing-category category-default"><div class="category" data-category="">All <span class="quarto-category-count">(1)</span></div><div class="category" data-category="new">new <span class="quarto-category-count">(1)</span></div></div></div>
 <!-- main -->
 <main class="content quarto-banner-title-block" id="quarto-document-content">
 
@@ -233,47 +289,183 @@ window.Quarto = {
 
 
 
-<p>Antother test render</p>
+<blockquote class="blockquote">
+<p>MDPs are a classical formalisation of <strong>sequential decision making</strong>, where actions influence not just immediate rewards, but also subsequent situations, or states, and through those future rewards. <u></u></p>
+</blockquote>
+<blockquote class="blockquote">
+<p>[!important] Reinforcement Learning has an underlying MDP, and <u>the goal of reinforcement learning is to solve this MDP by deriving an optimal policy</u></p>
+</blockquote>
+<section id="markov-property" class="level1">
+<h1>Markov Property</h1>
+<p>Markov property, also called, <strong>memoryless property</strong>, is means that the future and the past are conditionally independent, given the present. Intuitively, this means that, if we know the present state, knowing the past doesn’t give us any more information about the future.</p>
+<p>Mathematically, the probability that this agent then arrives at state <span class="math inline">\(s_{t+1}\)</span> given their <strong>history</strong> of previous states visited and actions taken can be written as follows: ^history</p>
+<p><span class="math display">\[
+P(S_{t + 1} = s_{t + 1} | S_t = s_t, A_t = a_t, S_{t - 1} = s_{t - 1}, A_{t-1} = a_{t-1}, ..., S_0 = s_0)
+\]</span></p>
+<p>The Markov property states that the above probability can be simplified as: <span class="math display">\[
+P(S_{t+1}=s_{t+1} | S_t = s_t, A_t = a_t)
+\]</span></p>
+<p>In fact, these memoryless probabilities is encoded by the <strong>transition function</strong>: ^tf <span class="math display">\[
+T(s, a, s') = P(s' | s, a)
+\]</span></p>
+</section>
+<section id="mdp" class="level1">
+<h1>MDP</h1>
+<p>Markov Decision Process (MDP) is defined by several properties: * A set of state <span class="math inline">\(S\)</span> * A set of actions <span class="math inline">\(A\)</span> * A start state <span class="math inline">\(s_0\)</span> * Possibly one or more terminal states * Possibly a <strong>discount factor</strong> <span class="math inline">\(\gamma\)</span> * A <strong>transition function</strong> <span class="math inline">\(T(s, a, s')\)</span>: is a probability function which represents the probability that an agent taking an action <span class="math inline">\(a \in A\)</span> from a state <span class="math inline">\(s \in S\)</span> ends up in a state <span class="math inline">\(s' \in S\)</span> * A <strong>reward function</strong> <span class="math inline">\(R(s, a, s')\)</span>: a reward at each step is <u>assign to agent after it took a step</u>. The agent’s objective is naturally to acquire the maximum reward possible before arriving at some terminal state. (The maximum is usually made by optimal policy)</p>
+<section id="discount-factor-gamma" class="level2">
+<h2 class="anchored" data-anchor-id="discount-factor-gamma">Discount Factor <span class="math inline">\(\gamma\)</span></h2>
+<p>It introduced to model an <u>exponential decay</u> in value of rewards over time. So the value function is <span class="math display">\[
+V(s) = \sum_{t=0}^{\infty}\textcolor{red}{\gamma^{t}}R(s_t, a_t, s_{t+1})
+\]</span></p>
+<p>According to <strong>geometric series</strong>, is the above function is guaranteed to be finite-values as long as the <span class="math inline">\(|\gamma| &lt; 1\)</span> <span class="math display">\[
+V(s) \leq \sum_{t=0}^{\infty}\gamma^tR_{max} = \frac {R_{max}} { 1- \gamma}
+\]</span> where, <span class="math inline">\(R_{max}\)</span> is the maximum possible reward attainable at any given timestep in the MDP.</p>
+<blockquote class="blockquote">
+<p>[!Info] The <span class="math inline">\(\gamma\)</span> value is selected strictly from the range <span class="math inline">\(0 &lt; \gamma &lt; 1\)</span> since values values in the range <span class="math inline">\(−1 &lt; \gamma ≤ 0\)</span> are simply not meaningful in most real-world situations</p>
+</blockquote>
+</section>
+</section>
+<section id="solving-mdp" class="level1">
+<h1>Solving MDP</h1>
+<p>Solving a Markov decision process, means finding an <strong>optimal policy</strong> <span class="math inline">\(\pi^* : S \rightarrow A\)</span> a function mapping each state <span class="math inline">\(s \in S\)</span> to an action <span class="math inline">\(a \in A\)</span>. An optimal policy is one that if followed by the agent, will yield the <em>maximum expected total reward</em>.</p>
+<section id="bellman-equation" class="level2">
+<h2 class="anchored" data-anchor-id="bellman-equation">Bellman Equation</h2>
+<p>The optimal value of a state <span class="math inline">\(s, V^{*}(s)\)</span> is the expected value of the utility an optimally-behaving (follow policy) agent that starts in <span class="math inline">\(s\)</span> will receive, over the rest of the agent’s lifetime. The optimal value (<strong>Q-value</strong>) of a Q-state <span class="math inline">\(Q^*(s, a)\)</span> is the expected value of the utility an agent receives after starting in <span class="math inline">\(s\)</span>, taking <span class="math inline">\(a\)</span> and acting optimally henceforth ^q-value</p>
+<div class="callout callout-style-default callout-note callout-titled">
+<div class="callout-header d-flex align-content-center">
+<div class="callout-icon-container">
+<i class="callout-icon"></i>
+</div>
+<div class="callout-title-container flex-fill">
+Note
+</div>
+</div>
+<div class="callout-body-container callout-body">
+<p>Q-state, also know as <strong>action state</strong>, is the combine of agent in state <span class="math inline">\(s\)</span>, and take action <span class="math inline">\(a\)</span></p>
+</div>
+</div>
+<p>The Bellman Equation for value function is define as follows: <span class="math display">\[
+V^*(s) = \max_{a} \sum_{s'} T(s, a, s')\left[ R(s, a, s') + \gamma V*(s')\right]
+\]</span> For Q-value function is define as follows: <span class="math display">\[
+Q^*(s, a) = \sum_{s'} T(s, a, s')\left[ R(s, a, s') + \gamma V*(s')\right]
+\]</span> <span class="math inline">\(R(s, a, s')\)</span> is <strong>immediate rewards</strong> ^immediate-reward</p>
+<blockquote class="blockquote">
+<p>[!Info] As showing above: <span class="math display">\[
+V^*(s) = \max_a Q^*(s, a)
+\]</span></p>
+</blockquote>
+<p>The Bellman equation is an example of a <strong>dynamic programming equation</strong>. The Q-value is a weighted sum of utilities, with each utility weighted by the probability of<span class="math inline">\(T(s, a, s')\)</span>. This define the <strong>expected utility</strong> of action optimally from Q-state <span class="math inline">\((s,a)\)</span></p>
+<p>The <span class="math inline">\(V^*(s)\)</span> is the <strong>maximum expected utility</strong> over all possible actions from <span class="math inline">\(s\)</span>.</p>
+<blockquote class="blockquote">
+<p>[!question] BE usage is as a condition for optimality. In other words, if we can somehow determine a value U(s) for every state s ∈ S such that the Bellman equation holds true for each of these states, we can conclude that these values are the optimal values for their respective states. Indeed, satisfying this condition implies ∀s ∈ S, <span class="math inline">\(V(s) = V^*(s)\)</span></p>
+</blockquote>
+<section id="value-iteration" class="level3">
+<h3 class="anchored" data-anchor-id="value-iteration">Value Iteration</h3>
+<p>To solve the optimal values, we need <strong>time-limited values</strong>. The time-limited value for a state <span class="math inline">\(s\)</span> with a time-limit of <span class="math inline">\(k\)</span> timesteps is denoted <span class="math inline">\(V_k(s)\)</span>, and represents the maximum expected value attainable from <span class="math inline">\(s\)</span> given that MDP under consideration terminated in <span class="math inline">\(k\)</span> timesteps.</p>
+<p>Value iteration is a dynamic programming algorithm that uses an iteratively longer time limit to compute time-limited values until convergence <span class="math display">\[\forall s,\ V_{k+1}(s) = V_k(s)\]</span> It operates as follows: 1. <span class="math inline">\(\forall s \in S\)</span>, initialize <span class="math inline">\(V_0(s) = 0\)</span>. 2. Repeat the following update rule utile convergence: <span class="math display">\[
+\forall s \in S,\ V_{k + 1}(s) \leftarrow \max_a\sum_{s'}T(s, a, s')\left[R(s, a, s') + \gamma V_k(s') \right]
+\]</span></p>
+<p>The Bellman Equation gives a condition for optimality, while update rule gives a method to iteratively update values util convergence. The above function for short is <span class="math display">\[
+V_{k + 1} \leftarrow BV_k
+\]</span> where <span class="math inline">\(B\)</span> is called the <strong>Bellman operator</strong>. which is contraction by <span class="math inline">\(\gamma\)</span> .</p>
+<section id="policy-extraction" class="level4">
+<h4 class="anchored" data-anchor-id="policy-extraction">Policy Extraction</h4>
+<p>The intuition behind policy extraction is very simple: if you’re in a state <span class="math inline">\(s\)</span>, you should take the action <span class="math inline">\(a\)</span> which yields the maximum expected value.</p>
+<p><span class="math display">\[
+\forall s \in S, \pi^*(s) = \underset{a}{\mathrm{argmax}}Q^*(s, a)
+\]</span></p>
+<blockquote class="blockquote">
+<p>[!Info] For performance reasons that it’s better for policy extraction to have the optimal Q-values of states, in which case a single <code>argmax</code> operation is all that is required to determine the optimal action from a state.</p>
+</blockquote>
+</section>
+</section>
+<section id="q-value-iteration" class="level3">
+<h3 class="anchored" data-anchor-id="q-value-iteration">Q-Value Iteration</h3>
+<p>Q-value iteration is a dynamic programming algorithm that computes time-limited Q-values. <span class="math display">\[
+Q_{k+1}(s, a) \leftarrow \sum_{s'}T(s, a, s')\left[R(s, a, s') + \gamma \max_{a'} Q_k(s', a') \right]
+\]</span></p>
+</section>
+<section id="policy-iteration" class="level3">
+<h3 class="anchored" data-anchor-id="policy-iteration">Policy Iteration</h3>
+<p>Value iteration can be quite slow. At each iteration, we must update the values of all <span class="math inline">\(|S|\)</span> states, each requires iteration over all <span class="math inline">\(|A|\)</span> actions. The computation of each of these Q-Values, requires iteration over each of <span class="math inline">\(|S|\)</span> states again, leading to runtime of <span class="math inline">\(O(|S|^2|A|)\)</span></p>
+<p>To solve this flaw, we can use <strong>policy iteration</strong>. It operates as follows: 1. Define an <strong>initial policy</strong>. 2. Repeat the following until convergence: 1. Evaluate the current policy with <strong>policy evaluation</strong>. For a policy <span class="math inline">\(\pi\)</span> , policy evaluation means computing <span class="math inline">\(V^{\pi}(s)\)</span> for all states <span class="math inline">\(s\)</span>, where <span class="math inline">\(V^{\pi}\)</span> is expected value of starting in state <span class="math inline">\(s\)</span> when following <span class="math inline">\(\pi\)</span>: <span class="math display">\[
+V^{\pi} = \sum_{s'}T(s, \pi(s), s')\left[ R(s, \pi(s), s' )  + \gamma V^{\pi}(s')\right]
+\]</span> 2. Define the policy at iteration <span class="math inline">\(i\)</span> as <span class="math inline">\(\pi_i\)</span>. We can updated value function</p>
+<p><span class="math display">\[
+    V^{\pi_i}_{k+1} \leftarrow \sum_{s'}T(s, \pi(s), s')\left[ R(s, \pi(s), s' )  + \gamma V^{\pi_i}_k (s')\right]
+\]</span></p>
+<pre><code>3. Once evaluate the current policy, use **policy improvement** to generate a better policy: </code></pre>
+<p><span class="math display">\[
+\pi_{i+1}(s) = \underset{a}{\mathrm{argmax}} \sum_{s'}T(s, a, s')\left[ R(s, a, s') + \gamma V^{\pi_i}(s') \right]
+\]</span></p>
+</section>
+</section>
+</section>
+<section id="practice-example" class="level1">
+<h1>Practice Example</h1>
+<div class="code-with-filename">
+<div class="code-with-filename-file">
+<pre><strong>run.py</strong></pre>
+</div>
+<div class="sourceCode" id="cb2" data-filename="run.py"><pre class="sourceCode numberSource python number-lines code-with-copy"><code class="sourceCode python"><span id="cb2-1"><a href="#cb2-1"></a><span class="bu">print</span>(<span class="st">"Hello World"</span>)</span>
+<span id="cb2-2"><a href="#cb2-2"></a><span class="dv">1</span> <span class="op">+</span> <span class="dv">1</span> </span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+</div>
+<div class="sourceCode" id="cb3"><pre class="sourceCode numberSource python number-lines code-with-copy"><code class="sourceCode python"><span id="cb3-1"><a href="#cb3-1"></a><span class="bu">print</span>(<span class="st">"1 + 1"</span>)</span>
+<span id="cb3-2"><a href="#cb3-2"></a><span class="cf">for</span> i <span class="kw">in</span> <span class="bu">range</span>(<span class="dv">10</span>):</span>
+<span id="cb3-3"><a href="#cb3-3"></a>  <span class="bu">print</span>(i)</span>
+<span id="cb3-4"><a href="#cb3-4"></a>  <span class="cf">if</span> i <span class="op">==</span> <span class="dv">1</span>:</span>
+<span id="cb3-5"><a href="#cb3-5"></a>    <span class="cf">break</span></span>
+<span id="cb3-6"><a href="#cb3-6"></a>  <span class="cf">else</span>:</span>
+<span id="cb3-7"><a href="#cb3-7"></a>    <span class="cf">continue</span> </span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<p>For a demonstration of a line plot on a polar axis, see <a href="#fig-polar" class="quarto-xref">Figure&nbsp;1</a>.</p>
+<div id="cell-fig-polar" class="cell" data-execution_count="1">
+<details class="code-fold">
+<summary>Code</summary>
+<div class="sourceCode cell-code" id="cb4"><pre class="sourceCode numberSource python number-lines code-with-copy"><code class="sourceCode python"><span id="cb4-1"><a href="#cb4-1"></a><span class="im">import</span> numpy <span class="im">as</span> np</span>
+<span id="cb4-2"><a href="#cb4-2"></a><span class="im">import</span> matplotlib.pyplot <span class="im">as</span> plt</span>
+<span id="cb4-3"><a href="#cb4-3"></a></span>
+<span id="cb4-4"><a href="#cb4-4"></a>r <span class="op">=</span> np.arange(<span class="dv">0</span>, <span class="dv">2</span>, <span class="fl">0.01</span>)</span>
+<span id="cb4-5"><a href="#cb4-5"></a>theta <span class="op">=</span> <span class="dv">2</span> <span class="op">*</span> np.pi <span class="op">*</span> r</span>
+<span id="cb4-6"><a href="#cb4-6"></a>fig, ax <span class="op">=</span> plt.subplots(</span>
+<span id="cb4-7"><a href="#cb4-7"></a>  subplot_kw <span class="op">=</span> {<span class="st">'projection'</span>: <span class="st">'polar'</span>} </span>
+<span id="cb4-8"><a href="#cb4-8"></a>)</span>
+<span id="cb4-9"><a href="#cb4-9"></a>ax.plot(theta, r)</span>
+<span id="cb4-10"><a href="#cb4-10"></a>ax.set_rticks([<span class="fl">0.5</span>, <span class="dv">1</span>, <span class="fl">1.5</span>, <span class="dv">2</span>])</span>
+<span id="cb4-11"><a href="#cb4-11"></a>ax.grid(<span class="va">True</span>)</span>
+<span id="cb4-12"><a href="#cb4-12"></a>plt.show()</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+</details>
+<div class="cell-output cell-output-display">
+<div id="fig-polar" class="quarto-float quarto-figure quarto-figure-center anchored">
+<figure class="quarto-float quarto-float-fig figure">
+<div aria-describedby="fig-polar-caption-0ceaefa1-69ba-4598-a22c-09a6ac19f8ca">
+<img src="test_2_files/figure-html/fig-polar-output-1.png" width="450" height="439" class="figure-img">
+</div>
+<figcaption class="quarto-float-caption-bottom quarto-float-caption quarto-float-fig" id="fig-polar-caption-0ceaefa1-69ba-4598-a22c-09a6ac19f8ca">
+Figure&nbsp;1: A line plot on a polar axis
+</figcaption>
+</figure>
+</div>
+</div>
+</div>
 
 
 
+</section>
 
 <div class="quarto-listing quarto-listing-container-default" id="listing-listing">
 <div class="list quarto-listing-default">
-<div class="quarto-post image-right" data-index="0" data-listing-file-modified-sort="1717830522757" data-listing-reading-time-sort="1" data-listing-word-count-sort="5">
+<div class="quarto-post image-right" data-index="0" data-categories="new" data-listing-date-sort="1717776000000" data-listing-file-modified-sort="1718031455404" data-listing-date-modified-sort="NaN" data-listing-reading-time-sort="1" data-listing-word-count-sort="1">
 <div class="thumbnail">
-<p><a href="../../posts/Reinforcement Learning/test_2.html" class="no-external"></a></p><a href="../../posts/Reinforcement Learning/test_2.html" class="no-external">
-<p class="card-img-top"><img src="test_2_files/figure-html/fig-polar-output-1.png"  class="thumbnail-image card-img"/></p>
-</a><p><a href="../../posts/Reinforcement Learning/test_2.html" class="no-external"></a></p>
+<p><a href="../../../posts/Reinforcement Learning/Policy-Based-Alg/REINFORCE.html" class="no-external"></a></p><a href="../../../posts/Reinforcement Learning/Policy-Based-Alg/REINFORCE.html" class="no-external">
+<p><img loading="lazy" src="../../../posts/Reinforcement Learning/Policy-Based-Alg/Images/REINFORCE.jpg" class="thumbnail-image"></p>
+</a><p><a href="../../../posts/Reinforcement Learning/Policy-Based-Alg/REINFORCE.html" class="no-external"></a></p>
 </div>
 <div class="body">
 <h3 class="no-anchor listing-title">
-<a href="../../posts/Reinforcement Learning/test_2.html" class="no-external">My Notebook</a>
+<a href="../../../posts/Reinforcement Learning/Policy-Based-Alg/REINFORCE.html" class="no-external">REINFORCE</a>
 </h3>
 <div class="listing-subtitle">
-<a href="../../posts/Reinforcement Learning/test_2.html" class="no-external"></a>
-</div>
-<div class="listing-description">
-<a href="../../posts/Reinforcement Learning/test_2.html" class="no-external">such as in Figure&nbsp;1</a>
-</div>
-</div>
-<div class="metadata">
-<p><a href="../../posts/Reinforcement Learning/test_2.html" class="no-external"></a></p><a href="../../posts/Reinforcement Learning/test_2.html" class="no-external">
-</a>
-</div>
-</div>
-<div class="quarto-post image-right" data-index="1" data-categories="new" data-listing-date-sort="1717776000000" data-listing-file-modified-sort="1718031455404" data-listing-date-modified-sort="NaN" data-listing-reading-time-sort="1" data-listing-word-count-sort="1">
-<div class="thumbnail">
-<p><a href="../../posts/Reinforcement Learning/Policy-Based-Alg/REINFORCE.html" class="no-external"></a></p><a href="../../posts/Reinforcement Learning/Policy-Based-Alg/REINFORCE.html" class="no-external">
-<p><img loading="lazy" src="../../posts/Reinforcement Learning/Policy-Based-Alg/Images/REINFORCE.jpg" class="thumbnail-image"></p>
-</a><p><a href="../../posts/Reinforcement Learning/Policy-Based-Alg/REINFORCE.html" class="no-external"></a></p>
-</div>
-<div class="body">
-<h3 class="no-anchor listing-title">
-<a href="../../posts/Reinforcement Learning/Policy-Based-Alg/REINFORCE.html" class="no-external">REINFORCE</a>
-</h3>
-<div class="listing-subtitle">
-<a href="../../posts/Reinforcement Learning/Policy-Based-Alg/REINFORCE.html" class="no-external"></a>
+<a href="../../../posts/Reinforcement Learning/Policy-Based-Alg/REINFORCE.html" class="no-external"></a>
 </div>
 <div class="listing-categories">
 <div class="listing-category" onclick="window.quartoListingCategory('new'); return false;">
@@ -281,11 +473,11 @@ new
 </div>
 </div>
 <div class="listing-description">
-<a href="../../posts/Reinforcement Learning/Policy-Based-Alg/REINFORCE.html" class="no-external">This article is my understanding of REINFOCE, one of the most basic policy-based algorithm</a>
+<a href="../../../posts/Reinforcement Learning/Policy-Based-Alg/REINFORCE.html" class="no-external">This article is my understanding of REINFOCE, one of the most basic policy-based algorithm</a>
 </div>
 </div>
 <div class="metadata">
-<a href="../../posts/Reinforcement Learning/Policy-Based-Alg/REINFORCE.html" class="no-external">
+<a href="../../../posts/Reinforcement Learning/Policy-Based-Alg/REINFORCE.html" class="no-external">
 <div class="listing-date">
 Jun 8, 2024
 </div>
@@ -869,5 +1061,5 @@ window.document.addEventListener("DOMContentLoaded", function (event) {
 
 
 
-<script src="../../site_libs/quarto-html/zenscroll-min.js"></script>
+<script src="../../../site_libs/quarto-html/zenscroll-min.js"></script>
 </body></html>

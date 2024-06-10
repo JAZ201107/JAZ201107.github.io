@@ -68,8 +68,6 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
 <script src="../../site_libs/quarto-search/quarto-search.js"></script>
 <meta name="quarto:offset" content="../../">
 <link href="../../images.jpeg" rel="icon" type="image/jpeg">
-<script src="../../site_libs/quarto-listing/list.min.js"></script>
-<script src="../../site_libs/quarto-listing/quarto-listing.js"></script>
 <script src="../../site_libs/quarto-html/quarto.js"></script>
 <script src="../../site_libs/quarto-html/popper.min.js"></script>
 <script src="../../site_libs/quarto-html/tippy.umd.min.js"></script>
@@ -108,35 +106,6 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
     "search-label": "Search"
   }
 }</script>
-<script>
-
-  window.document.addEventListener("DOMContentLoaded", function (_event) {
-    const listingTargetEl = window.document.querySelector('#listing-listing .list');
-    if (!listingTargetEl) {
-      // No listing discovered, do not attach.
-      return; 
-    }
-
-    const options = {
-      valueNames: ['listing-categories',{ data: ['index'] },{ data: ['categories'] },{ data: ['listing-date-sort'] },{ data: ['listing-file-modified-sort'] }],
-      
-      searchColumns: ["listing-categories"],
-    };
-
-    window['quarto-listings'] = window['quarto-listings'] || {};
-    window['quarto-listings']['listing-listing'] = new List('listing-listing', options);
-
-    if (window['quarto-listing-loaded']) {
-      window['quarto-listing-loaded']();
-    }
-  });
-
-  window.addEventListener('hashchange',() => {
-    if (window['quarto-listing-loaded']) {
-      window['quarto-listing-loaded']();
-    }
-  })
-  </script>
 <style>html{ scroll-behavior: smooth; }</style>
 
   <script src="https://cdnjs.cloudflare.com/polyfill/v3/polyfill.min.js?features=es6"></script>
@@ -231,9 +200,7 @@ window.Quarto = {
         </div>
       </div>
                           <div class="quarto-categories">
-                <div class="quarto-category">news</div>
-                <div class="quarto-category">code</div>
-                <div class="quarto-category">analysis</div>
+                <div class="quarto-category">PRML</div>
               </div>
                   </div>
   </div>
@@ -273,8 +240,8 @@ window.Quarto = {
 </nav>
 <div id="quarto-sidebar-glass" class="quarto-sidebar-collapse-item" data-bs-toggle="collapse" data-bs-target=".quarto-sidebar-collapse-item"></div>
 <!-- margin-sidebar -->
-    <div id="quarto-margin-sidebar" class="sidebar margin-sidebar">
-    <h5 class="quarto-listing-category-title">Categories</h5><div class="quarto-listing-category category-default"><div class="category" data-category="">All <span class="quarto-category-count">(0)</span></div></div></div>
+    <div id="quarto-margin-sidebar" class="sidebar margin-sidebar zindex-bottom">
+    </div>
 <!-- main -->
 <main class="content quarto-banner-title-block" id="quarto-document-content">
 
@@ -287,7 +254,7 @@ window.Quarto = {
 </section>
 <section id="polynomial-curve-fitting" class="level1">
 <h1>Polynomial Curve Fitting</h1>
-<div id="cell-fig-example" class="cell" data-execution_count="1">
+<div id="cell-fig-1-2" class="cell" data-execution_count="1">
 <details class="code-fold">
 <summary>Code</summary>
 <div class="sourceCode cell-code" id="cb1"><pre class="sourceCode numberSource python number-lines code-with-copy"><code class="sourceCode python"><span id="cb1-1"><a href="#cb1-1"></a><span class="im">import</span> numpy <span class="im">as</span> np</span>
@@ -296,29 +263,23 @@ window.Quarto = {
 <span id="cb1-4"><a href="#cb1-4"></a></span>
 <span id="cb1-5"><a href="#cb1-5"></a></span>
 <span id="cb1-6"><a href="#cb1-6"></a>x <span class="op">=</span> np.linspace(<span class="dv">0</span>, <span class="dv">1</span>, <span class="dv">10</span>)</span>
-<span id="cb1-7"><a href="#cb1-7"></a>x_lin <span class="op">=</span> np.linspace(<span class="dv">0</span>, <span class="dv">1</span>, <span class="dv">100</span>)</span>
-<span id="cb1-8"><a href="#cb1-8"></a>t <span class="op">=</span> np.sin(x <span class="op">*</span> <span class="dv">2</span> <span class="op">*</span> np.pi) <span class="op">+</span> np.random.normal(<span class="dv">0</span>, <span class="fl">0.3</span>, size<span class="op">=</span>x.size)</span>
-<span id="cb1-9"><a href="#cb1-9"></a>y <span class="op">=</span> np.sin(x_lin <span class="op">*</span> <span class="dv">2</span> <span class="op">*</span> np.pi)</span>
-<span id="cb1-10"><a href="#cb1-10"></a></span>
-<span id="cb1-11"><a href="#cb1-11"></a><span class="co"># scatter_plot = go.Scatter(x=x, y=t, mode='markers', name='$t$')</span></span>
-<span id="cb1-12"><a href="#cb1-12"></a><span class="co"># line_plot = go.Scatter(x = x_lin, y=y, mode='lines', name='$t=\sin(2 \pi x)$')</span></span>
+<span id="cb1-7"><a href="#cb1-7"></a>t <span class="op">=</span> np.sin(x <span class="op">*</span> <span class="dv">2</span> <span class="op">*</span> np.pi) <span class="op">+</span> np.random.normal(<span class="dv">0</span>, <span class="fl">0.3</span>, size<span class="op">=</span>x.size, )</span>
+<span id="cb1-8"><a href="#cb1-8"></a>plt.scatter(x, t,marker<span class="op">=</span><span class="st">'o'</span>, facecolors<span class="op">=</span><span class="st">'none'</span>, edgecolors<span class="op">=</span><span class="st">'b'</span>, s<span class="op">=</span><span class="dv">80</span>)</span>
+<span id="cb1-9"><a href="#cb1-9"></a></span>
+<span id="cb1-10"><a href="#cb1-10"></a>x_lin <span class="op">=</span> np.linspace(<span class="dv">0</span>, <span class="dv">1</span>, <span class="dv">100</span>)</span>
+<span id="cb1-11"><a href="#cb1-11"></a>y <span class="op">=</span> np.sin(x_lin <span class="op">*</span> <span class="dv">2</span> <span class="op">*</span> np.pi)</span>
+<span id="cb1-12"><a href="#cb1-12"></a>plt.plot(x_lin, y, <span class="st">'g'</span>)</span>
 <span id="cb1-13"><a href="#cb1-13"></a></span>
-<span id="cb1-14"><a href="#cb1-14"></a><span class="co"># fig = go.Figure(data=[scatter_plot, line_plot])</span></span>
-<span id="cb1-15"><a href="#cb1-15"></a></span>
-<span id="cb1-16"><a href="#cb1-16"></a><span class="co"># fig.update_layout(yaxis_title='y', xaxis_title='x')</span></span>
-<span id="cb1-17"><a href="#cb1-17"></a><span class="co"># fig.show()</span></span>
-<span id="cb1-18"><a href="#cb1-18"></a>plt.scatter(x, t)</span>
-<span id="cb1-19"><a href="#cb1-19"></a>plt.plot(x_lin, y)</span>
-<span id="cb1-20"><a href="#cb1-20"></a>plt.show()</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<span id="cb1-14"><a href="#cb1-14"></a>plt.show()<span class="op">;</span></span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 </details>
 <div class="cell-output cell-output-display">
-<div id="fig-example" class="quarto-float quarto-figure quarto-figure-center anchored">
+<div id="fig-1-2" class="quarto-float quarto-figure quarto-figure-center anchored">
 <figure class="quarto-float quarto-float-fig figure">
-<div aria-describedby="fig-example-caption-0ceaefa1-69ba-4598-a22c-09a6ac19f8ca">
-<img src="chapter01_files/figure-html/fig-example-output-1.png" width="582" height="415" class="figure-img">
+<div aria-describedby="fig-1-2-caption-0ceaefa1-69ba-4598-a22c-09a6ac19f8ca">
+<img src="chapter01_files/figure-html/fig-1-2-output-1.png" width="582" height="411" class="figure-img">
 </div>
-<figcaption class="quarto-float-caption-bottom quarto-float-caption quarto-float-fig" id="fig-example-caption-0ceaefa1-69ba-4598-a22c-09a6ac19f8ca">
-Figure&nbsp;1: Life Expectancy and GDP
+<figcaption class="quarto-float-caption-bottom quarto-float-caption quarto-float-fig" id="fig-1-2-caption-0ceaefa1-69ba-4598-a22c-09a6ac19f8ca">
+Figure&nbsp;1: training data and function
 </figcaption>
 </figure>
 </div>
@@ -336,17 +297,9 @@ Figure&nbsp;1: Life Expectancy and GDP
 </ol>
 
 
-
 </section>
 
-<div class="quarto-listing quarto-listing-container-default" id="listing-listing">
-<div class="list quarto-listing-default">
-
-</div>
-<div class="listing-no-matching d-none">
-No matching items
-</div>
-</div><a onclick="window.scrollTo(0, 0); return false;" role="button" id="quarto-back-to-top"><i class="bi bi-arrow-up"></i> Back to top</a></main> <!-- /main -->
+<a onclick="window.scrollTo(0, 0); return false;" role="button" id="quarto-back-to-top"><i class="bi bi-arrow-up"></i> Back to top</a></main> <!-- /main -->
 <script id="quarto-html-after-body" type="application/javascript">
 window.document.addEventListener("DOMContentLoaded", function (event) {
   const toggleBodyColorMode = (bsSheetEl) => {

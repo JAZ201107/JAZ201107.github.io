@@ -6,10 +6,11 @@
 
 <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=yes">
 
-<meta name="author" content="Yuyang">
-<meta name="dcterms.date" content="2024-01-01">
+<meta name="author" content="Yuyang Zhang">
+<meta name="dcterms.date" content="2024-06-08">
+<meta name="description" content="This article is my understanding of Normalizing Flow">
 
-<title>Yuyang's Blog – Test Deployment</title>
+<title>Yuyang's Blog – Normalizing Flow</title>
 <style>
 code{white-space: pre-wrap;}
 span.smallcaps{font-variant: small-caps;}
@@ -33,8 +34,6 @@ ul.task-list li input[type="checkbox"] {
 <script src="../../site_libs/quarto-search/quarto-search.js"></script>
 <meta name="quarto:offset" content="../../">
 <link href="../../images.jpeg" rel="icon" type="image/jpeg">
-<script src="../../site_libs/quarto-listing/list.min.js"></script>
-<script src="../../site_libs/quarto-listing/quarto-listing.js"></script>
 <script src="../../site_libs/quarto-html/quarto.js"></script>
 <script src="../../site_libs/quarto-html/popper.min.js"></script>
 <script src="../../site_libs/quarto-html/tippy.umd.min.js"></script>
@@ -73,71 +72,13 @@ ul.task-list li input[type="checkbox"] {
     "search-label": "Search"
   }
 }</script>
-<script>
-
-  window.document.addEventListener("DOMContentLoaded", function (_event) {
-    const listingTargetEl = window.document.querySelector('#listing-listing .list');
-    if (!listingTargetEl) {
-      // No listing discovered, do not attach.
-      return; 
-    }
-
-    const options = {
-      valueNames: ['listing-date','listing-title','listing-author','listing-image','listing-description','listing-categories',{ data: ['index'] },{ data: ['categories'] },{ data: ['listing-date-sort'] },{ data: ['listing-file-modified-sort'] }],
-      
-      searchColumns: ["listing-date","listing-title","listing-author","listing-image","listing-description","listing-categories"],
-    };
-
-    window['quarto-listings'] = window['quarto-listings'] || {};
-    window['quarto-listings']['listing-listing'] = new List('listing-listing', options);
-
-    if (window['quarto-listing-loaded']) {
-      window['quarto-listing-loaded']();
-    }
-  });
-
-  window.addEventListener('hashchange',() => {
-    if (window['quarto-listing-loaded']) {
-      window['quarto-listing-loaded']();
-    }
-  })
-  </script>
 <style>html{ scroll-behavior: smooth; }</style>
 
-  <script src="https://cdnjs.cloudflare.com/polyfill/v3/polyfill.min.js?features=es6"></script>
-  <script src="https://cdn.jsdelivr.net/npm/mathjax@3/es5/tex-chtml-full.js" type="text/javascript"></script>
-
-<script type="text/javascript">
-const typesetMath = (el) => {
-  if (window.MathJax) {
-    // MathJax Typeset
-    window.MathJax.typeset([el]);
-  } else if (window.katex) {
-    // KaTeX Render
-    var mathElements = el.getElementsByClassName("math");
-    var macros = [];
-    for (var i = 0; i < mathElements.length; i++) {
-      var texText = mathElements[i].firstChild;
-      if (mathElements[i].tagName == "SPAN") {
-        window.katex.render(texText.data, mathElements[i], {
-          displayMode: mathElements[i].classList.contains('display'),
-          throwOnError: false,
-          macros: macros,
-          fleqn: false
-        });
-      }
-    }
-  }
-}
-window.Quarto = {
-  typesetMath
-};
-</script>
 
 <link rel="stylesheet" href="../../styles.css">
-<meta name="twitter:title" content="Yuyang’s Blog - Test Deployment">
-<meta name="twitter:description" content="">
-<meta name="twitter:image" content="q-learning.png">
+<meta name="twitter:title" content="Yuyang’s Blog - Normalizing Flow">
+<meta name="twitter:description" content="This article is my understanding of Normalizing Flow">
+<meta name="twitter:image" content="Images/NF.jpg">
 <meta name="twitter:card" content="summary_large_image">
 </head>
 
@@ -189,9 +130,17 @@ window.Quarto = {
 <header id="title-block-header" class="quarto-title-block default toc-left page-columns page-full">
   <div class="quarto-title-banner page-columns page-full">
     <div class="quarto-title column-body">
-      <h1 class="title">Test Deployment</h1>
-                                <div class="quarto-categories">
-                <div class="quarto-category">test</div>
+      <h1 class="title">Normalizing Flow</h1>
+                  <div>
+        <div class="description">
+          This article is my understanding of Normalizing Flow
+        </div>
+      </div>
+                          <div class="quarto-categories">
+                <div class="quarto-category">Generative Model</div>
+                <div class="quarto-category">Un-supervised</div>
+                <div class="quarto-category">Stanford CS236</div>
+                <div class="quarto-category">UCB CS294</div>
               </div>
                   </div>
   </div>
@@ -202,14 +151,14 @@ window.Quarto = {
       <div>
       <div class="quarto-title-meta-heading">Author</div>
       <div class="quarto-title-meta-contents">
-               <p>Yuyang </p>
+               <p>Yuyang Zhang </p>
             </div>
     </div>
       
       <div>
       <div class="quarto-title-meta-heading">Published</div>
       <div class="quarto-title-meta-contents">
-        <p class="date">January 1, 2024</p>
+        <p class="date">June 8, 2024</p>
       </div>
     </div>
     
@@ -220,12 +169,19 @@ window.Quarto = {
   </header><div id="quarto-content" class="quarto-container page-columns page-rows-contents page-layout-article page-navbar">
 <!-- sidebar -->
   <nav id="quarto-sidebar" class="sidebar collapse collapse-horizontal quarto-sidebar-collapse-item sidebar-navigation floating overflow-auto">
-    
+    <nav id="TOC" role="doc-toc" class="toc-active">
+    <h2 id="toc-title">Table of Content</h2>
+   
+  <ul>
+  <li><a href="#autoregressive-model" id="toc-autoregressive-model" class="nav-link active" data-scroll-target="#autoregressive-model">Autoregressive Model</a></li>
+  <li><a href="#reference" id="toc-reference" class="nav-link" data-scroll-target="#reference">Reference</a></li>
+  </ul>
+</nav>
 </nav>
 <div id="quarto-sidebar-glass" class="quarto-sidebar-collapse-item" data-bs-toggle="collapse" data-bs-target=".quarto-sidebar-collapse-item"></div>
 <!-- margin-sidebar -->
-    <div id="quarto-margin-sidebar" class="sidebar margin-sidebar">
-    <h5 class="quarto-listing-category-title">Categories</h5><div class="quarto-listing-category category-default"><div class="category" data-category="">All <span class="quarto-category-count">(2)</span></div><div class="category" data-category="new">new <span class="quarto-category-count">(1)</span></div></div></div>
+    <div id="quarto-margin-sidebar" class="sidebar margin-sidebar zindex-bottom">
+    </div>
 <!-- main -->
 <main class="content quarto-banner-title-block" id="quarto-document-content">
 
@@ -233,73 +189,20 @@ window.Quarto = {
 
 
 
-<p>Antother test render</p>
+<section id="autoregressive-model" class="level1">
+<h1>Autoregressive Model</h1>
+</section>
+<section id="reference" class="level1">
+<h1>Reference</h1>
+<ul>
+<li><a href="https://deepgenerativemodels.github.io/syllabus.html">Stanford CS236: Deep Generative Models</a></li>
+<li><a href="https://sites.google.com/view/berkeley-cs294-158-sp24/home">UCB CS294 :Deep Unsupervised Learning</a></li>
+</ul>
 
 
+</section>
 
-
-<div class="quarto-listing quarto-listing-container-default" id="listing-listing">
-<div class="list quarto-listing-default">
-<div class="quarto-post image-right" data-index="0" data-listing-file-modified-sort="1717830522757" data-listing-reading-time-sort="1" data-listing-word-count-sort="5">
-<div class="thumbnail">
-<p><a href="../../posts/Reinforcement Learning/test_2.html" class="no-external"></a></p><a href="../../posts/Reinforcement Learning/test_2.html" class="no-external">
-<p class="card-img-top"><img src="test_2_files/figure-html/fig-polar-output-1.png"  class="thumbnail-image card-img"/></p>
-</a><p><a href="../../posts/Reinforcement Learning/test_2.html" class="no-external"></a></p>
-</div>
-<div class="body">
-<h3 class="no-anchor listing-title">
-<a href="../../posts/Reinforcement Learning/test_2.html" class="no-external">My Notebook</a>
-</h3>
-<div class="listing-subtitle">
-<a href="../../posts/Reinforcement Learning/test_2.html" class="no-external"></a>
-</div>
-<div class="listing-description">
-<a href="../../posts/Reinforcement Learning/test_2.html" class="no-external">such as in Figure&nbsp;1</a>
-</div>
-</div>
-<div class="metadata">
-<p><a href="../../posts/Reinforcement Learning/test_2.html" class="no-external"></a></p><a href="../../posts/Reinforcement Learning/test_2.html" class="no-external">
-</a>
-</div>
-</div>
-<div class="quarto-post image-right" data-index="1" data-categories="new" data-listing-date-sort="1717776000000" data-listing-file-modified-sort="1718031455404" data-listing-date-modified-sort="NaN" data-listing-reading-time-sort="1" data-listing-word-count-sort="1">
-<div class="thumbnail">
-<p><a href="../../posts/Reinforcement Learning/Policy-Based-Alg/REINFORCE.html" class="no-external"></a></p><a href="../../posts/Reinforcement Learning/Policy-Based-Alg/REINFORCE.html" class="no-external">
-<p><img loading="lazy" src="../../posts/Reinforcement Learning/Policy-Based-Alg/Images/REINFORCE.jpg" class="thumbnail-image"></p>
-</a><p><a href="../../posts/Reinforcement Learning/Policy-Based-Alg/REINFORCE.html" class="no-external"></a></p>
-</div>
-<div class="body">
-<h3 class="no-anchor listing-title">
-<a href="../../posts/Reinforcement Learning/Policy-Based-Alg/REINFORCE.html" class="no-external">REINFORCE</a>
-</h3>
-<div class="listing-subtitle">
-<a href="../../posts/Reinforcement Learning/Policy-Based-Alg/REINFORCE.html" class="no-external"></a>
-</div>
-<div class="listing-categories">
-<div class="listing-category" onclick="window.quartoListingCategory('new'); return false;">
-new
-</div>
-</div>
-<div class="listing-description">
-<a href="../../posts/Reinforcement Learning/Policy-Based-Alg/REINFORCE.html" class="no-external">This article is my understanding of REINFOCE, one of the most basic policy-based algorithm</a>
-</div>
-</div>
-<div class="metadata">
-<a href="../../posts/Reinforcement Learning/Policy-Based-Alg/REINFORCE.html" class="no-external">
-<div class="listing-date">
-Jun 8, 2024
-</div>
-<div class="listing-author">
-Yuyang Zhang
-</div>
-</a>
-</div>
-</div>
-</div>
-<div class="listing-no-matching d-none">
-No matching items
-</div>
-</div><a onclick="window.scrollTo(0, 0); return false;" role="button" id="quarto-back-to-top"><i class="bi bi-arrow-up"></i> Back to top</a></main> <!-- /main -->
+<a onclick="window.scrollTo(0, 0); return false;" role="button" id="quarto-back-to-top"><i class="bi bi-arrow-up"></i> Back to top</a></main> <!-- /main -->
 <script id="quarto-html-after-body" type="application/javascript">
 window.document.addEventListener("DOMContentLoaded", function (event) {
   const toggleBodyColorMode = (bsSheetEl) => {
