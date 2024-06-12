@@ -49,6 +49,7 @@
     "listing": "/index.html",
     "items": [
       "/posts/Reinforcement Learning/test_2.html",
+      "/posts/DLFC/Chapter02 Probabilities.html",
       "/posts/Reinforcement Learning/Policy-Based-Alg/TRPO.html",
       "/posts/Reinforcement Learning/Policy-Based-Alg/DDPG.html",
       "/posts/Reinforcement Learning/Policy-Based-Alg/PPO.html",
