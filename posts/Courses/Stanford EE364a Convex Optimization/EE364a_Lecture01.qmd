@@ -1,0 +1,114 @@
+---
+title: "Stanford EE364A Convex Optimization Lecture 01: Introduction"
+author: "Yuyang Zhang"
+date: "2024-06-19"
+image: "Images/Lecture01.jpg"
+description: "An post about PRML chapter 01 introduction"
+categories: ["EE364A"]
+execute:
+  freeze: auto
+---
+
+
+# Optimization Problem
+$$
+\begin{gather}
+\text{minimize} & f_0(x) \\
+\text{subject to} &  f_i(x) \leq 0 \quad i =  1, \dots, m \\
+& g_i(x) = 0 \quad i =  1  \dots, p \\
+\end{gather}
+$$
+
+* $x \in \mathbf{R}^n$  is (vector) variable to be chosen to 
+* $f_0: \mathbf{R}^n \to \mathbf{R} $ is the **objective function** to be minimized or (maxizimed)
+* $f_1, \dots, f_m: \mathbf{R}^n \to \mathbf{R}$ are the **inequality constraint** functions
+* $g_1, \dots, g_p$ are **equality constraint** functions
+
+Solution or optimal point $x^{\star}$ has smallest value of $f_0$ among all vector that staisfy the constraints
+
+For example, in machine learning problem:
+*  $x$ represents the parametrs in a model 
+*  the constraints impose requirements on model parameters (e.g. nonnegativity)
+*  The objective function $f_0(x)$ is the sum of two terms:
+   *  a prediction error(also called loss) on some observed data
+   *  a (regularization) term that penelized model complexity 
+
+
+# Solving Optimization problem
+* General optimization problem:
+  * Very difficult to solve 
+  * methods involve some compromise, e.g.
+    * very long computation time 
+    * not always finding the solution
+* Exception: certain problem classes can be solved efficiently and reliable:
+  * Lear-Squared Problems
+  * Linear Programming Problems 
+  * Convex Optimization
+
+## Lear-Squared Problems
+
+$$
+\text{minimize} \quad || Ax - b ||_{2}^{2}
+$$
+
+
+
+Solving least squares problems:
+* Analytical solution (closed form): $x^{\star} = (A^\mathrm{T}A)^{-1}A^\mathrm{T}b$
+The computation time proportional to $n^2k (A\in \mathbf{R}^{k \times n})$ 
+
+* Least-Squares problems are easy to recognization (e.g. the regression problem)
+* A few standard techniques increase flexible :
+  * Including weights 
+  * Adding regularization terms 
+
+
+## Linear Programming 
+
+
+$$
+\begin{gather}
+\text{minimize} & c^{\mathrm{T}}x \\
+\text{subject to} &  a_{i}^{\mathrm{T}}x \leq b_i \quad i =  1, \dots, m \\
+
+\end{gather}
+$$
+
+Solving linear programs:
+* No analytical formula for solution 
+* Computation time porportional to $n^2m$ if $m \geq n$
+
+Using Linear programming:
+* Not as easy as recognize as least-square problems
+* A few standard tricks used to convert problem into linear programming 
+  * Problems involving $\ell_1-$ or $\ell_{\infty}-$ norms
+  * Piecewise-lienar function 
+
+## Convex Optimization problem
+$$
+\begin{gather}
+\text{minimize} & f_{0}(x) \\
+\text{subject to} &  f_{i}(x) \leq b_i \quad i =  1, \dots, m \\
+\end{gather}
+$$
+
+* Objective $f_0$ and constraint functions $f_i(x)$ are convex:
+
+$$
+\begin{align}
+& f_i(\alpha x + \beta y)  \leq \alpha f_i(x) + \beta f_i(y)   \\ 
+& \alpha + \beta  = 1 \text{ and } \alpha  \geq 0 , \beta  \geq 0 
+\end{align}
+$$
+Include Least-Square problems and linear programs as special case. 
+
+
+Solving convex optimzation problems
+* No analytical solution
+
+Using convex optimizatoin
+* Often difficult to recognize 
+* many tricks for transforming problems into convex form
+* Almost any problem can be solved via convex optimization
+
+cle
