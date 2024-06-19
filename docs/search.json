@@ -1,0 +1,30 @@
+[
+  {
+    "objectID": "posts/Courses/Stanford EE364a Convex Optimization/EE364a_Lecture01.html",
+    "href": "posts/Courses/Stanford EE364a Convex Optimization/EE364a_Lecture01.html",
+    "title": "Stanford EE364A Convex Optimization Lecture 01: Introduction",
+    "section": "",
+    "text": "\\[\n\\begin{gather}\n\\text{minimize} & f_0(x) \\\\\n\\text{subject to} &  f_i(x) \\leq 0 \\quad i =  1, \\dots, m \\\\\n& g_i(x) = 0 \\quad i =  1  \\dots, p \\\\\n\\end{gather}\n\\]\n\n\\(x \\in \\mathbf{R}^n\\) is (vector) variable to be chosen to\n\\(f_0: \\mathbf{R}^n \\to \\mathbf{R}\\) is the objective function to be minimized or (maxizimed)\n\\(f_1, \\dots, f_m: \\mathbf{R}^n \\to \\mathbf{R}\\) are the inequality constraint functions\n\\(g_1, \\dots, g_p\\) are equality constraint functions\n\nSolution or optimal point \\(x^{\\star}\\) has smallest value of \\(f_0\\) among all vector that staisfy the constraints\nFor example, in machine learning problem: * \\(x\\) represents the parametrs in a model * the constraints impose requirements on model parameters (e.g. nonnegativity) * The objective function \\(f_0(x)\\) is the sum of two terms: * a prediction error(also called loss) on some observed data * a (regularization) term that penelized model complexity"
+  },
+  {
+    "objectID": "posts/Courses/Stanford EE364a Convex Optimization/EE364a_Lecture01.html#lear-squared-problems",
+    "href": "posts/Courses/Stanford EE364a Convex Optimization/EE364a_Lecture01.html#lear-squared-problems",
+    "title": "Stanford EE364A Convex Optimization Lecture 01: Introduction",
+    "section": "Lear-Squared Problems",
+    "text": "Lear-Squared Problems\n\\[\n\\text{minimize} \\quad || Ax - b ||_{2}^{2}\n\\]\nSolving least squares problems: * Analytical solution (closed form): \\(x^{\\star} = (A^\\mathrm{T}A)^{-1}A^\\mathrm{T}b\\) The computation time proportional to \\(n^2k (A\\in \\mathbf{R}^{k \\times n})\\)\n\nLeast-Squares problems are easy to recognization (e.g. the regression problem)\nA few standard techniques increase flexible :\n\nIncluding weights\nAdding regularization terms"
+  },
+  {
+    "objectID": "posts/Courses/Stanford EE364a Convex Optimization/EE364a_Lecture01.html#linear-programming",
+    "href": "posts/Courses/Stanford EE364a Convex Optimization/EE364a_Lecture01.html#linear-programming",
+    "title": "Stanford EE364A Convex Optimization Lecture 01: Introduction",
+    "section": "Linear Programming",
+    "text": "Linear Programming\n\\[\n\\begin{gather}\n\\text{minimize} & c^{\\mathrm{T}}x \\\\\n\\text{subject to} &  a_{i}^{\\mathrm{T}}x \\leq b_i \\quad i =  1, \\dots, m \\\\\n\\end{gather}\n\\]\nSolving linear programs: * No analytical formula for solution * Computation time porportional to \\(n^2m\\) if \\(m \\geq n\\)\nUsing Linear programming: * Not as easy as recognize as least-square problems * A few standard tricks used to convert problem into linear programming * Problems involving \\(\\ell_1-\\) or \\(\\ell_{\\infty}-\\) norms * Piecewise-lienar function"
+  },
+  {
+    "objectID": "posts/Courses/Stanford EE364a Convex Optimization/EE364a_Lecture01.html#convex-optimization-problem",
+    "href": "posts/Courses/Stanford EE364a Convex Optimization/EE364a_Lecture01.html#convex-optimization-problem",
+    "title": "Stanford EE364A Convex Optimization Lecture 01: Introduction",
+    "section": "Convex Optimization problem",
+    "text": "Convex Optimization problem\n\\[\n\\begin{gather}\n\\text{minimize} & f_{0}(x) \\\\\n\\text{subject to} &  f_{i}(x) \\leq b_i \\quad i =  1, \\dots, m \\\\\n\\end{gather}\n\\]\n\nObjective \\(f_0\\) and constraint functions \\(f_i(x)\\) are convex:\n\n\\[\n\\begin{align}\n& f_i(\\alpha x + \\beta y)  \\leq \\alpha f_i(x) + \\beta f_i(y)   \\\\\n& \\alpha + \\beta  = 1 \\text{ and } \\alpha  \\geq 0 , \\beta  \\geq 0\n\\end{align}\n\\] Include Least-Square problems and linear programs as special case.\nSolving convex optimzation problems * No analytical solution\nUsing convex optimizatoin * Often difficult to recognize * many tricks for transforming problems into convex form * Almost any problem can be solved via convex optimization"
+  }
+]
