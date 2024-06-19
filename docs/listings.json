@@ -1,54 +1,9 @@
 [
   {
-    "listing": "/about.html",
-    "items": [
-      "/index.html",
-      "/posts/Reinforcement Learning/test_2.html",
-      "/posts/PRML/chapter01.html",
-      "/posts/test_side_bar/test.html",
-      "/posts/test_side_bar/another.html",
-      "/posts/Reinforcement Learning/Policy-Based-Alg/REINFORCE.html",
-      "/posts/Reinforcement Learning/test.html"
-    ]
-  },
-  {
-    "listing": "/posts/PRML/chapter01.html",
-    "items": []
-  },
-  {
-    "listing": "/posts/test_side_bar/another.html",
-    "items": [
-      "/posts/test_side_bar/test.html"
-    ]
-  },
-  {
-    "listing": "/posts/Reinforcement Learning/test.html",
-    "items": [
-      "/posts/Reinforcement Learning/test_2.html",
-      "/posts/Reinforcement Learning/Policy-Based-Alg/REINFORCE.html"
-    ]
-  },
-  {
-    "listing": "/posts/Reinforcement Learning/Policy-Based-Alg/REINFORCE.html",
-    "items": []
-  },
-  {
-    "listing": "/posts/Reinforcement Learning/test_2.html",
-    "items": [
-      "/posts/Reinforcement Learning/Policy-Based-Alg/REINFORCE.html",
-      "/posts/Reinforcement Learning/test.html"
-    ]
-  },
-  {
-    "listing": "/posts/test_side_bar/test.html",
-    "items": [
-      "/posts/test_side_bar/another.html"
-    ]
-  },
-  {
     "listing": "/index.html",
     "items": [
       "/posts/Reinforcement Learning/test_2.html",
+      "/posts/Courses/Stanford EE364a Convex Optimization/EE364a_Lecture01.html",
       "/posts/DLFC/Chapter02 Probabilities.html",
       "/posts/Reinforcement Learning/Policy-Based-Alg/TRPO.html",
       "/posts/Reinforcement Learning/Policy-Based-Alg/DDPG.html",
@@ -67,14 +22,7 @@
       "/posts/Generative Models/ScoreBased.html",
       "/posts/Generative Models/DiffusionModel.html",
       "/posts/Generative Models/NormalizingFlows.html",
-      "/posts/Courses/Stanford EE364a Convex Optimization/EE364a_Lecture01.html",
       "/posts/PRML/chapter01.html"
-    ]
-  },
-  {
-    "listing": "/posts/Reinforcement Learning/Policy-Based-Alg/test_2.html",
-    "items": [
-      "/posts/Reinforcement Learning/Policy-Based-Alg/REINFORCE.html"
     ]
   }
 ]

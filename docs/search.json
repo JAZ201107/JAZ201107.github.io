@@ -1,171 +1,17 @@
 [
   {
-    "objectID": "about.html",
-    "href": "about.html",
-    "title": "About",
+    "objectID": "test.html",
+    "href": "test.html",
+    "title": "Yuyang's Blog",
     "section": "",
-    "text": "About this blog\n\n\n Back to top"
-  },
-  {
-    "objectID": "posts/PRML/chapter01.html",
-    "href": "posts/PRML/chapter01.html",
-    "title": "PRML Chapter01: Introduction",
-    "section": "",
-    "text": "Overview\n\n\nPolynomial Curve Fitting\n\n\nCode\nimport numpy as np\nimport plotly.graph_objects as go\nimport matplotlib.pyplot as plt \n\n\nx = np.linspace(0, 1, 10)\nt = np.sin(x * 2 * np.pi) + np.random.normal(0, 0.3, size=x.size, )\nplt.scatter(x, t,marker='o', facecolors='none', edgecolors='b', s=80)\n\nx_lin = np.linspace(0, 1, 100)\ny = np.sin(x_lin * 2 * np.pi)\nplt.plot(x_lin, y, 'g')\n\nplt.show();\n\n\n\n\n\n\n\n\nFigure 1: training data and function\n\n\n\n\n\n\\[\n\\mathcal{N} = (0, \\mathrm{I})\n\\tag{1}\\]\nThis equation (Equation 1) refer to.\n\\[\n\\mathcal{N} = (0, \\mathrm{I})\n\\tag{2}\\]\n\nanother\n\n\n\n\n\n Back to top"
-  },
-  {
-    "objectID": "posts/test_side_bar/another.html",
-    "href": "posts/test_side_bar/another.html",
-    "title": "Post With Code V3",
-    "section": "",
-    "text": "MDPs are a classical formalisation of sequential decision making, where actions influence not just immediate rewards, but also subsequent situations, or states, and through those future rewards."
-  },
-  {
-    "objectID": "posts/test_side_bar/another.html#discount-factor-gamma",
-    "href": "posts/test_side_bar/another.html#discount-factor-gamma",
-    "title": "Post With Code V3",
-    "section": "Discount Factor \\(\\gamma\\)",
-    "text": "Discount Factor \\(\\gamma\\)\nIt introduced to model an exponential decay in value of rewards over time. So the value function is \\[\nV(s) = \\sum_{t=0}^{\\infty}\\textcolor{red}{\\gamma^{t}}R(s_t, a_t, s_{t+1})\n\\]\nAccording to geometric series, is the above function is guaranteed to be finite-values as long as the \\(|\\gamma| &lt; 1\\) \\[\nV(s) \\leq \\sum_{t=0}^{\\infty}\\gamma^tR_{max} = \\frac {R_{max}} { 1- \\gamma}\n\\] where, \\(R_{max}\\) is the maximum possible reward attainable at any given timestep in the MDP.\n\n[!Info] The \\(\\gamma\\) value is selected strictly from the range \\(0 &lt; \\gamma &lt; 1\\) since values values in the range \\(−1 &lt; \\gamma ≤ 0\\) are simply not meaningful in most real-world situations"
-  },
-  {
-    "objectID": "posts/test_side_bar/another.html#bellman-equation",
-    "href": "posts/test_side_bar/another.html#bellman-equation",
-    "title": "Post With Code V3",
-    "section": "Bellman Equation",
-    "text": "Bellman Equation\nThe optimal value of a state \\(s, V^{*}(s)\\) is the expected value of the utility an optimally-behaving (follow policy) agent that starts in \\(s\\) will receive, over the rest of the agent’s lifetime. The optimal value (Q-value) of a Q-state \\(Q^*(s, a)\\) is the expected value of the utility an agent receives after starting in \\(s\\), taking \\(a\\) and acting optimally henceforth ^q-value\n\n\n\n\n\n\nNote\n\n\n\nQ-state, also know as action state, is the combine of agent in state \\(s\\), and take action \\(a\\)\n\n\nThe Bellman Equation for value function is define as follows: \\[\nV^*(s) = \\max_{a} \\sum_{s'} T(s, a, s')\\left[ R(s, a, s') + \\gamma V*(s')\\right]\n\\] For Q-value function is define as follows: \\[\nQ^*(s, a) = \\sum_{s'} T(s, a, s')\\left[ R(s, a, s') + \\gamma V*(s')\\right]\n\\] \\(R(s, a, s')\\) is immediate rewards ^immediate-reward\n\n[!Info] As showing above: \\[\nV^*(s) = \\max_a Q^*(s, a)\n\\]\n\nThe Bellman equation is an example of a dynamic programming equation. The Q-value is a weighted sum of utilities, with each utility weighted by the probability of\\(T(s, a, s')\\). This define the expected utility of action optimally from Q-state \\((s,a)\\)\nThe \\(V^*(s)\\) is the maximum expected utility over all possible actions from \\(s\\).\n\n[!question] BE usage is as a condition for optimality. In other words, if we can somehow determine a value U(s) for every state s ∈ S such that the Bellman equation holds true for each of these states, we can conclude that these values are the optimal values for their respective states. Indeed, satisfying this condition implies ∀s ∈ S, \\(V(s) = V^*(s)\\)\n\n\nValue Iteration\nTo solve the optimal values, we need time-limited values. The time-limited value for a state \\(s\\) with a time-limit of \\(k\\) timesteps is denoted \\(V_k(s)\\), and represents the maximum expected value attainable from \\(s\\) given that MDP under consideration terminated in \\(k\\) timesteps.\nValue iteration is a dynamic programming algorithm that uses an iteratively longer time limit to compute time-limited values until convergence \\[\\forall s,\\ V_{k+1}(s) = V_k(s)\\] It operates as follows: 1. \\(\\forall s \\in S\\), initialize \\(V_0(s) = 0\\). 2. Repeat the following update rule utile convergence: \\[\n\\forall s \\in S,\\ V_{k + 1}(s) \\leftarrow \\max_a\\sum_{s'}T(s, a, s')\\left[R(s, a, s') + \\gamma V_k(s') \\right]\n\\]\nThe Bellman Equation gives a condition for optimality, while update rule gives a method to iteratively update values util convergence. The above function for short is \\[\nV_{k + 1} \\leftarrow BV_k\n\\] where \\(B\\) is called the Bellman operator. which is contraction by \\(\\gamma\\) .\n\nPolicy Extraction\nThe intuition behind policy extraction is very simple: if you’re in a state \\(s\\), you should take the action \\(a\\) which yields the maximum expected value.\n\\[\n\\forall s \\in S, \\pi^*(s) = \\underset{a}{\\mathrm{argmax}}Q^*(s, a)\n\\]\n\n[!Info] For performance reasons that it’s better for policy extraction to have the optimal Q-values of states, in which case a single argmax operation is all that is required to determine the optimal action from a state.\n\n\n\n\nQ-Value Iteration\nQ-value iteration is a dynamic programming algorithm that computes time-limited Q-values. \\[\nQ_{k+1}(s, a) \\leftarrow \\sum_{s'}T(s, a, s')\\left[R(s, a, s') + \\gamma \\max_{a'} Q_k(s', a') \\right]\n\\tag{1}\\]\n\n\nPolicy Iteration\nValue iteration can be quite slow. At each iteration, we must update the values of all \\(|S|\\) states, each requires iteration over all \\(|A|\\) actions. The computation of each of these Q-Values, requires iteration over each of \\(|S|\\) states again, leading to runtime of \\(O(|S|^2|A|)\\)\nTo solve this flaw, we can use policy iteration. It operates as follows: 1. Define an initial policy. 2. Repeat the following until convergence: 1. Evaluate the current policy with policy evaluation. For a policy \\(\\pi\\) , policy evaluation means computing \\(V^{\\pi}(s)\\) for all states \\(s\\), where \\(V^{\\pi}\\) is expected value of starting in state \\(s\\) when following \\(\\pi\\): \\[\nV^{\\pi} = \\sum_{s'}T(s, \\pi(s), s')\\left[ R(s, \\pi(s), s' )  + \\gamma V^{\\pi}(s')\\right]\n\\] 2. Define the policy at iteration \\(i\\) as \\(\\pi_i\\). We can updated value function\n\\[\n    V^{\\pi_i}_{k+1} \\leftarrow \\sum_{s'}T(s, \\pi(s), s')\\left[ R(s, \\pi(s), s' )  + \\gamma V^{\\pi_i}_k (s')\\right]\n\\]\n3. Once evaluate the current policy, use **policy improvement** to generate a better policy: \n\\[\n\\pi_{i+1}(s) = \\underset{a}{\\mathrm{argmax}} \\sum_{s'}T(s, a, s')\\left[ R(s, a, s') + \\gamma V^{\\pi_i}(s') \\right]\n\\]"
-  },
-  {
-    "objectID": "posts/Reinforcement Learning/test.html",
-    "href": "posts/Reinforcement Learning/test.html",
-    "title": "Test Deployment",
-    "section": "",
-    "text": "Antother test render\n\n\n\n\n\n\n\n\n\n\n\n\n\n\nMy Notebook\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\nREINFORCE\n\n\n\n\n\n\nnew\n\n\n\nThis article is my understanding of REINFOCE, one of the most basic policy-based algorithm\n\n\n\n\n\nJun 8, 2024\n\n\nYuyang Zhang\n\n\n\n\n\n\nNo matching items\n\n Back to top"
-  },
-  {
-    "objectID": "posts/Reinforcement Learning/Policy-Based-Alg/REINFORCE.html",
-    "href": "posts/Reinforcement Learning/Policy-Based-Alg/REINFORCE.html",
-    "title": "REINFORCE",
-    "section": "",
-    "text": "REINFORCE Algorithm\n\n\n\n\n Back to top"
-  },
-  {
-    "objectID": "posts/Reinforcement Learning/test_2.html",
-    "href": "posts/Reinforcement Learning/test_2.html",
-    "title": "My Notebook",
-    "section": "",
-    "text": "Code\nimport numpy as np\nimport matplotlib.pyplot as plt\n\nr = np.arange(0, 2, 0.01)\ntheta = 2 * np.pi * r\nfig, ax = plt.subplots(subplot_kw={\"projection\": \"polar\"})\nax.plot(theta, r)\nax.set_rticks([0.5, 1, 1.5, 2])\nax.grid(True)\nplt.show()\n\n\n\n\n\n\n\n\nFigure 1: A line plot on a polar axis"
-  },
-  {
-    "objectID": "posts/Reinforcement Learning/test_2.html#head02",
-    "href": "posts/Reinforcement Learning/test_2.html#head02",
-    "title": "My Notebook",
-    "section": "Head02",
-    "text": "Head02\nsuch as in Figure 1"
-  },
-  {
-    "objectID": "posts/test_side_bar/test.html",
-    "href": "posts/test_side_bar/test.html",
-    "title": "Post With Code V2",
-    "section": "",
-    "text": "MDPs are a classical formalisation of sequential decision making, where actions influence not just immediate rewards, but also subsequent situations, or states, and through those future rewards."
-  },
-  {
-    "objectID": "posts/test_side_bar/test.html#discount-factor-gamma",
-    "href": "posts/test_side_bar/test.html#discount-factor-gamma",
-    "title": "Post With Code V2",
-    "section": "Discount Factor \\(\\gamma\\)",
-    "text": "Discount Factor \\(\\gamma\\)\nIt introduced to model an exponential decay in value of rewards over time. So the value function is \\[\nV(s) = \\sum_{t=0}^{\\infty}\\textcolor{red}{\\gamma^{t}}R(s_t, a_t, s_{t+1})\n\\]\nAccording to geometric series, is the above function is guaranteed to be finite-values as long as the \\(|\\gamma| &lt; 1\\) \\[\nV(s) \\leq \\sum_{t=0}^{\\infty}\\gamma^tR_{max} = \\frac {R_{max}} { 1- \\gamma}\n\\] where, \\(R_{max}\\) is the maximum possible reward attainable at any given timestep in the MDP.\n\n[!Info] The \\(\\gamma\\) value is selected strictly from the range \\(0 &lt; \\gamma &lt; 1\\) since values values in the range \\(−1 &lt; \\gamma ≤ 0\\) are simply not meaningful in most real-world situations"
-  },
-  {
-    "objectID": "posts/test_side_bar/test.html#bellman-equation",
-    "href": "posts/test_side_bar/test.html#bellman-equation",
-    "title": "Post With Code V2",
-    "section": "Bellman Equation",
-    "text": "Bellman Equation\nThe optimal value of a state \\(s, V^{*}(s)\\) is the expected value of the utility an optimally-behaving (follow policy) agent that starts in \\(s\\) will receive, over the rest of the agent’s lifetime. The optimal value (Q-value) of a Q-state \\(Q^*(s, a)\\) is the expected value of the utility an agent receives after starting in \\(s\\), taking \\(a\\) and acting optimally henceforth ^q-value\n\n\n\n\n\n\nNote\n\n\n\nQ-state, also know as action state, is the combine of agent in state \\(s\\), and take action \\(a\\)\n\n\nThe Bellman Equation for value function is define as follows: \\[\nV^*(s) = \\max_{a} \\sum_{s'} T(s, a, s')\\left[ R(s, a, s') + \\gamma V*(s')\\right]\n\\] For Q-value function is define as follows: \\[\nQ^*(s, a) = \\sum_{s'} T(s, a, s')\\left[ R(s, a, s') + \\gamma V*(s')\\right]\n\\] \\(R(s, a, s')\\) is immediate rewards ^immediate-reward\n\n[!Info] As showing above: \\[\nV^*(s) = \\max_a Q^*(s, a)\n\\]\n\nThe Bellman equation is an example of a dynamic programming equation. The Q-value is a weighted sum of utilities, with each utility weighted by the probability of\\(T(s, a, s')\\). This define the expected utility of action optimally from Q-state \\((s,a)\\)\nThe \\(V^*(s)\\) is the maximum expected utility over all possible actions from \\(s\\).\n\n[!question] BE usage is as a condition for optimality. In other words, if we can somehow determine a value U(s) for every state s ∈ S such that the Bellman equation holds true for each of these states, we can conclude that these values are the optimal values for their respective states. Indeed, satisfying this condition implies ∀s ∈ S, \\(V(s) = V^*(s)\\)\n\n\nValue Iteration\nTo solve the optimal values, we need time-limited values. The time-limited value for a state \\(s\\) with a time-limit of \\(k\\) timesteps is denoted \\(V_k(s)\\), and represents the maximum expected value attainable from \\(s\\) given that MDP under consideration terminated in \\(k\\) timesteps.\nValue iteration is a dynamic programming algorithm that uses an iteratively longer time limit to compute time-limited values until convergence \\[\\forall s,\\ V_{k+1}(s) = V_k(s)\\] It operates as follows: 1. \\(\\forall s \\in S\\), initialize \\(V_0(s) = 0\\). 2. Repeat the following update rule utile convergence: \\[\n\\forall s \\in S,\\ V_{k + 1}(s) \\leftarrow \\max_a\\sum_{s'}T(s, a, s')\\left[R(s, a, s') + \\gamma V_k(s') \\right]\n\\]\nThe Bellman Equation gives a condition for optimality, while update rule gives a method to iteratively update values util convergence. The above function for short is \\[\nV_{k + 1} \\leftarrow BV_k\n\\] where \\(B\\) is called the Bellman operator. which is contraction by \\(\\gamma\\) .\n\nPolicy Extraction\nThe intuition behind policy extraction is very simple: if you’re in a state \\(s\\), you should take the action \\(a\\) which yields the maximum expected value.\n\\[\n\\forall s \\in S, \\pi^*(s) = \\underset{a}{\\mathrm{argmax}}Q^*(s, a)\n\\]\n\n[!Info] For performance reasons that it’s better for policy extraction to have the optimal Q-values of states, in which case a single argmax operation is all that is required to determine the optimal action from a state.\n\n\n\n\nQ-Value Iteration\nQ-value iteration is a dynamic programming algorithm that computes time-limited Q-values. \\[\nQ_{k+1}(s, a) \\leftarrow \\sum_{s'}T(s, a, s')\\left[R(s, a, s') + \\gamma \\max_{a'} Q_k(s', a') \\right]\n\\]\n\n\nPolicy Iteration\nValue iteration can be quite slow. At each iteration, we must update the values of all \\(|S|\\) states, each requires iteration over all \\(|A|\\) actions. The computation of each of these Q-Values, requires iteration over each of \\(|S|\\) states again, leading to runtime of \\(O(|S|^2|A|)\\)\nTo solve this flaw, we can use policy iteration. It operates as follows: 1. Define an initial policy. 2. Repeat the following until convergence: 1. Evaluate the current policy with policy evaluation. For a policy \\(\\pi\\) , policy evaluation means computing \\(V^{\\pi}(s)\\) for all states \\(s\\), where \\(V^{\\pi}\\) is expected value of starting in state \\(s\\) when following \\(\\pi\\): \\[\nV^{\\pi} = \\sum_{s'}T(s, \\pi(s), s')\\left[ R(s, \\pi(s), s' )  + \\gamma V^{\\pi}(s')\\right]\n\\] 2. Define the policy at iteration \\(i\\) as \\(\\pi_i\\). We can updated value function\n\\[\n    V^{\\pi_i}_{k+1} \\leftarrow \\sum_{s'}T(s, \\pi(s), s')\\left[ R(s, \\pi(s), s' )  + \\gamma V^{\\pi_i}_k (s')\\right]\n\\]\n3. Once evaluate the current policy, use **policy improvement** to generate a better policy: \n\\[\n\\pi_{i+1}(s) = \\underset{a}{\\mathrm{argmax}} \\sum_{s'}T(s, a, s')\\left[ R(s, a, s') + \\gamma V^{\\pi_i}(s') \\right]\n\\]"
+    "text": "Back to top"
   },
   {
     "objectID": "index.html",
     "href": "index.html",
     "title": "Blog",
     "section": "",
-    "text": "My Notebook\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\nDeep Learning Foundation and Concepts Chapter02: Probabilities\n\n\n\n\n\n\nDLFC\n\n\n\nThis article is my notes and exercises solutions for the book Deep Learning Foundation and Concepts Chapter02: Probabilities\n\n\n\n\n\nJun 12, 2024\n\n\nYuyang Zhang\n\n\n\n\n\n\n\n\n\n\n\n\nTrust Region Policy Optmization\n\n\n\n\n\n\nRL\n\n\n\nThis article is my understanding of Trust Region Policy Optmization(TRPO)\n\n\n\n\n\nJun 8, 2024\n\n\nYuyang Zhang\n\n\n\n\n\n\n\n\n\n\n\n\nDeep Deterministic Policy Gradient\n\n\n\n\n\n\nRL\n\n\n\nThis article is my understanding of Deep Deterministic Policy Gradient\n\n\n\n\n\nJun 8, 2024\n\n\nYuyang Zhang\n\n\n\n\n\n\n\n\n\n\n\n\nProximal Policy Optimization\n\n\n\n\n\n\nRL\n\n\n\nThis article is my understanding of Proximal Policy Optimization(PPO), RL algorithm used to train GPT\n\n\n\n\n\nJun 8, 2024\n\n\nYuyang Zhang\n\n\n\n\n\n\n\n\n\n\n\n\nREINFORCE\n\n\n\n\n\n\nRL\n\n\n\nThis article is my understanding of REINFOCE, one of the most basic policy-based algorithm\n\n\n\n\n\nJun 8, 2024\n\n\nYuyang Zhang\n\n\n\n\n\n\n\n\n\n\n\n\nParticle Filter\n\n\n\n\n\n\nState Space Model\n\n\n\nThis article is my understanding of Particle Filter\n\n\n\n\n\nJun 8, 2024\n\n\nYuyang Zhang\n\n\n\n\n\n\n\n\n\n\n\n\nKalman Filter\n\n\n\n\n\n\nState Space Model\n\n\n\nThis article is my understanding of Kalman Filter\n\n\n\n\n\nJun 8, 2024\n\n\nYuyang Zhang\n\n\n\n\n\n\n\n\n\n\n\n\nHidden Markov Model\n\n\n\n\n\n\nState Space Model\n\n\n\nThis article is my understanding of Hidden Markov Model(HMM)\n\n\n\n\n\nJun 8, 2024\n\n\nYuyang Zhang\n\n\n\n\n\n\n\n\n\n\n\n\nExpectation Maximization(EM) Algorithm\n\n\n\n\n\n\nLearning\n\n\n\nThis article is my understanding of Expectation Maximization(EM) Algorithm, one of the method to learn parameter\n\n\n\n\n\nJun 8, 2024\n\n\nYuyang Zhang\n\n\n\n\n\n\n\n\n\n\n\n\nPost With Code V3\n\n\n\n\n\n\nnews\n\n\ncode\n\n\nanalysis\n\n\n\n\n\n\n\n\n\nJun 8, 2024\n\n\nYuyang Zhang\n\n\n\n\n\n\n\n\n\n\n\n\nPost With Code V2\n\n\n\n\n\n\nnews\n\n\ncode\n\n\nanalysis\n\n\n\n\n\n\n\n\n\nJun 8, 2024\n\n\nHarlow Malloc\n\n\n\n\n\n\n\n\n\n\n\n\nVariational Inference(VI) Algortihm\n\n\n\n\n\n\nInference\n\n\n\nThis article is my understanding of Variational Inference(VI)\n\n\n\n\n\nJun 8, 2024\n\n\nYuyang Zhang\n\n\n\n\n\n\n\n\n\n\n\n\nGenerative Adversarial Network\n\n\n\n\n\n\nGenerative Model\n\n\nUn-supervised\n\n\nStanford CS236\n\n\nUCB CS294\n\n\n\nThis article is my understanding of Generative Adversarial Network(GAN)\n\n\n\n\n\nJun 8, 2024\n\n\nYuyang Zhang\n\n\n\n\n\n\n\n\n\n\n\n\nAutoregressive Model\n\n\n\n\n\n\nGenerative Model\n\n\nUn-supervised\n\n\nStanford CS236\n\n\nUCB CS294\n\n\n\nThis article is my understanding of Auto-Regressive\n\n\n\n\n\nJun 8, 2024\n\n\nYuyang Zhang\n\n\n\n\n\n\n\n\n\n\n\n\nEnergy Based Model\n\n\n\n\n\n\nGenerative Model\n\n\nUn-supervised\n\n\nStanford CS236\n\n\nUCB CS294\n\n\n\nThis article is my understanding of Energy Based Model\n\n\n\n\n\nJun 8, 2024\n\n\nYuyang Zhang\n\n\n\n\n\n\n\n\n\n\n\n\nScore based Model\n\n\n\n\n\n\nGenerative Model\n\n\nUn-supervised\n\n\nStanford CS236\n\n\nUCB CS294\n\n\n\nThis article is my understanding of Score Based model\n\n\n\n\n\nJun 8, 2024\n\n\nYuyang Zhang\n\n\n\n\n\n\n\n\n\n\n\n\nDiffusion Model\n\n\n\n\n\n\nGenerative Model\n\n\nUn-supervised\n\n\nStanford CS236\n\n\nUCB CS294\n\n\n\nThis article is my understanding of Diffusion Model\n\n\n\n\n\nJun 8, 2024\n\n\nYuyang Zhang\n\n\n\n\n\n\n\n\n\n\n\n\nNormalizing Flow\n\n\n\n\n\n\nGenerative Model\n\n\nUn-supervised\n\n\nStanford CS236\n\n\nUCB CS294\n\n\n\nThis article is my understanding of Normalizing Flow\n\n\n\n\n\nJun 8, 2024\n\n\nYuyang Zhang\n\n\n\n\n\n\n\n\n\n\n\n\nStanford EE364A Convex Optimization Lecture 01: Introduction\n\n\n\n\n\n\nEE364A\n\n\n\nAn post about PRML chapter 01 introduction\n\n\n\n\n\nJun 3, 2024\n\n\nYuyang Zhang\n\n\n\n\n\n\n\n\n\n\n\n\nPRML Chapter01: Introduction\n\n\n\n\n\n\nPRML\n\n\n\nAn post about PRML chapter 01 introduction\n\n\n\n\n\nJun 3, 2024\n\n\nYuyang Zhang\n\n\n\n\n\n\nNo matching items\n\n Back to top"
-  },
-  {
-    "objectID": "posts/Reinforcement Learning/Policy-Based-Alg/test_2.html",
-    "href": "posts/Reinforcement Learning/Policy-Based-Alg/test_2.html",
-    "title": "Post With Code V2",
-    "section": "",
-    "text": "MDPs are a classical formalisation of sequential decision making, where actions influence not just immediate rewards, but also subsequent situations, or states, and through those future rewards."
-  },
-  {
-    "objectID": "posts/Reinforcement Learning/Policy-Based-Alg/test_2.html#discount-factor-gamma",
-    "href": "posts/Reinforcement Learning/Policy-Based-Alg/test_2.html#discount-factor-gamma",
-    "title": "Post With Code V2",
-    "section": "Discount Factor \\(\\gamma\\)",
-    "text": "Discount Factor \\(\\gamma\\)\nIt introduced to model an exponential decay in value of rewards over time. So the value function is \\[\nV(s) = \\sum_{t=0}^{\\infty}\\textcolor{red}{\\gamma^{t}}R(s_t, a_t, s_{t+1})\n\\]\nAccording to geometric series, is the above function is guaranteed to be finite-values as long as the \\(|\\gamma| &lt; 1\\) \\[\nV(s) \\leq \\sum_{t=0}^{\\infty}\\gamma^tR_{max} = \\frac {R_{max}} { 1- \\gamma}\n\\] where, \\(R_{max}\\) is the maximum possible reward attainable at any given timestep in the MDP.\n\n[!Info] The \\(\\gamma\\) value is selected strictly from the range \\(0 &lt; \\gamma &lt; 1\\) since values values in the range \\(−1 &lt; \\gamma ≤ 0\\) are simply not meaningful in most real-world situations"
-  },
-  {
-    "objectID": "posts/Reinforcement Learning/Policy-Based-Alg/test_2.html#bellman-equation",
-    "href": "posts/Reinforcement Learning/Policy-Based-Alg/test_2.html#bellman-equation",
-    "title": "Post With Code V2",
-    "section": "Bellman Equation",
-    "text": "Bellman Equation\nThe optimal value of a state \\(s, V^{*}(s)\\) is the expected value of the utility an optimally-behaving (follow policy) agent that starts in \\(s\\) will receive, over the rest of the agent’s lifetime. The optimal value (Q-value) of a Q-state \\(Q^*(s, a)\\) is the expected value of the utility an agent receives after starting in \\(s\\), taking \\(a\\) and acting optimally henceforth ^q-value\n\n\n\n\n\n\nNote\n\n\n\nQ-state, also know as action state, is the combine of agent in state \\(s\\), and take action \\(a\\)\n\n\nThe Bellman Equation for value function is define as follows: \\[\nV^*(s) = \\max_{a} \\sum_{s'} T(s, a, s')\\left[ R(s, a, s') + \\gamma V*(s')\\right]\n\\] For Q-value function is define as follows: \\[\nQ^*(s, a) = \\sum_{s'} T(s, a, s')\\left[ R(s, a, s') + \\gamma V*(s')\\right]\n\\] \\(R(s, a, s')\\) is immediate rewards ^immediate-reward\n\n[!Info] As showing above: \\[\nV^*(s) = \\max_a Q^*(s, a)\n\\]\n\nThe Bellman equation is an example of a dynamic programming equation. The Q-value is a weighted sum of utilities, with each utility weighted by the probability of\\(T(s, a, s')\\). This define the expected utility of action optimally from Q-state \\((s,a)\\)\nThe \\(V^*(s)\\) is the maximum expected utility over all possible actions from \\(s\\).\n\n[!question] BE usage is as a condition for optimality. In other words, if we can somehow determine a value U(s) for every state s ∈ S such that the Bellman equation holds true for each of these states, we can conclude that these values are the optimal values for their respective states. Indeed, satisfying this condition implies ∀s ∈ S, \\(V(s) = V^*(s)\\)\n\n\nValue Iteration\nTo solve the optimal values, we need time-limited values. The time-limited value for a state \\(s\\) with a time-limit of \\(k\\) timesteps is denoted \\(V_k(s)\\), and represents the maximum expected value attainable from \\(s\\) given that MDP under consideration terminated in \\(k\\) timesteps.\nValue iteration is a dynamic programming algorithm that uses an iteratively longer time limit to compute time-limited values until convergence \\[\\forall s,\\ V_{k+1}(s) = V_k(s)\\] It operates as follows: 1. \\(\\forall s \\in S\\), initialize \\(V_0(s) = 0\\). 2. Repeat the following update rule utile convergence: \\[\n\\forall s \\in S,\\ V_{k + 1}(s) \\leftarrow \\max_a\\sum_{s'}T(s, a, s')\\left[R(s, a, s') + \\gamma V_k(s') \\right]\n\\]\nThe Bellman Equation gives a condition for optimality, while update rule gives a method to iteratively update values util convergence. The above function for short is \\[\nV_{k + 1} \\leftarrow BV_k\n\\] where \\(B\\) is called the Bellman operator. which is contraction by \\(\\gamma\\) .\n\nPolicy Extraction\nThe intuition behind policy extraction is very simple: if you’re in a state \\(s\\), you should take the action \\(a\\) which yields the maximum expected value.\n\\[\n\\forall s \\in S, \\pi^*(s) = \\underset{a}{\\mathrm{argmax}}Q^*(s, a)\n\\]\n\n[!Info] For performance reasons that it’s better for policy extraction to have the optimal Q-values of states, in which case a single argmax operation is all that is required to determine the optimal action from a state.\n\n\n\n\nQ-Value Iteration\nQ-value iteration is a dynamic programming algorithm that computes time-limited Q-values. \\[\nQ_{k+1}(s, a) \\leftarrow \\sum_{s'}T(s, a, s')\\left[R(s, a, s') + \\gamma \\max_{a'} Q_k(s', a') \\right]\n\\]\n\n\nPolicy Iteration\nValue iteration can be quite slow. At each iteration, we must update the values of all \\(|S|\\) states, each requires iteration over all \\(|A|\\) actions. The computation of each of these Q-Values, requires iteration over each of \\(|S|\\) states again, leading to runtime of \\(O(|S|^2|A|)\\)\nTo solve this flaw, we can use policy iteration. It operates as follows: 1. Define an initial policy. 2. Repeat the following until convergence: 1. Evaluate the current policy with policy evaluation. For a policy \\(\\pi\\) , policy evaluation means computing \\(V^{\\pi}(s)\\) for all states \\(s\\), where \\(V^{\\pi}\\) is expected value of starting in state \\(s\\) when following \\(\\pi\\): \\[\nV^{\\pi} = \\sum_{s'}T(s, \\pi(s), s')\\left[ R(s, \\pi(s), s' )  + \\gamma V^{\\pi}(s')\\right]\n\\] 2. Define the policy at iteration \\(i\\) as \\(\\pi_i\\). We can updated value function\n\\[\n    V^{\\pi_i}_{k+1} \\leftarrow \\sum_{s'}T(s, \\pi(s), s')\\left[ R(s, \\pi(s), s' )  + \\gamma V^{\\pi_i}_k (s')\\right]\n\\]\n3. Once evaluate the current policy, use **policy improvement** to generate a better policy: \n\\[\n\\pi_{i+1}(s) = \\underset{a}{\\mathrm{argmax}} \\sum_{s'}T(s, a, s')\\left[ R(s, a, s') + \\gamma V^{\\pi_i}(s') \\right]\n\\]"
-  },
-  {
-    "objectID": "posts/Learning/EM.html",
-    "href": "posts/Learning/EM.html",
-    "title": "Expectation Maximization(EM) Algorithm",
-    "section": "",
-    "text": "Expectation Maximization(EM) Algorithm\n\n\n\n\n Back to top"
-  },
-  {
-    "objectID": "posts/StateSpaceModel/Kalman_Filter.html",
-    "href": "posts/StateSpaceModel/Kalman_Filter.html",
-    "title": "Kalman Filter",
-    "section": "",
-    "text": "Kalman Filter\n\n\n\n\n Back to top"
-  },
-  {
-    "objectID": "posts/Reinforcement Learning/Policy-Based-Alg/DDPG.html",
-    "href": "posts/Reinforcement Learning/Policy-Based-Alg/DDPG.html",
-    "title": "Deep Deterministic Policy Gradient",
-    "section": "",
-    "text": "Deep Deterministic Policy Gradient\n\n\n\n\n Back to top"
-  },
-  {
-    "objectID": "posts/Reinforcement Learning/Policy-Based-Alg/TRPO.html",
-    "href": "posts/Reinforcement Learning/Policy-Based-Alg/TRPO.html",
-    "title": "Trust Region Policy Optmization",
-    "section": "",
-    "text": "Trust Region Policy Optmization\n\n\n\n\n Back to top"
-  },
-  {
-    "objectID": "posts/Reinforcement Learning/Policy-Based-Alg/PPO.html",
-    "href": "posts/Reinforcement Learning/Policy-Based-Alg/PPO.html",
-    "title": "Proximal Policy Optimization",
-    "section": "",
-    "text": "Proximal Policy Optimization\n\n\n\n\n Back to top"
-  },
-  {
-    "objectID": "posts/StateSpaceModel/Particle_Filter.html",
-    "href": "posts/StateSpaceModel/Particle_Filter.html",
-    "title": "Particle Filter",
-    "section": "",
-    "text": "Particle Filter\n\n\n\n\n Back to top"
-  },
-  {
-    "objectID": "posts/StateSpaceModel/HMM.html",
-    "href": "posts/StateSpaceModel/HMM.html",
-    "title": "Hidden Markov Model",
-    "section": "",
-    "text": "Hidden Markov Model\n\n\n\n\n Back to top"
-  },
-  {
-    "objectID": "posts/Inference/VI.html",
-    "href": "posts/Inference/VI.html",
-    "title": "Variational Inference(VI) Algortihm",
-    "section": "",
-    "text": "Variational Inference\n\n\n\n\n Back to top"
+    "text": "My Notebook\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\nStanford EE364A Convex Optimization Lecture 01: Introduction\n\n\n\n\n\n\nEE364A\n\n\n\nAn post about PRML chapter 01 introduction\n\n\n\n\n\nJun 19, 2024\n\n\nYuyang Zhang\n\n\n\n\n\n\n\n\n\n\n\n\nDeep Learning Foundation and Concepts Chapter02: Probabilities\n\n\n\n\n\n\nDLFC\n\n\n\nThis article is my notes and exercises solutions for the book Deep Learning Foundation and Concepts Chapter02: Probabilities\n\n\n\n\n\nJun 12, 2024\n\n\nYuyang Zhang\n\n\n\n\n\n\n\n\n\n\n\n\nTrust Region Policy Optmization\n\n\n\n\n\n\nRL\n\n\n\nThis article is my understanding of Trust Region Policy Optmization(TRPO)\n\n\n\n\n\nJun 8, 2024\n\n\nYuyang Zhang\n\n\n\n\n\n\n\n\n\n\n\n\nDeep Deterministic Policy Gradient\n\n\n\n\n\n\nRL\n\n\n\nThis article is my understanding of Deep Deterministic Policy Gradient\n\n\n\n\n\nJun 8, 2024\n\n\nYuyang Zhang\n\n\n\n\n\n\n\n\n\n\n\n\nProximal Policy Optimization\n\n\n\n\n\n\nRL\n\n\n\nThis article is my understanding of Proximal Policy Optimization(PPO), RL algorithm used to train GPT\n\n\n\n\n\nJun 8, 2024\n\n\nYuyang Zhang\n\n\n\n\n\n\n\n\n\n\n\n\nREINFORCE\n\n\n\n\n\n\nRL\n\n\n\nThis article is my understanding of REINFOCE, one of the most basic policy-based algorithm\n\n\n\n\n\nJun 8, 2024\n\n\nYuyang Zhang\n\n\n\n\n\n\n\n\n\n\n\n\nParticle Filter\n\n\n\n\n\n\nState Space Model\n\n\n\nThis article is my understanding of Particle Filter\n\n\n\n\n\nJun 8, 2024\n\n\nYuyang Zhang\n\n\n\n\n\n\n\n\n\n\n\n\nKalman Filter\n\n\n\n\n\n\nState Space Model\n\n\n\nThis article is my understanding of Kalman Filter\n\n\n\n\n\nJun 8, 2024\n\n\nYuyang Zhang\n\n\n\n\n\n\n\n\n\n\n\n\nHidden Markov Model\n\n\n\n\n\n\nState Space Model\n\n\n\nThis article is my understanding of Hidden Markov Model(HMM)\n\n\n\n\n\nJun 8, 2024\n\n\nYuyang Zhang\n\n\n\n\n\n\n\n\n\n\n\n\nExpectation Maximization(EM) Algorithm\n\n\n\n\n\n\nLearning\n\n\n\nThis article is my understanding of Expectation Maximization(EM) Algorithm, one of the method to learn parameter\n\n\n\n\n\nJun 8, 2024\n\n\nYuyang Zhang\n\n\n\n\n\n\n\n\n\n\n\n\nPost With Code V3\n\n\n\n\n\n\nnews\n\n\ncode\n\n\nanalysis\n\n\n\n\n\n\n\n\n\nJun 8, 2024\n\n\nYuyang Zhang\n\n\n\n\n\n\n\n\n\n\n\n\nPost With Code V2\n\n\n\n\n\n\nnews\n\n\ncode\n\n\nanalysis\n\n\n\n\n\n\n\n\n\nJun 8, 2024\n\n\nHarlow Malloc\n\n\n\n\n\n\n\n\n\n\n\n\nVariational Inference(VI) Algortihm\n\n\n\n\n\n\nInference\n\n\n\nThis article is my understanding of Variational Inference(VI)\n\n\n\n\n\nJun 8, 2024\n\n\nYuyang Zhang\n\n\n\n\n\n\n\n\n\n\n\n\nGenerative Adversarial Network\n\n\n\n\n\n\nGenerative Model\n\n\nUn-supervised\n\n\nStanford CS236\n\n\nUCB CS294\n\n\n\nThis article is my understanding of Generative Adversarial Network(GAN)\n\n\n\n\n\nJun 8, 2024\n\n\nYuyang Zhang\n\n\n\n\n\n\n\n\n\n\n\n\nAutoregressive Model\n\n\n\n\n\n\nGenerative Model\n\n\nUn-supervised\n\n\nStanford CS236\n\n\nUCB CS294\n\n\n\nThis article is my understanding of Auto-Regressive\n\n\n\n\n\nJun 8, 2024\n\n\nYuyang Zhang\n\n\n\n\n\n\n\n\n\n\n\n\nEnergy Based Model\n\n\n\n\n\n\nGenerative Model\n\n\nUn-supervised\n\n\nStanford CS236\n\n\nUCB CS294\n\n\n\nThis article is my understanding of Energy Based Model\n\n\n\n\n\nJun 8, 2024\n\n\nYuyang Zhang\n\n\n\n\n\n\n\n\n\n\n\n\nScore based Model\n\n\n\n\n\n\nGenerative Model\n\n\nUn-supervised\n\n\nStanford CS236\n\n\nUCB CS294\n\n\n\nThis article is my understanding of Score Based model\n\n\n\n\n\nJun 8, 2024\n\n\nYuyang Zhang\n\n\n\n\n\n\n\n\n\n\n\n\nDiffusion Model\n\n\n\n\n\n\nGenerative Model\n\n\nUn-supervised\n\n\nStanford CS236\n\n\nUCB CS294\n\n\n\nThis article is my understanding of Diffusion Model\n\n\n\n\n\nJun 8, 2024\n\n\nYuyang Zhang\n\n\n\n\n\n\n\n\n\n\n\n\nNormalizing Flow\n\n\n\n\n\n\nGenerative Model\n\n\nUn-supervised\n\n\nStanford CS236\n\n\nUCB CS294\n\n\n\nThis article is my understanding of Normalizing Flow\n\n\n\n\n\nJun 8, 2024\n\n\nYuyang Zhang\n\n\n\n\n\n\n\n\n\n\n\n\nPRML Chapter01: Introduction\n\n\n\n\n\n\nPRML\n\n\n\nAn post about PRML chapter 01 introduction\n\n\n\n\n\nJun 3, 2024\n\n\nYuyang Zhang\n\n\n\n\n\n\nNo matching items\n\n Back to top"
   },
   {
     "objectID": "posts/Generative Models/DiffusionModel.html",
@@ -189,25 +35,46 @@
     "text": "Autoregressive Model\n\n\nReference\n\nStanford CS236: Deep Generative Models\nUCB CS294 :Deep Unsupervised Learning\n\n\n\n\n\n Back to top"
   },
   {
-    "objectID": "posts/Generative Models/AutoRegressive.html",
-    "href": "posts/Generative Models/AutoRegressive.html",
-    "title": "Autoregressive Model",
+    "objectID": "posts/Inference/VI.html",
+    "href": "posts/Inference/VI.html",
+    "title": "Variational Inference(VI) Algortihm",
     "section": "",
-    "text": "Autoregressive Model\n\n\nReference\n\nStanford CS236: Deep Generative Models\nUCB CS294 :Deep Unsupervised Learning\n\n\n\n\n\n Back to top"
+    "text": "Variational Inference\n\n\n\n\n Back to top"
   },
   {
-    "objectID": "posts/Generative Models/ScoreBased.html",
-    "href": "posts/Generative Models/ScoreBased.html",
-    "title": "Score based Model",
+    "objectID": "posts/test_side_bar/test.html",
+    "href": "posts/test_side_bar/test.html",
+    "title": "Post With Code V2",
     "section": "",
-    "text": "Autoregressive Model\n\n\nReference\nStanford CS236: Deep Generative Models\n\n\n\n\n Back to top"
+    "text": "MDPs are a classical formalisation of sequential decision making, where actions influence not just immediate rewards, but also subsequent situations, or states, and through those future rewards."
   },
   {
-    "objectID": "posts/Generative Models/NormalizingFlows.html",
-    "href": "posts/Generative Models/NormalizingFlows.html",
-    "title": "Normalizing Flow",
+    "objectID": "posts/test_side_bar/test.html#discount-factor-gamma",
+    "href": "posts/test_side_bar/test.html#discount-factor-gamma",
+    "title": "Post With Code V2",
+    "section": "Discount Factor \\(\\gamma\\)",
+    "text": "Discount Factor \\(\\gamma\\)\nIt introduced to model an exponential decay in value of rewards over time. So the value function is \\[\nV(s) = \\sum_{t=0}^{\\infty}\\textcolor{red}{\\gamma^{t}}R(s_t, a_t, s_{t+1})\n\\]\nAccording to geometric series, is the above function is guaranteed to be finite-values as long as the \\(|\\gamma| &lt; 1\\) \\[\nV(s) \\leq \\sum_{t=0}^{\\infty}\\gamma^tR_{max} = \\frac {R_{max}} { 1- \\gamma}\n\\] where, \\(R_{max}\\) is the maximum possible reward attainable at any given timestep in the MDP.\n\n[!Info] The \\(\\gamma\\) value is selected strictly from the range \\(0 &lt; \\gamma &lt; 1\\) since values values in the range \\(−1 &lt; \\gamma ≤ 0\\) are simply not meaningful in most real-world situations"
+  },
+  {
+    "objectID": "posts/test_side_bar/test.html#bellman-equation",
+    "href": "posts/test_side_bar/test.html#bellman-equation",
+    "title": "Post With Code V2",
+    "section": "Bellman Equation",
+    "text": "Bellman Equation\nThe optimal value of a state \\(s, V^{*}(s)\\) is the expected value of the utility an optimally-behaving (follow policy) agent that starts in \\(s\\) will receive, over the rest of the agent’s lifetime. The optimal value (Q-value) of a Q-state \\(Q^*(s, a)\\) is the expected value of the utility an agent receives after starting in \\(s\\), taking \\(a\\) and acting optimally henceforth ^q-value\n\n\n\n\n\n\nNote\n\n\n\nQ-state, also know as action state, is the combine of agent in state \\(s\\), and take action \\(a\\)\n\n\nThe Bellman Equation for value function is define as follows: \\[\nV^*(s) = \\max_{a} \\sum_{s'} T(s, a, s')\\left[ R(s, a, s') + \\gamma V*(s')\\right]\n\\] For Q-value function is define as follows: \\[\nQ^*(s, a) = \\sum_{s'} T(s, a, s')\\left[ R(s, a, s') + \\gamma V*(s')\\right]\n\\] \\(R(s, a, s')\\) is immediate rewards ^immediate-reward\n\n[!Info] As showing above: \\[\nV^*(s) = \\max_a Q^*(s, a)\n\\]\n\nThe Bellman equation is an example of a dynamic programming equation. The Q-value is a weighted sum of utilities, with each utility weighted by the probability of\\(T(s, a, s')\\). This define the expected utility of action optimally from Q-state \\((s,a)\\)\nThe \\(V^*(s)\\) is the maximum expected utility over all possible actions from \\(s\\).\n\n[!question] BE usage is as a condition for optimality. In other words, if we can somehow determine a value U(s) for every state s ∈ S such that the Bellman equation holds true for each of these states, we can conclude that these values are the optimal values for their respective states. Indeed, satisfying this condition implies ∀s ∈ S, \\(V(s) = V^*(s)\\)\n\n\nValue Iteration\nTo solve the optimal values, we need time-limited values. The time-limited value for a state \\(s\\) with a time-limit of \\(k\\) timesteps is denoted \\(V_k(s)\\), and represents the maximum expected value attainable from \\(s\\) given that MDP under consideration terminated in \\(k\\) timesteps.\nValue iteration is a dynamic programming algorithm that uses an iteratively longer time limit to compute time-limited values until convergence \\[\\forall s,\\ V_{k+1}(s) = V_k(s)\\] It operates as follows: 1. \\(\\forall s \\in S\\), initialize \\(V_0(s) = 0\\). 2. Repeat the following update rule utile convergence: \\[\n\\forall s \\in S,\\ V_{k + 1}(s) \\leftarrow \\max_a\\sum_{s'}T(s, a, s')\\left[R(s, a, s') + \\gamma V_k(s') \\right]\n\\]\nThe Bellman Equation gives a condition for optimality, while update rule gives a method to iteratively update values util convergence. The above function for short is \\[\nV_{k + 1} \\leftarrow BV_k\n\\] where \\(B\\) is called the Bellman operator. which is contraction by \\(\\gamma\\) .\n\nPolicy Extraction\nThe intuition behind policy extraction is very simple: if you’re in a state \\(s\\), you should take the action \\(a\\) which yields the maximum expected value.\n\\[\n\\forall s \\in S, \\pi^*(s) = \\underset{a}{\\mathrm{argmax}}Q^*(s, a)\n\\]\n\n[!Info] For performance reasons that it’s better for policy extraction to have the optimal Q-values of states, in which case a single argmax operation is all that is required to determine the optimal action from a state.\n\n\n\n\nQ-Value Iteration\nQ-value iteration is a dynamic programming algorithm that computes time-limited Q-values. \\[\nQ_{k+1}(s, a) \\leftarrow \\sum_{s'}T(s, a, s')\\left[R(s, a, s') + \\gamma \\max_{a'} Q_k(s', a') \\right]\n\\]\n\n\nPolicy Iteration\nValue iteration can be quite slow. At each iteration, we must update the values of all \\(|S|\\) states, each requires iteration over all \\(|A|\\) actions. The computation of each of these Q-Values, requires iteration over each of \\(|S|\\) states again, leading to runtime of \\(O(|S|^2|A|)\\)\nTo solve this flaw, we can use policy iteration. It operates as follows: 1. Define an initial policy. 2. Repeat the following until convergence: 1. Evaluate the current policy with policy evaluation. For a policy \\(\\pi\\) , policy evaluation means computing \\(V^{\\pi}(s)\\) for all states \\(s\\), where \\(V^{\\pi}\\) is expected value of starting in state \\(s\\) when following \\(\\pi\\): \\[\nV^{\\pi} = \\sum_{s'}T(s, \\pi(s), s')\\left[ R(s, \\pi(s), s' )  + \\gamma V^{\\pi}(s')\\right]\n\\] 2. Define the policy at iteration \\(i\\) as \\(\\pi_i\\). We can updated value function\n\\[\n    V^{\\pi_i}_{k+1} \\leftarrow \\sum_{s'}T(s, \\pi(s), s')\\left[ R(s, \\pi(s), s' )  + \\gamma V^{\\pi_i}_k (s')\\right]\n\\]\n3. Once evaluate the current policy, use **policy improvement** to generate a better policy: \n\\[\n\\pi_{i+1}(s) = \\underset{a}{\\mathrm{argmax}} \\sum_{s'}T(s, a, s')\\left[ R(s, a, s') + \\gamma V^{\\pi_i}(s') \\right]\n\\]"
+  },
+  {
+    "objectID": "posts/Learning/EM.html",
+    "href": "posts/Learning/EM.html",
+    "title": "Expectation Maximization(EM) Algorithm",
     "section": "",
-    "text": "Autoregressive Model\n\n\nReference\n\nStanford CS236: Deep Generative Models\nUCB CS294 :Deep Unsupervised Learning\n\n\n\n\n\n Back to top"
+    "text": "Expectation Maximization(EM) Algorithm\n\n\n\n\n Back to top"
+  },
+  {
+    "objectID": "posts/StateSpaceModel/Kalman_Filter.html",
+    "href": "posts/StateSpaceModel/Kalman_Filter.html",
+    "title": "Kalman Filter",
+    "section": "",
+    "text": "Kalman Filter\n\n\n\n\n Back to top"
   },
   {
     "objectID": "posts/DLFC/Chapter02 Probabilities.html",
@@ -315,11 +182,109 @@
     "text": "Exercise 2.40\n\n\n\nExercise 2.40\n\n\nPrior Probability:\n\n\\(p(H_{\\text{convex}}) = 0.1\\)\n\\(p(H_{\\text{concave}}) = 1-0.1=0.9\\)\n\nObservation:\n\n\\(N(H) = 8\\)\n\\(N(T) = 2\\)\n\nUsing Bayes’s theorem updated posterior probability\n\\[\nP(A|B) = \\frac{P(B|A)P(A)}{P(B)}\n\\]\n\nCalculate likelihood: \\[\n\\begin{gather}\np(\\text{data}|H_{\\text{convex}}) = \\binom{10}{8}(0.1)^{8}(0.9)^{2} \\\\\np(\\text{data}|H_{\\text{concave}}) = \\binom{10}{8}(0.1)^{2}(0.9)^{8}\n\\end{gather}\n\\]\nMarginal Likelihood: \\[\np(\\text{data}) = p(\\text{data}|H_{\\text{convex}})p(H_{\\text{convex}}) + p(\\text{data}|H_{\\text{concave}})p(H_{\\text{concave}})\n\\]\nCalculate the posterior probability: \\[\n\\begin{gather}\np(H_{\\text{convex}}|\\text{data})= \\frac{p(\\text{data}|H_{\\text{convex}})p(H_{\\text{convex}})}{p(\\text{data})} \\approx 0.003 \\\\\np(H_{\\text{concave}}|\\text{data})= \\frac{p(\\text{data}|H_{\\text{concave}})p(H_{\\text{concave}})}{p(\\text{data})} \\approx 0.997\n\\end{gather}\n\\]\n\nSo the probability of next flip landing hands is:\n\\[\np(H) = p(H_{\\text{convex}}|\\text{data})p(H_{\\text{convex}}) + p(H_{\\text{concave}}|\\text{data})p(H_{\\text{concave}}) \\approx 0.900\n\\]\n\n[!warning] TODO: Law of total probability"
   },
   {
+    "objectID": "posts/Reinforcement Learning/Policy-Based-Alg/REINFORCE.html",
+    "href": "posts/Reinforcement Learning/Policy-Based-Alg/REINFORCE.html",
+    "title": "REINFORCE",
+    "section": "",
+    "text": "REINFORCE Algorithm\n\n\n\n\n Back to top"
+  },
+  {
+    "objectID": "posts/Reinforcement Learning/Policy-Based-Alg/DDPG.html",
+    "href": "posts/Reinforcement Learning/Policy-Based-Alg/DDPG.html",
+    "title": "Deep Deterministic Policy Gradient",
+    "section": "",
+    "text": "Deep Deterministic Policy Gradient\n\n\n\n\n Back to top"
+  },
+  {
+    "objectID": "posts/Reinforcement Learning/Policy-Based-Alg/TRPO.html",
+    "href": "posts/Reinforcement Learning/Policy-Based-Alg/TRPO.html",
+    "title": "Trust Region Policy Optmization",
+    "section": "",
+    "text": "Trust Region Policy Optmization\n\n\n\n\n Back to top"
+  },
+  {
+    "objectID": "posts/Reinforcement Learning/Policy-Based-Alg/PPO.html",
+    "href": "posts/Reinforcement Learning/Policy-Based-Alg/PPO.html",
+    "title": "Proximal Policy Optimization",
+    "section": "",
+    "text": "Proximal Policy Optimization\n\n\n\n\n Back to top"
+  },
+  {
+    "objectID": "posts/Reinforcement Learning/test_2.html",
+    "href": "posts/Reinforcement Learning/test_2.html",
+    "title": "My Notebook",
+    "section": "",
+    "text": "Code\nimport numpy as np\nimport matplotlib.pyplot as plt\n\nr = np.arange(0, 2, 0.01)\ntheta = 2 * np.pi * r\nfig, ax = plt.subplots(subplot_kw={\"projection\": \"polar\"})\nax.plot(theta, r)\nax.set_rticks([0.5, 1, 1.5, 2])\nax.grid(True)\nplt.show()\n\n\n\n\n\n\n\n\nFigure 1: A line plot on a polar axis"
+  },
+  {
+    "objectID": "posts/Reinforcement Learning/test_2.html#head02",
+    "href": "posts/Reinforcement Learning/test_2.html#head02",
+    "title": "My Notebook",
+    "section": "Head02",
+    "text": "Head02\nsuch as in Figure 1"
+  },
+  {
+    "objectID": "posts/StateSpaceModel/Particle_Filter.html",
+    "href": "posts/StateSpaceModel/Particle_Filter.html",
+    "title": "Particle Filter",
+    "section": "",
+    "text": "Particle Filter\n\n\n\n\n Back to top"
+  },
+  {
+    "objectID": "posts/StateSpaceModel/HMM.html",
+    "href": "posts/StateSpaceModel/HMM.html",
+    "title": "Hidden Markov Model",
+    "section": "",
+    "text": "Hidden Markov Model\n\n\n\n\n Back to top"
+  },
+  {
+    "objectID": "posts/test_side_bar/another.html",
+    "href": "posts/test_side_bar/another.html",
+    "title": "Post With Code V3",
+    "section": "",
+    "text": "MDPs are a classical formalisation of sequential decision making, where actions influence not just immediate rewards, but also subsequent situations, or states, and through those future rewards."
+  },
+  {
+    "objectID": "posts/test_side_bar/another.html#discount-factor-gamma",
+    "href": "posts/test_side_bar/another.html#discount-factor-gamma",
+    "title": "Post With Code V3",
+    "section": "Discount Factor \\(\\gamma\\)",
+    "text": "Discount Factor \\(\\gamma\\)\nIt introduced to model an exponential decay in value of rewards over time. So the value function is \\[\nV(s) = \\sum_{t=0}^{\\infty}\\textcolor{red}{\\gamma^{t}}R(s_t, a_t, s_{t+1})\n\\]\nAccording to geometric series, is the above function is guaranteed to be finite-values as long as the \\(|\\gamma| &lt; 1\\) \\[\nV(s) \\leq \\sum_{t=0}^{\\infty}\\gamma^tR_{max} = \\frac {R_{max}} { 1- \\gamma}\n\\] where, \\(R_{max}\\) is the maximum possible reward attainable at any given timestep in the MDP.\n\n[!Info] The \\(\\gamma\\) value is selected strictly from the range \\(0 &lt; \\gamma &lt; 1\\) since values values in the range \\(−1 &lt; \\gamma ≤ 0\\) are simply not meaningful in most real-world situations"
+  },
+  {
+    "objectID": "posts/test_side_bar/another.html#bellman-equation",
+    "href": "posts/test_side_bar/another.html#bellman-equation",
+    "title": "Post With Code V3",
+    "section": "Bellman Equation",
+    "text": "Bellman Equation\nThe optimal value of a state \\(s, V^{*}(s)\\) is the expected value of the utility an optimally-behaving (follow policy) agent that starts in \\(s\\) will receive, over the rest of the agent’s lifetime. The optimal value (Q-value) of a Q-state \\(Q^*(s, a)\\) is the expected value of the utility an agent receives after starting in \\(s\\), taking \\(a\\) and acting optimally henceforth ^q-value\n\n\n\n\n\n\nNote\n\n\n\nQ-state, also know as action state, is the combine of agent in state \\(s\\), and take action \\(a\\)\n\n\nThe Bellman Equation for value function is define as follows: \\[\nV^*(s) = \\max_{a} \\sum_{s'} T(s, a, s')\\left[ R(s, a, s') + \\gamma V*(s')\\right]\n\\] For Q-value function is define as follows: \\[\nQ^*(s, a) = \\sum_{s'} T(s, a, s')\\left[ R(s, a, s') + \\gamma V*(s')\\right]\n\\] \\(R(s, a, s')\\) is immediate rewards ^immediate-reward\n\n[!Info] As showing above: \\[\nV^*(s) = \\max_a Q^*(s, a)\n\\]\n\nThe Bellman equation is an example of a dynamic programming equation. The Q-value is a weighted sum of utilities, with each utility weighted by the probability of\\(T(s, a, s')\\). This define the expected utility of action optimally from Q-state \\((s,a)\\)\nThe \\(V^*(s)\\) is the maximum expected utility over all possible actions from \\(s\\).\n\n[!question] BE usage is as a condition for optimality. In other words, if we can somehow determine a value U(s) for every state s ∈ S such that the Bellman equation holds true for each of these states, we can conclude that these values are the optimal values for their respective states. Indeed, satisfying this condition implies ∀s ∈ S, \\(V(s) = V^*(s)\\)\n\n\nValue Iteration\nTo solve the optimal values, we need time-limited values. The time-limited value for a state \\(s\\) with a time-limit of \\(k\\) timesteps is denoted \\(V_k(s)\\), and represents the maximum expected value attainable from \\(s\\) given that MDP under consideration terminated in \\(k\\) timesteps.\nValue iteration is a dynamic programming algorithm that uses an iteratively longer time limit to compute time-limited values until convergence \\[\\forall s,\\ V_{k+1}(s) = V_k(s)\\] It operates as follows: 1. \\(\\forall s \\in S\\), initialize \\(V_0(s) = 0\\). 2. Repeat the following update rule utile convergence: \\[\n\\forall s \\in S,\\ V_{k + 1}(s) \\leftarrow \\max_a\\sum_{s'}T(s, a, s')\\left[R(s, a, s') + \\gamma V_k(s') \\right]\n\\]\nThe Bellman Equation gives a condition for optimality, while update rule gives a method to iteratively update values util convergence. The above function for short is \\[\nV_{k + 1} \\leftarrow BV_k\n\\] where \\(B\\) is called the Bellman operator. which is contraction by \\(\\gamma\\) .\n\nPolicy Extraction\nThe intuition behind policy extraction is very simple: if you’re in a state \\(s\\), you should take the action \\(a\\) which yields the maximum expected value.\n\\[\n\\forall s \\in S, \\pi^*(s) = \\underset{a}{\\mathrm{argmax}}Q^*(s, a)\n\\]\n\n[!Info] For performance reasons that it’s better for policy extraction to have the optimal Q-values of states, in which case a single argmax operation is all that is required to determine the optimal action from a state.\n\n\n\n\nQ-Value Iteration\nQ-value iteration is a dynamic programming algorithm that computes time-limited Q-values. \\[\nQ_{k+1}(s, a) \\leftarrow \\sum_{s'}T(s, a, s')\\left[R(s, a, s') + \\gamma \\max_{a'} Q_k(s', a') \\right]\n\\tag{1}\\]\n\n\nPolicy Iteration\nValue iteration can be quite slow. At each iteration, we must update the values of all \\(|S|\\) states, each requires iteration over all \\(|A|\\) actions. The computation of each of these Q-Values, requires iteration over each of \\(|S|\\) states again, leading to runtime of \\(O(|S|^2|A|)\\)\nTo solve this flaw, we can use policy iteration. It operates as follows: 1. Define an initial policy. 2. Repeat the following until convergence: 1. Evaluate the current policy with policy evaluation. For a policy \\(\\pi\\) , policy evaluation means computing \\(V^{\\pi}(s)\\) for all states \\(s\\), where \\(V^{\\pi}\\) is expected value of starting in state \\(s\\) when following \\(\\pi\\): \\[\nV^{\\pi} = \\sum_{s'}T(s, \\pi(s), s')\\left[ R(s, \\pi(s), s' )  + \\gamma V^{\\pi}(s')\\right]\n\\] 2. Define the policy at iteration \\(i\\) as \\(\\pi_i\\). We can updated value function\n\\[\n    V^{\\pi_i}_{k+1} \\leftarrow \\sum_{s'}T(s, \\pi(s), s')\\left[ R(s, \\pi(s), s' )  + \\gamma V^{\\pi_i}_k (s')\\right]\n\\]\n3. Once evaluate the current policy, use **policy improvement** to generate a better policy: \n\\[\n\\pi_{i+1}(s) = \\underset{a}{\\mathrm{argmax}} \\sum_{s'}T(s, a, s')\\left[ R(s, a, s') + \\gamma V^{\\pi_i}(s') \\right]\n\\]"
+  },
+  {
     "objectID": "posts/Courses/Stanford EE364a Convex Optimization/EE364a_Lecture01.html",
     "href": "posts/Courses/Stanford EE364a Convex Optimization/EE364a_Lecture01.html",
     "title": "Stanford EE364A Convex Optimization Lecture 01: Introduction",
     "section": "",
-    "text": "Stanford EE364A Convex Optimization Lecture 01\n\n\n\n\n Back to top"
+    "text": "\\[\n\\begin{gather}\n\\text{minimize} & f_0(x) \\\\\n\\text{subject to} &  f_i(x) \\leq 0 \\quad i =  1, \\dots, m \\\\\n& g_i(x) = 0 \\quad i =  1  \\dots, p \\\\\n\\end{gather}\n\\]\n\n\\(x \\in \\mathbf{R}^n\\) is (vector) variable to be chosen to\n$f_0: ^n $ is the objective function to be minimized or (maxizimed)\n\\(f_1, \\dots, f_m: \\mathbf{R}^n \\to \\mathbf{R}\\) are the inequality constraint functions\n\\(g_1, \\dots, g_p\\) are equality constraint functions\n\nSolution or optimal point \\(x^{\\star}\\) has smallest value of \\(f_0\\) among all vector that staisfy the constraints\nFor example, in machine learning problem: * \\(x\\) represents the parametrs in a model * the constraints impose requirements on model parameters (e.g. nonnegativity) * The objective function \\(f_0(x)\\) is the sum of two terms: * a prediction error(also called loss) on some observed data * a (regularization) term that penelized model complexity"
+  },
+  {
+    "objectID": "posts/Courses/Stanford EE364a Convex Optimization/EE364a_Lecture01.html#lear-squared-problems",
+    "href": "posts/Courses/Stanford EE364a Convex Optimization/EE364a_Lecture01.html#lear-squared-problems",
+    "title": "Stanford EE364A Convex Optimization Lecture 01: Introduction",
+    "section": "Lear-Squared Problems",
+    "text": "Lear-Squared Problems\n\\[\n\\text{minimize} \\quad || Ax - b ||_{2}^{2}\n\\]\nSolving least squares problems: * Analytical solution (closed form): \\(x^{\\star} = (A^\\mathrm{T}A)^{-1}A^\\mathrm{T}b\\) The computation time proportional to \\(n^2k (A\\in \\mathbf{R}^{k \\times n})\\)\n\nLeast-Squares problems are easy to recognization (e.g. the regression problem)\nA few standard techniques increase flexible :\n\nIncluding weights\nAdding regularization terms"
+  },
+  {
+    "objectID": "posts/Courses/Stanford EE364a Convex Optimization/EE364a_Lecture01.html#linear-programming",
+    "href": "posts/Courses/Stanford EE364a Convex Optimization/EE364a_Lecture01.html#linear-programming",
+    "title": "Stanford EE364A Convex Optimization Lecture 01: Introduction",
+    "section": "Linear Programming",
+    "text": "Linear Programming\n$$ \\[\\begin{gather}\n\\text{minimize} & c^{\\mathrm{T}}x \\\\\n\\text{subject to} &  a_{i}^{\\mathrm{T}}x \\leq b_i \\quad i =  1, \\dots, m \\\\\n\n\\end{gather}\\] $$\nSolving linear programs: * No analytical formula for solution * Computation time porportional to \\(n^2m\\) if \\(m \\geq n\\)\nUsing Linear programming: * Not as easy as recognize as least-square problems * A few standard tricks used to convert problem into linear programming * Problems involving \\(\\ell_1-\\) or \\(\\ell_{\\infty}-\\) norms * Piecewise-lienar function"
+  },
+  {
+    "objectID": "posts/Courses/Stanford EE364a Convex Optimization/EE364a_Lecture01.html#convex-optimization-problem",
+    "href": "posts/Courses/Stanford EE364a Convex Optimization/EE364a_Lecture01.html#convex-optimization-problem",
+    "title": "Stanford EE364A Convex Optimization Lecture 01: Introduction",
+    "section": "Convex Optimization problem",
+    "text": "Convex Optimization problem\n\\[\n\\begin{gather}\n\\text{minimize} & f_{0}(x) \\\\\n\\text{subject to} &  f_{i}(x) \\leq b_i \\quad i =  1, \\dots, m \\\\\n\\end{gather}\n\\]\n\nObjective \\(f_0\\) and constraint functions \\(f_i(x)\\) are convex:\n\n\\[\n\\begin{align}\n& f_i(\\alpha x + \\beta y)  \\leq \\alpha f_i(x) + \\beta f_i(y)   \\\\\n& \\alpha + \\beta  = 1 \\text{ and } \\alpha  \\geq 0 , \\beta  \\geq 0\n\\end{align}\n\\] Include Least-Square problems and linear programs as special case.\nSolving convex optimzation problems * No analytical solution\nUsing convex optimizatoin * Often difficult to recognize * many tricks for transforming problems into convex form * Almost any problem can be solved via convex optimization\ncle"
   },
   {
     "objectID": "posts/PRML/chapter01.html#exercise-1.1",
@@ -329,10 +294,31 @@
     "text": "Exercise 1.1"
   },
   {
-    "objectID": "test.html",
-    "href": "test.html",
-    "title": "Yuyang's Blog",
+    "objectID": "posts/Generative Models/AutoRegressive.html",
+    "href": "posts/Generative Models/AutoRegressive.html",
+    "title": "Autoregressive Model",
     "section": "",
-    "text": "Back to top"
+    "text": "Autoregressive Model\n\n\nReference\n\nStanford CS236: Deep Generative Models\nUCB CS294 :Deep Unsupervised Learning\n\n\n\n\n\n Back to top"
+  },
+  {
+    "objectID": "posts/Generative Models/ScoreBased.html",
+    "href": "posts/Generative Models/ScoreBased.html",
+    "title": "Score based Model",
+    "section": "",
+    "text": "Autoregressive Model\n\n\nReference\nStanford CS236: Deep Generative Models\n\n\n\n\n Back to top"
+  },
+  {
+    "objectID": "posts/Generative Models/NormalizingFlows.html",
+    "href": "posts/Generative Models/NormalizingFlows.html",
+    "title": "Normalizing Flow",
+    "section": "",
+    "text": "Autoregressive Model\n\n\nReference\n\nStanford CS236: Deep Generative Models\nUCB CS294 :Deep Unsupervised Learning\n\n\n\n\n\n Back to top"
+  },
+  {
+    "objectID": "about.html",
+    "href": "about.html",
+    "title": "About",
+    "section": "",
+    "text": "About this blog\n\n\n Back to top"
   }
 ]

@@ -7,7 +7,7 @@
 <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=yes">
 
 <meta name="author" content="Yuyang Zhang">
-<meta name="dcterms.date" content="2024-06-03">
+<meta name="dcterms.date" content="2024-06-19">
 <meta name="description" content="An post about PRML chapter 01 introduction">
 
 <title>Yuyang's Blog – Stanford EE364A Convex Optimization Lecture 01: Introduction</title>
@@ -74,6 +74,35 @@ ul.task-list li input[type="checkbox"] {
 }</script>
 <style>html{ scroll-behavior: smooth; }</style>
 
+  <script src="https://cdnjs.cloudflare.com/polyfill/v3/polyfill.min.js?features=es6"></script>
+  <script src="https://cdn.jsdelivr.net/npm/mathjax@3/es5/tex-chtml-full.js" type="text/javascript"></script>
+
+<script type="text/javascript">
+const typesetMath = (el) => {
+  if (window.MathJax) {
+    // MathJax Typeset
+    window.MathJax.typeset([el]);
+  } else if (window.katex) {
+    // KaTeX Render
+    var mathElements = el.getElementsByClassName("math");
+    var macros = [];
+    for (var i = 0; i < mathElements.length; i++) {
+      var texText = mathElements[i].firstChild;
+      if (mathElements[i].tagName == "SPAN") {
+        window.katex.render(texText.data, mathElements[i], {
+          displayMode: mathElements[i].classList.contains('display'),
+          throwOnError: false,
+          macros: macros,
+          fleqn: false
+        });
+      }
+    }
+  }
+}
+window.Quarto = {
+  typesetMath
+};
+</script>
 
 <link rel="stylesheet" href="../../../styles.css">
 <meta name="twitter:title" content="Yuyang’s Blog - Stanford EE364A Convex Optimization Lecture 01: Introduction">
@@ -155,7 +184,7 @@ ul.task-list li input[type="checkbox"] {
       <div>
       <div class="quarto-title-meta-heading">Published</div>
       <div class="quarto-title-meta-contents">
-        <p class="date">June 3, 2024</p>
+        <p class="date">June 19, 2024</p>
       </div>
     </div>
     
@@ -170,7 +199,13 @@ ul.task-list li input[type="checkbox"] {
     <h2 id="toc-title">Table of Content</h2>
    
   <ul>
-  <li><a href="#stanford-ee364a-convex-optimization-lecture-01" id="toc-stanford-ee364a-convex-optimization-lecture-01" class="nav-link active" data-scroll-target="#stanford-ee364a-convex-optimization-lecture-01">Stanford EE364A Convex Optimization Lecture 01</a></li>
+  <li><a href="#optimization-problem" id="toc-optimization-problem" class="nav-link active" data-scroll-target="#optimization-problem">Optimization Problem</a></li>
+  <li><a href="#solving-optimization-problem" id="toc-solving-optimization-problem" class="nav-link" data-scroll-target="#solving-optimization-problem">Solving Optimization problem</a>
+  <ul class="collapse">
+  <li><a href="#lear-squared-problems" id="toc-lear-squared-problems" class="nav-link" data-scroll-target="#lear-squared-problems">Lear-Squared Problems</a></li>
+  <li><a href="#linear-programming" id="toc-linear-programming" class="nav-link" data-scroll-target="#linear-programming">Linear Programming</a></li>
+  <li><a href="#convex-optimization-problem" id="toc-convex-optimization-problem" class="nav-link" data-scroll-target="#convex-optimization-problem">Convex Optimization problem</a></li>
+  </ul></li>
   </ul>
 </nav>
 </nav>
@@ -185,10 +220,91 @@ ul.task-list li input[type="checkbox"] {
 
 
 
-<section id="stanford-ee364a-convex-optimization-lecture-01" class="level1">
-<h1>Stanford EE364A Convex Optimization Lecture 01</h1>
+<section id="optimization-problem" class="level1">
+<h1>Optimization Problem</h1>
+<p><span class="math display">\[
+\begin{gather}
+\text{minimize} &amp; f_0(x) \\
+\text{subject to} &amp;  f_i(x) \leq 0 \quad i =  1, \dots, m \\
+&amp; g_i(x) = 0 \quad i =  1  \dots, p \\
+\end{gather}
+\]</span></p>
+<ul>
+<li><span class="math inline">\(x \in \mathbf{R}^n\)</span> is (vector) variable to be chosen to</li>
+<li>$f_0: ^n $ is the <strong>objective function</strong> to be minimized or (maxizimed)</li>
+<li><span class="math inline">\(f_1, \dots, f_m: \mathbf{R}^n \to \mathbf{R}\)</span> are the <strong>inequality constraint</strong> functions</li>
+<li><span class="math inline">\(g_1, \dots, g_p\)</span> are <strong>equality constraint</strong> functions</li>
+</ul>
+<p>Solution or optimal point <span class="math inline">\(x^{\star}\)</span> has smallest value of <span class="math inline">\(f_0\)</span> among all vector that staisfy the constraints</p>
+<p>For example, in machine learning problem: * <span class="math inline">\(x\)</span> represents the parametrs in a model * the constraints impose requirements on model parameters (e.g.&nbsp;nonnegativity) * The objective function <span class="math inline">\(f_0(x)\)</span> is the sum of two terms: * a prediction error(also called loss) on some observed data * a (regularization) term that penelized model complexity</p>
+</section>
+<section id="solving-optimization-problem" class="level1">
+<h1>Solving Optimization problem</h1>
+<ul>
+<li>General optimization problem:
+<ul>
+<li>Very difficult to solve</li>
+<li>methods involve some compromise, e.g.
+<ul>
+<li>very long computation time</li>
+<li>not always finding the solution</li>
+</ul></li>
+</ul></li>
+<li>Exception: certain problem classes can be solved efficiently and reliable:
+<ul>
+<li>Lear-Squared Problems</li>
+<li>Linear Programming Problems</li>
+<li>Convex Optimization</li>
+</ul></li>
+</ul>
+<section id="lear-squared-problems" class="level2">
+<h2 class="anchored" data-anchor-id="lear-squared-problems">Lear-Squared Problems</h2>
+<p><span class="math display">\[
+\text{minimize} \quad || Ax - b ||_{2}^{2}
+\]</span></p>
+<p>Solving least squares problems: * Analytical solution (closed form): <span class="math inline">\(x^{\star} = (A^\mathrm{T}A)^{-1}A^\mathrm{T}b\)</span> The computation time proportional to <span class="math inline">\(n^2k (A\in \mathbf{R}^{k \times n})\)</span></p>
+<ul>
+<li>Least-Squares problems are easy to recognization (e.g.&nbsp;the regression problem)</li>
+<li>A few standard techniques increase flexible :
+<ul>
+<li>Including weights</li>
+<li>Adding regularization terms</li>
+</ul></li>
+</ul>
+</section>
+<section id="linear-programming" class="level2">
+<h2 class="anchored" data-anchor-id="linear-programming">Linear Programming</h2>
+<p>$$ <span class="math display">\[\begin{gather}
+\text{minimize} &amp; c^{\mathrm{T}}x \\
+\text{subject to} &amp;  a_{i}^{\mathrm{T}}x \leq b_i \quad i =  1, \dots, m \\
+
+\end{gather}\]</span> $$</p>
+<p>Solving linear programs: * No analytical formula for solution * Computation time porportional to <span class="math inline">\(n^2m\)</span> if <span class="math inline">\(m \geq n\)</span></p>
+<p>Using Linear programming: * Not as easy as recognize as least-square problems * A few standard tricks used to convert problem into linear programming * Problems involving <span class="math inline">\(\ell_1-\)</span> or <span class="math inline">\(\ell_{\infty}-\)</span> norms * Piecewise-lienar function</p>
+</section>
+<section id="convex-optimization-problem" class="level2">
+<h2 class="anchored" data-anchor-id="convex-optimization-problem">Convex Optimization problem</h2>
+<p><span class="math display">\[
+\begin{gather}
+\text{minimize} &amp; f_{0}(x) \\
+\text{subject to} &amp;  f_{i}(x) \leq b_i \quad i =  1, \dots, m \\
+\end{gather}
+\]</span></p>
+<ul>
+<li>Objective <span class="math inline">\(f_0\)</span> and constraint functions <span class="math inline">\(f_i(x)\)</span> are convex:</li>
+</ul>
+<p><span class="math display">\[
+\begin{align}
+&amp; f_i(\alpha x + \beta y)  \leq \alpha f_i(x) + \beta f_i(y)   \\
+&amp; \alpha + \beta  = 1 \text{ and } \alpha  \geq 0 , \beta  \geq 0
+\end{align}
+\]</span> Include Least-Square problems and linear programs as special case.</p>
+<p>Solving convex optimzation problems * No analytical solution</p>
+<p>Using convex optimizatoin * Often difficult to recognize * many tricks for transforming problems into convex form * Almost any problem can be solved via convex optimization</p>
+<p>cle</p>
 
 
+</section>
 </section>
 
 <a onclick="window.scrollTo(0, 0); return false;" role="button" id="quarto-back-to-top"><i class="bi bi-arrow-up"></i> Back to top</a></main> <!-- /main -->
