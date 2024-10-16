@@ -2,6 +2,10 @@
   {
     "listing": "/index.html",
     "items": [
+      "/posts/Reinforcement Learning/Policy-Based-Alg/Policy_Gradient.html",
+      "/posts/Reinforcement Learning/RL.html",
+      "/posts/Mathematic Toolbox/Important Sampling.html",
+      "/posts/Reinforcement Learning/MDP.html",
       "/posts/DLFC/Chapter02 Probabilities.html",
       "/posts/Reinforcement Learning/Policy-Based-Alg/TRPO.html",
       "/posts/Reinforcement Learning/Policy-Based-Alg/DDPG.html",
