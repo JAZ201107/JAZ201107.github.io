@@ -2,26 +2,7 @@
   {
     "listing": "/index.html",
     "items": [
-      "/posts/Reinforcement Learning/Policy-Based-Alg/Policy_Gradient.html",
-      "/posts/Reinforcement Learning/RL.html",
-      "/posts/Mathematic Toolbox/Important Sampling.html",
-      "/posts/Reinforcement Learning/MDP.html",
-      "/posts/DLFC/Chapter02 Probabilities.html",
-      "/posts/Reinforcement Learning/Policy-Based-Alg/TRPO.html",
-      "/posts/Reinforcement Learning/Policy-Based-Alg/DDPG.html",
-      "/posts/Reinforcement Learning/Policy-Based-Alg/PPO.html",
-      "/posts/Reinforcement Learning/Policy-Based-Alg/REINFORCE.html",
-      "/posts/StateSpaceModel/Particle_Filter.html",
-      "/posts/StateSpaceModel/Kalman_Filter.html",
-      "/posts/StateSpaceModel/HMM.html",
-      "/posts/Learning/EM.html",
-      "/posts/Inference/VI.html",
-      "/posts/Generative Models/GAN.html",
-      "/posts/Generative Models/AutoRegressive.html",
-      "/posts/Generative Models/EnergyBased.html",
-      "/posts/Generative Models/ScoreBased.html",
-      "/posts/Generative Models/DiffusionModel.html",
-      "/posts/Generative Models/NormalizingFlows.html",
+      "/posts/Books/DLFC/Chapter02 Probabilities.html",
       "/posts/PRML/chapter01.html"
     ]
   }
